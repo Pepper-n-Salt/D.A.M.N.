@@ -1,2 +1,36 @@
 # D.A.M.N.
-A full-stack web application for managing exhibitions, artworks, multimedia content, and interactive visitor experiences. Built with React, Node.js, PostgreSQL, and Tailwind CSS.
+
+Digital-Artwork-Management-Network
+
+# Exhibition CMS
+
+A modern content management system for museums and exhibitions.
+
+## Features
+
+- Authentication
+- Role management
+- Exhibition editor
+- QR Codes
+- Interactive quizzes
+- Responsive Design
+
+## Tech Stack
+
+React
+Next.js
+Express
+PostgreSQL
+Tailwind CSS
+
+## Screenshots
+
+...
+
+## Live Demo
+
+...
+
+## Installation
+
+...
