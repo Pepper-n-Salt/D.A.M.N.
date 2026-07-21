@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ArtworkCard from "./ArtworkCard";
+import Carouselbutton from "./ui/buttons/Carouselbutton";
 
 const artworks = [
   {
@@ -45,20 +46,18 @@ export default function ArtworkCarousel() {
       </div>
 
       <div className="flex justify-between gap-4">
-        <button
+        <Carouselbutton
           onClick={() => setStartIndex((prev) => Math.max(prev - 3, 0))}
           disabled={startIndex === 0}
-          className="border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
         >
           ← Previous
-        </button>
+        </Carouselbutton>
 
         <button
           onClick={() =>
             setStartIndex((prev) => Math.min(prev + 3, artworks.length - 3))
           }
           disabled={startIndex >= artworks.length - 3}
-          className="border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
         >
           Next →
         </button>

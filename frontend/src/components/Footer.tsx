@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 export default function Footer() {
   return (
     <footer className="border-t border-gray-200 px-8 py-8">
@@ -5,8 +6,8 @@ export default function Footer() {
         <p className="text-gray-400">© D.A.M.N. {new Date().getFullYear()}</p>
 
         <nav className="flex gap-8">
-          <a href="/imprint">Imprint</a>
-          <a href="/privacy">Privacy</a>
+          <Link to="/imprint">Imprint</Link>
+          <Link to="/privacy">Privacy</Link>
         </nav>
       </div>
     </footer>

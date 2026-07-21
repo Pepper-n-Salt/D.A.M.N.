@@ -1,6 +1,5 @@
 import Header from "./Header";
 import Footer from "./Footer";
-// import { LanguageProvider } from "../context/LanguageContext";
 
 export default function RootLayout({
   children,
@@ -9,7 +8,6 @@ export default function RootLayout({
 }) {
   return (
     <div>
-      {/* <LanguageProvider> */}
       <div className="min-h-screen flex flex-col bg-white text-black">
         <Header />
 
@@ -17,7 +15,6 @@ export default function RootLayout({
 
         <Footer />
       </div>
-      {/* </LanguageProvider> */}
     </div>
   );
 }
