@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { useLanguage } from "../context/LanguageContext";
+// import { useLanguage } from "../context/LanguageContext";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header() {
   const { pathname } = useLocation();
   const isLandingPage =
     pathname === "/landingpage" || pathname.startsWith("/landingpage/");
-  const { language, setLanguage } = useLanguage();
+  // const { language, setLanguage } = useLanguage();
 
   return (
     <header className="border-b border-gray-200 px-8 py-6">
@@ -70,12 +71,13 @@ export default function Header() {
               Hello Superuser!
             </p>
 
-            <button
+            {/* <button
               className="cursor-pointer"
               onClick={() => setLanguage(language === "de" ? "en" : "de")}
             >
               {language.toUpperCase()}
-            </button>
+            </button> */}
+            <LanguageSwitcher />
 
             <Link
               to="/login"
@@ -86,12 +88,13 @@ export default function Header() {
           </div>
         ) : (
           <div className="flex items-center uppercase gap-4">
-            <button
+            {/* <button
               className="text-sm uppercase tracking-[0.2em] cursor-pointer"
               onClick={() => setLanguage(language === "de" ? "en" : "de")}
             >
               {language.toUpperCase()}
-            </button>
+            </button> */}
+            <LanguageSwitcher />
 
             <Link
               to="/login"
