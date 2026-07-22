@@ -1,0 +1,30 @@
+{
+  "hero": {
+    "title": "Pepper'n'Salt"
+  },
+  "intro": {
+    "paragraph1": "Pepper'n'Salt is a creative collaboration between two designers exploring digital experiences, visual communication and cultural heritage. Together we combine design thinking and technical implementation to create digital products with a clear focus on usability and aesthetics.",
+    "paragraph2": "As the final project of our Web Development training, we developed D.A.M.N. — the Digital Artwork Management Network. The platform was created to simplify the management, curation and presentation of digital artworks while providing museums, galleries and cultural institutions with a flexible and future-oriented workflow."
+  },
+  "team": {
+    "title": "The Team",
+    "portrait": "Portrait",
+    "members": {
+      "mela": {
+        "name": "Mela Heß",
+        "role": "UX Design · Frontend Development",
+        "description": "Passionate about creating intuitive and engaging digital experiences through thoughtful UX design and modern frontend development. Focused on translating complex ideas into clear, accessible interfaces while ensuring a seamless interaction between design, functionality and technology throughout the development of D.A.M.N."
+      },
+      "imke": {
+        "name": "Imke Högden",
+        "role": "Frontend Development · Backend Development",
+        "description": "Focused on frontend and backend development, creating the technical foundation of D.A.M.N. Responsible for implementing the user interface, designing the application architecture, integrating the database and ensuring a reliable connection between functionality and user experience."
+      }
+    }
+  },
+  "collaboration": {
+    "label": "Collaboration",
+    "title": "Design meets Development.",
+    "paragraph": "We believe that successful digital products emerge through close collaboration. By combining different perspectives and skill sets, we transform ideas into thoughtful digital experiences that are both visually refined and technically robust. As Pepper'n'Salt, we value curiosity, experimentation and the balance between creativity and functionality."
+  }
+}
