@@ -1,44 +1,46 @@
-import ExhibitionCard from "../components/ExhibitionCard";
-
-const exhibitions = [
-  {
-    id: 1,
-    image: "https://placehold.co/900x600",
-    title: "Digital Landscapes",
-    date: "12.09.2026",
-    location: "Berlin",
-    created: "05.07.2026",
-  },
-  {
-    id: 2,
-    image: "https://placehold.co/900x600",
-    title: "Future Forms",
-    date: "20.10.2026",
-    location: "Hamburg",
-    created: "14.07.2026",
-  },
-];
+import { Link } from "react-router-dom";
+import DeletedExhibitions from "../components/DeletedExhibition";
+import ArchivedExhibitions from "../components/ArchivedExhibitions";
+import ExhibitionCarousel from "../components/ExhibitionCarousel";
+import H1 from "../components/ui/typography/H1";
+import H2 from "../components/ui/typography/H2";
+import P from "../components/ui/typography/P";
+import Borderbutton from "../components/ui/buttons/Borderbutton";
 
 export default function ExhibitionsPage() {
   return (
     <section className="space-y-20 py-8">
       <div className="space-y-8">
-        <h1 className="text-5xl md:text-7xl sm:text-5xl lg:text-9xl font-light">
-          Exhibitions
-        </h1>
-        <p className="max-w-2xl tracking-widest leading-loose">
+        <H1>Exhibitions</H1>
+        <P>
           Build and manage exhibitions that connect artworks, spaces, and
           presentation formats.
-        </p>
+        </P>
       </div>
 
       <section className="border-t border-neutral-200 pt-12 space-y-8">
-        <h2 className="text-3xl md:text-5xl font-light">Current Exhibitions</h2>
-        <div className="grid gap-8 md:grid-cols-2">
-          {exhibitions.map((exhibition) => (
-            <ExhibitionCard key={exhibition.id} exhibition={exhibition} />
-          ))}
-        </div>
+        <H2>Current Exhibitions</H2>
+
+        <ExhibitionCarousel />
+      </section>
+
+      <section className="border-t border-neutral-200 pt-12 space-y-12">
+        <H2>Add new Exhibition</H2>
+        <Link to="/landingpage/exhibitions/new">
+          <Borderbutton>Click here to add a new Exhibition →</Borderbutton>
+        </Link>
+      </section>
+
+      <section className="border-t border-neutral-200 pt-12 space-y-12">
+        <H2>Archived Exhibitions</H2>
+
+        <ArchivedExhibitions />
+      </section>
+
+      <section className="border-t border-neutral-200 pt-12 space-y-12">
+        <H2>Deleted Exhibitions</H2>
+
+        <DeletedExhibitions />
       </section>
     </section>
   );

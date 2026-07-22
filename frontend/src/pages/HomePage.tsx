@@ -1,6 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { useContext } from "react";
-import { LanguageContext } from "../context/LanguageContext";
 
 import Carouselbutton from "../components/ui/buttons/Carouselbutton";
 import H1 from "../components/ui/typography/H1";
@@ -68,8 +66,9 @@ export default function HomePage() {
           </div>
 
           <aside className="lg:col-span-4">
-            <H2>{t("showcase.workflow")}</H2>
-
+            <H2>{t("showcase.workflow")}/H2>
+            <br />
+            <br />
             <div className="space-y-6">
               {showcaseSteps.map((step, index) => (
                 <div key={index}>

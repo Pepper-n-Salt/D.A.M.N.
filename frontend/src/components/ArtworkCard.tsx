@@ -1,3 +1,5 @@
+import H3 from "./ui/typography/H3";
+import P from "./ui/typography/P";
 interface Artwork {
   id: string | number;
   image: string;
@@ -20,8 +22,8 @@ export default function ArtworkCard({ artwork }: ArtworkCardProps) {
       />
 
       <div className="space-y-1 p-4">
-        <h3 className="text-sm font-semibold">{artwork.title}</h3>
-        <p className="text-sm text-neutral-600">{artwork.artist}</p>
+        <H3>{artwork.title}</H3>
+        <P>{artwork.artist}</P>
         <p className="text-xs text-neutral-500">Created: {artwork.created}</p>
       </div>
     </article>
