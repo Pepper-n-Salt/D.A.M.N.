@@ -1,38 +1,37 @@
+import H1 from "../components/ui/typography/H1";
+import H2 from "../components/ui/typography/H2";
+import H3 from "../components/ui/typography/H3";
+import P from "../components/ui/typography/P";
+
 export default function NewScreenPage() {
   return (
     <section className="space-y-20 py-8">
       <div className="space-y-6">
-        <h1 className="text-5xl font-light sm:text-6xl md:text-7xl">
-          Create Screen
-        </h1>
-        <p className="max-w-2xl text-neutral-500">
-          Configure a digital presentation for your museum displays.
-        </p>
+        <H1>Create Screen</H1>
+        <P>Configure a digital presentation for your museum displays.</P>
       </div>
 
       <section className="space-y-8">
-        <p className="text-sm uppercase tracking-[0.25em] text-neutral-500">
-          Select Screen Type
-        </p>
-
+        <H2>Select Screen Type</H2>
+        <br />
         <div className="space-y-6">
-          <h2 className="text-2xl font-light">Static Screens</h2>
+          <H3>Static Screens</H3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button className="group border border-neutral-300 p-6 text-left transition-colors duration-300 hover:bg-black hover:text-white">
-              <h3 className="text-xl font-light">Exhibition</h3>
+              <P>Exhibition</P>
               <p className="mt-3 text-sm text-neutral-500 group-hover:text-neutral-500">
                 Display current exhibitions and related information.
               </p>
             </button>
             <button className="border border-neutral-300 p-6 text-left transition hover:bg-black hover:text-white">
-              <h3 className="text-xl font-light">Artwork</h3>
+              <P>Artwork</P>
               <p className="mt-3 text-sm text-neutral-500">
                 Present individual artworks with metadata.
               </p>
             </button>
             <button className="border border-neutral-300 p-6 text-left transition hover:bg-black hover:text-white">
-              <h3 className="text-xl font-light">Artist</h3>
+              <P>Artist</P>
               <p className="mt-3 text-sm text-neutral-500">
                 Show artist information and selected works.
               </p>
@@ -40,7 +39,7 @@ export default function NewScreenPage() {
           </div>
         </div>
 
-        <div className="space-y-6 pt-8">
+        {/* <div className="space-y-6 pt-8">
           <h2 className="text-2xl font-light">Dynamic Screens</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -69,17 +68,17 @@ export default function NewScreenPage() {
               </p>
             </button>
           </div>
-        </div>
+        </div>*/}
       </section>
 
       <section className="border-t border-neutral-200 pt-12">
-        <p className="text-sm uppercase tracking-[0.25em] text-neutral-500 mb-8">
-          Screen Information
-        </p>
-
+        <H2>Add Screen Information</H2>
+        <br /> <br />
         <div className="max-w-xl space-y-8">
           <div>
-            <label className="text-sm text-neutral-500">Screen Name</label>
+            <label className="text-sm uppercase tracking-[0.2em]">
+              Screen Name
+            </label>
             <input
               type="text"
               placeholder="Main Gallery Screen"
@@ -87,13 +86,16 @@ export default function NewScreenPage() {
             />
           </div>
           <div>
-            <label className="text-sm text-neutral-500">Location</label>
+            <label className="text-sm uppercase tracking-[0.2em]">
+              Location
+            </label>
             <input
               type="text"
               placeholder="Entrance Hall"
               className="mt-3 w-full border-b border-black bg-transparent py-3 outline-none placeholder:text-neutral-400"
             />
           </div>
+          <br />
           <button className="border border-black px-8 py-3 text-sm uppercase tracking-[0.25em] transition hover:bg-black hover:text-white">
             Create Screen
           </button>
