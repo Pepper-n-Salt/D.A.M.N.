@@ -1,4 +1,7 @@
 import { useState } from "react";
+import H1 from "../components/ui/typography/H1";
+import H2 from "../components/ui/typography/H2";
+import P from "../components/ui/typography/P";
 
 export default function NewArtworkPage() {
   const [showImport, setShowImport] = useState(false);
@@ -38,13 +41,11 @@ export default function NewArtworkPage() {
   return (
     <section className="space-y-10 py-8">
       <div className="space-y-8">
-        <h1 className="text-5xl font-light sm:text-5xl md:text-7xl lg:text-9xl">
-          Add new Artwork
-        </h1>
-        <p className="max-w-2xl tracking-widest leading-loose">
+        <H1>Add new Artwork</H1>
+        <P>
           Fill in the details below to create a new artwork entry for the
           platform.
-        </p>
+        </P>
       </div>
 
       <div className="flex items-center gap-6">

@@ -1,22 +1,22 @@
+import H1 from "../components/ui/typography/H1";
+import H2 from "../components/ui/typography/H2";
+import P from "../components/ui/typography/P";
+
 export default function NewUserPage() {
   return (
     <section className="space-y-20 py-8">
       <section className="space-y-8">
-        <h1 className="text-5xl md:text-7xl sm:text-5xl lg:text-9xl font-light">
-          Add Member
-        </h1>
-        <p className="tracking-widest leading-loose max-w-2xl">
+        <H1>Add Member</H1>
+        <P>
           Create a new account for your organization and define the appropriate
           access level within D.A.M.N.
-        </p>
+        </P>
       </section>
 
       <section className="border-t border-neutral-200 pt-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-4">
-            <p className="text-sm uppercase tracking-[0.25em] text-neutral-500">
-              User Information
-            </p>
+            <H2>User Information</H2>
           </div>
 
           <form className="lg:col-span-8 max-w-md flex flex-col gap-8">
