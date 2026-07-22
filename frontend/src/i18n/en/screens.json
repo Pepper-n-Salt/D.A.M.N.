@@ -1,0 +1,13 @@
+{
+  "hero": {
+    "title": "Display Management",
+    "paragraph": "Manage and curate digital content displayed throughout the exhibition space."
+  },
+  "current": {
+    "title": "Exhibition Screens"
+  },
+  "create": {
+    "title": "New Screen",
+    "button": "Add new screen →"
+  }
+}

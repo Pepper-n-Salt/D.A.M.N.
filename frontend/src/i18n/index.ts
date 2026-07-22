@@ -24,6 +24,7 @@ i18n.use(initReactI18next).init({
     "user",
     "artworks",
     "exhibitions",
+    "screens",
   ],
 
   interpolation: {

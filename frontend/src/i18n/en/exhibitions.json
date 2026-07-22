@@ -7,8 +7,8 @@
     "title": "Current Exhibitions"
   },
   "create": {
-    "title": "Add New Exhibition",
-    "button": "Add Exhibition →"
+    "title": "New Exhibition",
+    "button": "Add new Exhibition →"
   },
   "archived": {
     "title": "Archived Exhibitions"
