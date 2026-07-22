@@ -1,4 +1,8 @@
+import Carouselbutton from "../components/ui/buttons/Carouselbutton";
 import H1 from "../components/ui/typography/H1";
+import H2 from "../components/ui/typography/H2";
+import H3 from "../components/ui/typography/H3";
+import P from "../components/ui/typography/P";
 
 export default function HomePage() {
   const workflow = ["Contact", "Artwork", "Exhibition", "Screen"];
@@ -8,29 +12,29 @@ export default function HomePage() {
       <H1>A system for collecting, curating and presenting digital art.</H1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 tracking-widest leading-loose">
-        <p>
+        <P>
           D.A.M.N. (Digital Artwork Management Network) is a platform designed
           to simplify the organization and presentation of digital artworks. It
           brings together artwork data, collections, exhibitions, and display
           management in one centralized environment, creating a structured
           workflow from archive to presentation.
-        </p>
+        </P>
 
-        <p>
+        <P>
           Whether used by artists, galleries, museums, or cultural institutions,
           D.A.M.N. supports the entire curatorial process. Artworks can be
           documented, enriched with metadata, grouped into collections, and
           prepared for exhibitions without relying on scattered files or
           disconnected systems.
-        </p>
+        </P>
 
-        <p>
+        <P>
           By connecting collections with exhibitions and digital screens,
           D.A.M.N. creates a seamless link between management and presentation.
           The platform is built to make digital art easier to curate, maintain,
           and share, while providing a flexible foundation that can grow with
           future projects and collaborations.
-        </p>
+        </P>
       </div>
 
       <section className="border-t border-neutral-200 pt-12 space-y-12">
@@ -44,46 +48,32 @@ export default function HomePage() {
             </div>
           </div> */}
           <div className="lg:col-span-8">
-            <div className="aspect-[16/9] border border-neutral-300 bg-neutral-100 overflow-hidden">
+            <div className="aspect-video border border-neutral-300 bg-neutral-100 overflow-hidden">
               {/* hier später Image-Komponente einsetzen */}
               <div className="flex h-full items-center justify-center uppercase tracking-[0.3em] text-neutral-400 text-sm">
                 Screenshot Dashboard
               </div>
             </div>
 
-            <div className="flex justify-between items-center mt-6">
-              <div className="flex gap-6 px-6">
-                <button
-                  aria-label="Previous screenshot"
-                  className="group flex items-center gap-2 text-sm uppercase tracking-[0.2em]"
-                >
-                  <span className="transition-transform duration-300 group-hover:-translate-x-1">
-                    ←
-                  </span>
-                  Prev
-                </button>
-
-                <button
-                  aria-label="Next screenshot"
-                  className="group flex items-center gap-2 text-sm uppercase tracking-[0.2em]"
-                >
-                  Next
-                  <span className="transition-transform duration-300 group-hover:translate-x-1">
-                    →
-                  </span>
-                </button>
-              </div>
-
-              <p className="text-sm uppercase tracking-[0.2em] text-neutral-400 px-6">
-                01 / 04
-              </p>
+            <div className="flex justify-between gap-4">
+              <Carouselbutton aria-label="Previous screenshot">
+                <span className="transition-transform duration-300 group-hover:-translate-x-1">
+                  ←
+                </span>
+                Prev
+              </Carouselbutton>
+              <P>01 / 04</P>
+              <Carouselbutton aria-label="Next screenshot">
+                Next
+                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
+              </Carouselbutton>
             </div>
           </div>
 
           <aside className="lg:col-span-4">
-            <p className="mb-8 text-sm uppercase tracking-[0.25em] text-neutral-500">
-              Workflow
-            </p>
+            <H2>Workflow</H2>
 
             <div className="space-y-6">
               {workflow.map((item, index) => (
@@ -93,7 +83,7 @@ export default function HomePage() {
                       {String(index + 1).padStart(2, "0")}
                     </span>
 
-                    <h3 className="text-2xl font-light">{item}</h3>
+                    <H3>{item}</H3>
                   </div>
 
                   {index < workflow.length - 1 && (
@@ -116,14 +106,14 @@ export default function HomePage() {
             <div className="md:col-span-2 text-sm text-neutral-400">01</div>
 
             <div className="md:col-span-4">
-              <h3 className="text-2xl font-light">Archive</h3>
+              <H3>Archive</H3>
             </div>
 
             <div className="md:col-span-6 tracking-widest leading-loose">
-              <p>
+              <P>
                 Store, organize and maintain digital artworks with structured
                 information, metadata and documentation.
-              </p>
+              </P>
             </div>
           </div>
 
@@ -131,14 +121,14 @@ export default function HomePage() {
             <div className="md:col-span-2 text-sm text-neutral-400">02</div>
 
             <div className="md:col-span-4">
-              <h3 className="text-2xl font-light">Curate</h3>
+              <H3>Curate</H3>
             </div>
 
             <div className="md:col-span-6 tracking-widest leading-loose">
-              <p>
+              <P>
                 Build collections, plan exhibitions and create meaningful
                 relationships between artworks and contexts.
-              </p>
+              </P>
             </div>
           </div>
 
@@ -146,14 +136,14 @@ export default function HomePage() {
             <div className="md:col-span-2 text-sm text-neutral-400">03</div>
 
             <div className="md:col-span-4">
-              <h3 className="text-2xl font-light">Publish</h3>
+              <H3>Publish</H3>
             </div>
 
             <div className="md:col-span-6 tracking-widest leading-loose">
-              <p>
+              <P>
                 Connect curated content to digital screens and make artworks
                 accessible across different exhibition environments.
-              </p>
+              </P>
             </div>
           </div>
         </div>

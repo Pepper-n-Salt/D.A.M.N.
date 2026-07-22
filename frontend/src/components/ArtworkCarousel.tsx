@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ArtworkCard from "./ArtworkCard";
 import Carouselbutton from "./ui/buttons/Carouselbutton";
+import P from "./ui/typography/P";
 
 const artworks = [
   {
@@ -52,15 +53,15 @@ export default function ArtworkCarousel() {
         >
           ← Previous
         </Carouselbutton>
-
-        <button
+        <P>01 / 03</P>
+        <Carouselbutton
           onClick={() =>
             setStartIndex((prev) => Math.min(prev + 3, artworks.length - 3))
           }
           disabled={startIndex >= artworks.length - 3}
         >
           Next →
-        </button>
+        </Carouselbutton>
       </div>
     </div>
   );

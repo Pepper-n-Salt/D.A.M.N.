@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
+import H1 from "../components/ui/typography/H1";
+import P from "../components/ui/typography/P";
+
 export default function LoginPage() {
   return (
     <section className="max-w-md">
-      <h1 className="text-5xl md:text-7xl sm:text-6xl lg:text-9xl font-light">
-        Login
-      </h1>
-
-      <p className="mt-12 tracking-widest leading-loose">
-        Access the Digital Artwork Management Network!
-      </p>
+      <H1>Login</H1>
+      <br />
+      <br />
+      <P>Access the Digital Artwork Management Network!</P>
 
       <form action="/login" method="post" className="mt-12">
         <div className="flex flex-col gap-8">
