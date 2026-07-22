@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { useContext } from "react";
+import { LanguageContext } from "../context/LanguageContext";
 
 import Carouselbutton from "../components/ui/buttons/Carouselbutton";
 import H1 from "../components/ui/typography/H1";
