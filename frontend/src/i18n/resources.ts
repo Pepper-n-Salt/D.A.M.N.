@@ -9,6 +9,7 @@ import deUser from "./de/user.json";
 import deArtworks from "./de/artworks.json";
 import deExhibitions from "./de/exhibitions.json";
 import deScreens from "./de/screens.json";
+import deImprint from "./de/imprint.json";
 
 import enCommon from "./en/common.json";
 import enHome from "./en/home.json";
@@ -19,6 +20,7 @@ import enUser from "./en/user.json";
 import enArtworks from "./en/artworks.json";
 import enExhibitions from "./en/exhibitions.json";
 import enScreens from "./en/screens.json";
+import enImprint from "./de/imprint.json";
 
 export const resources = {
   de: {
@@ -31,6 +33,7 @@ export const resources = {
     artworks: deArtworks,
     exhibitions: deExhibitions,
     screens: deScreens,
+    imprint: deImprint,
   },
   en: {
     common: enCommon,
@@ -42,6 +45,7 @@ export const resources = {
     artworks: enArtworks,
     exhibitions: enExhibitions,
     screens: enScreens,
+    imprint: enImprint,
   },
 } as const;
 
