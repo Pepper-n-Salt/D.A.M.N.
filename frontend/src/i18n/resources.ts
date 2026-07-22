@@ -10,6 +10,11 @@ import deArtworks from "./de/artworks.json";
 import deExhibitions from "./de/exhibitions.json";
 import deScreens from "./de/screens.json";
 import deImprint from "./de/imprint.json";
+import dePrivacy from "./de/privacy.json";
+import deNewUser from "./de/newUser.json";
+import deNewArtwork from "./de/newArtwork.json";
+import deNewExhibition from "./de/newExhibition.json";
+import deNewScreen from "./de/newScreen.json";
 
 import enCommon from "./en/common.json";
 import enHome from "./en/home.json";
@@ -21,6 +26,11 @@ import enArtworks from "./en/artworks.json";
 import enExhibitions from "./en/exhibitions.json";
 import enScreens from "./en/screens.json";
 import enImprint from "./de/imprint.json";
+import enPrivacy from "./en/privacy.json";
+import enNewUser from "./en/newUser.json";
+import enNewArtwork from "./en/newArtwork.json";
+import enNewExhibition from "./en/newExhibition.json";
+import enNewScreen from "./en/newScreen.json";
 
 export const resources = {
   de: {
@@ -34,6 +44,11 @@ export const resources = {
     exhibitions: deExhibitions,
     screens: deScreens,
     imprint: deImprint,
+    privacy: dePrivacy,
+    newUser: deNewUser,
+    newArtwork: deNewArtwork,
+    newExhibition: deNewExhibition,
+    newScreen: deNewScreen,
   },
   en: {
     common: enCommon,
@@ -46,6 +61,11 @@ export const resources = {
     exhibitions: enExhibitions,
     screens: enScreens,
     imprint: enImprint,
+    privacy: enPrivacy,
+    newUser: enNewUser,
+    newArtwork: enNewArtwork,
+    newExhibition: enNewExhibition,
+    newScreen: enNewScreen,
   },
 } as const;
 

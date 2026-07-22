@@ -25,6 +25,12 @@ i18n.use(initReactI18next).init({
     "artworks",
     "exhibitions",
     "screens",
+    "newUser",
+    "newArtwork",
+    "newExhibition",
+    "newScreen",
+    "imprint",
+    "privacy",
   ],
 
   interpolation: {

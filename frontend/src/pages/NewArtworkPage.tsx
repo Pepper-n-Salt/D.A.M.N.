@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import H1 from "../components/ui/typography/H1";
-import H2 from "../components/ui/typography/H2";
 import P from "../components/ui/typography/P";
 
 export default function NewArtworkPage() {
+  const { t } = useTranslation("newArtwork");
+
   const [showImport, setShowImport] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
@@ -41,11 +44,8 @@ export default function NewArtworkPage() {
   return (
     <section className="space-y-10 py-8">
       <div className="space-y-8">
-        <H1>Add new Artwork</H1>
-        <P>
-          Fill in the details below to create a new artwork entry for the
-          platform.
-        </P>
+        <H1>{t("hero.title")}</H1>
+        <P>{t("hero.paragraph")}</P>
       </div>
 
       <div className="flex items-center gap-6">
@@ -54,10 +54,10 @@ export default function NewArtworkPage() {
           onClick={() => setShowImport(!showImport)}
           className="border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white"
         >
-          {showImport ? "Close Import" : "Import Artwork"}
+          {showImport ? t("import.close") : t("import.open")}
         </button>
         <p className="text-sm text-neutral-500 tracking-wide">
-          Search and import artwork data from The Met Collection.
+          {t("import.hint")}
         </p>
       </div>
 
@@ -65,17 +65,15 @@ export default function NewArtworkPage() {
         <section className="border-t border-neutral-200 pt-12 space-y-8">
           <div>
             <p className="text-sm uppercase tracking-[0.25em] text-neutral-500">
-              Import Artwork
+              {t("import.label")}
             </p>
-            <h2 className="mt-4 text-3xl font-light">
-              Search The Met Collection
-            </h2>
+            <h2 className="mt-4 text-3xl font-light">{t("import.title")}</h2>
           </div>
 
           <div className="max-w-xl flex gap-4">
             <input
               type="text"
-              placeholder="Search by the title of the artwork."
+              placeholder={t("import.placeholder")}
               className="flex-1 border-b border-black bg-transparent py-3 outline-none"
             />
             <button
@@ -86,7 +84,7 @@ export default function NewArtworkPage() {
               }}
               className="border border-black px-6 py-3 uppercase tracking-[0.2em] text-sm hover:bg-black hover:text-white transition-colors"
             >
-              Search
+              {t("import.search")}
             </button>
           </div>
 
