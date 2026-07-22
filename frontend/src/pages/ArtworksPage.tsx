@@ -1,8 +1,7 @@
 import ArtworkCarousel from "../components/ArtworkCarousel";
-import Carouselbutton from "../components/ui/buttons/Carouselbutton";
+import Borderbutton from "../components/ui/buttons/Borderbutton";
 import H1 from "../components/ui/typography/H1";
 import H2 from "../components/ui/typography/H2";
-import H3 from "../components/ui/typography/H3";
 import P from "../components/ui/typography/P";
 
 export default function ArtworksPage() {
@@ -22,9 +21,7 @@ export default function ArtworksPage() {
       </section>
 
       <section className="border-t border-neutral-200 pt-12 space-y-8">
-        <button className="border border-black px-8 py-3 uppercase tracking-[0.25em] transition-colors duration-300 hover:bg-black hover:text-white">
-          Add new Artwork →
-        </button>
+        <Borderbutton>Add new Artwork →</Borderbutton>
       </section>
     </section>
   );
