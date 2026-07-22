@@ -1,0 +1,34 @@
+{
+  "hero": {
+    "title": "A system for collecting, curating and presenting digital art."
+  },
+  "intro": {
+    "paragraph1": "D.A.M.N. (Digital Artwork Management Network) is a platform designed to simplify the organization and presentation of digital artworks. It brings together artwork data, collections, exhibitions, and display management in one centralized environment, creating a structured workflow from archive to presentation.",
+    "paragraph2": "Whether used by artists, galleries, museums, or cultural institutions, D.A.M.N. supports the entire curatorial process. Artworks can be documented, enriched with metadata, grouped into collections, and prepared for exhibitions without relying on scattered files or disconnected systems.",
+    "paragraph3": "By connecting collections with exhibitions and digital screens, D.A.M.N. creates a seamless link between management and presentation. The platform is built to make digital art easier to curate, maintain, and share, while providing a flexible foundation that can grow with future projects and collaborations."
+  },
+  "showcase": {
+    "placeholder": "Screenshot Dashboard",
+    "previous": "Prev",
+    "next": "Next",
+    "workflow": "Workflow",
+    "steps": ["Contact", "Artwork", "Exhibition", "Screen"]
+  },
+  "overview": {
+    "title": "System Overview",
+    "items": [
+      {
+        "title": "Archive",
+        "description": "Store, organize and maintain digital artworks with structured information, metadata and documentation."
+      },
+      {
+        "title": "Curate",
+        "description": "Build collections, plan exhibitions and create meaningful relationships between artworks and contexts."
+      },
+      {
+        "title": "Publish",
+        "description": "Connect curated content to digital screens and make artworks accessible across different exhibition environments."
+      }
+    ]
+  }
+}
