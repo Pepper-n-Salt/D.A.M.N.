@@ -6,6 +6,7 @@ import deAbout from "./de/about.json";
 import deContact from "./de/contact.json";
 import deLogin from "./de/login.json";
 import deUser from "./de/user.json";
+import deArtworks from "./de/artworks.json";
 
 import enCommon from "./en/common.json";
 import enHome from "./en/home.json";
@@ -13,6 +14,7 @@ import enAbout from "./en/about.json";
 import enContact from "./en/contact.json";
 import enLogin from "./en/login.json";
 import enUser from "./en/user.json";
+import enArtworks from "./en/artworks.json";
 
 export const resources = {
   de: {
@@ -22,6 +24,7 @@ export const resources = {
     contact: deContact,
     login: deLogin,
     user: deUser,
+    artworks: deArtworks,
   },
   en: {
     common: enCommon,
@@ -30,6 +33,7 @@ export const resources = {
     contact: enContact,
     login: enLogin,
     user: enUser,
+    artworks: enArtworks,
   },
 } as const;
 
