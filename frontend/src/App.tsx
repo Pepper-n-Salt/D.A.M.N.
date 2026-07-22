@@ -16,6 +16,7 @@ import NewArtworkPage from "./pages/NewArtworkPage";
 import NewExhibitionPage from "./pages/NewExhibitionPage";
 import NewScreenPage from "./pages/NewScreenPage";
 import NewUserPage from "./pages/NewUserPage";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
@@ -30,14 +31,27 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/imprint" element={<ImprintPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/artworks" element={<ArtworksPage />} />
-            <Route path="/artworks/new" element={<NewArtworkPage />} />
-            <Route path="/exhibitions" element={<ExhibitionsPage />} />
-            <Route path="/exhibitions/new" element={<NewExhibitionPage />} />
-            <Route path="/screens" element={<ScreensPage />} />
-            <Route path="/screens/new" element={<NewScreenPage />} />
-            <Route path="/user" element={<UserPage />} />
-            <Route path="/user/new" element={<NewUserPage />} />
+            <Route path="/landingpage" element={<LandingPage />} />
+            <Route path="/landingpage/artworks" element={<ArtworksPage />} />
+            <Route
+              path="/landingpage/artworks/new"
+              element={<NewArtworkPage />}
+            />
+            <Route
+              path="/landingpage/exhibitions"
+              element={<ExhibitionsPage />}
+            />
+            <Route
+              path="/landingpage/exhibitions/new"
+              element={<NewExhibitionPage />}
+            />
+            <Route path="/landingpage/screens" element={<ScreensPage />} />
+            <Route
+              path="/landingpage/screens/new"
+              element={<NewScreenPage />}
+            />
+            <Route path="/landingpage/user" element={<UserPage />} />
+            <Route path="/landingpage/user/new" element={<NewUserPage />} />
           </Routes>
         </main>
         <Footer />

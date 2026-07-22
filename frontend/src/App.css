@@ -3,23 +3,3 @@
 * {
   box-sizing: border-box;
 }
-
-body {
-  @apply text-black bg-white;
-}
-
-section {
-  @apply space-y-20;
-}
-
-h1 {
-  @apply text-5xl font-light sm:text-5xl md:text-7xl lg:text-9xl;
-}
-
-h2 {
-  @apply text-4xl font-light sm:text-4xl md:text-6xl lg:text-8xl text-neutral-500 uppercase mb-6;
-}
-
-p {
-  @apply tracking-widest leading-loose;
-}
