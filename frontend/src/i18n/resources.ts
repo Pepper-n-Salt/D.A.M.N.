@@ -15,11 +15,13 @@ export const resources = {
     common: deCommon,
     home: deHome,
     about: deAbout,
+    contact: deContact,
   },
   en: {
     common: enCommon,
     home: enHome,
     about: enAbout,
+    contact: enContact,
   },
 } as const;
 
