@@ -1,0 +1,19 @@
+{
+  "hero": {
+    "title": "Ausstellungen",
+    "paragraph": "Erstellen und verwalten Sie Ausstellungen, die Kunstwerke, Ausstellungsräume und Präsentationsformate miteinander verbinden."
+  },
+  "current": {
+    "title": "Aktuelle Ausstellungen"
+  },
+  "create": {
+    "title": "Neue Ausstellung hinzufügen",
+    "button": "Ausstellung hinzufügen →"
+  },
+  "archived": {
+    "title": "Archivierte Ausstellungen"
+  },
+  "deleted": {
+    "title": "Gelöschte Ausstellungen"
+  }
+}

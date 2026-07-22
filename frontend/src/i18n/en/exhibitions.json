@@ -1,0 +1,19 @@
+{
+  "hero": {
+    "title": "Exhibitions",
+    "paragraph": "Build and manage exhibitions that connect artworks, spaces, and presentation formats."
+  },
+  "current": {
+    "title": "Current Exhibitions"
+  },
+  "create": {
+    "title": "Add New Exhibition",
+    "button": "Add Exhibition →"
+  },
+  "archived": {
+    "title": "Archived Exhibitions"
+  },
+  "deleted": {
+    "title": "Deleted Exhibitions"
+  }
+}

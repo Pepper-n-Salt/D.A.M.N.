@@ -15,7 +15,16 @@ i18n.use(initReactI18next).init({
   // Definiert den Standard-Namespace, der verwendet wird, wenn kein Namespace angegeben wird. // festgelegte Schlüssel, lassen sich nicht umbenennen :(
   defaultNS: "common",
   // Verfügbare Namespaces für die verschiedenen Bereiche der Anwendung.
-  ns: ["common", "home", "about", "contact", "login", "user", "artworks"],
+  ns: [
+    "common",
+    "home",
+    "about",
+    "contact",
+    "login",
+    "user",
+    "artworks",
+    "exhibitions",
+  ],
 
   interpolation: {
     escapeValue: false,
