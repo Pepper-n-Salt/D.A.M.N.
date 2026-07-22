@@ -12,7 +12,7 @@ interface Context {
   setLanguage: (lang: Language) => void;
 }
 
-const LanguageContext = createContext<Context | null>(null);
+export const LanguageContext = createContext<Context | null>(null);
 
 export function LanguageProvider({ children }: PropsWithChildren) {
   const [language, setLanguage] = useState<Language>("de");

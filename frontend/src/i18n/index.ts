@@ -7,8 +7,8 @@ import { resources } from "./resources"; // importiert das Übersetzungsobjekt
 i18n.use(initReactI18next).init({
   // Die Methode use() bindet das React-Plugin an i18next. Anschließend initialisiert init() die Bibliothek mit den Übersetzungen und den definierten Konfigurationsoptionen.
   resources,
-  lng: "de",
-  fallbackLng: "en",
+  lng: "en",
+  fallbackLng: "de",
 
   defaultNS: "common", // festgelegte Schlüssel, lassen sich nicht umbenennen :(
   ns: ["common", "home"],
