@@ -74,7 +74,8 @@ export default function HomePage() {
 
           <aside className="lg:col-span-4">
             <H2>Workflow</H2>
-
+            <br />
+            <br />
             <div className="space-y-6">
               {workflow.map((item, index) => (
                 <div key={item}>

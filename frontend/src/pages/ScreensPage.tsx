@@ -1,56 +1,36 @@
-import ScreenCard from "../components/ScreenCard";
+import ScreenCarousel from "../components/ScreenCarousel";
+import { Link } from "react-router-dom";
+import Borderbutton from "../components/ui/buttons/Borderbutton";
+import H1 from "../components/ui/typography/H1";
+import H2 from "../components/ui/typography/H2";
+import P from "../components/ui/typography/P";
 
-const screenDemo = {
-  id: 1,
-  exhibition: {
-    id: 10,
-    image: "https://placehold.co/900x600",
-    title: "Digital Landscapes",
-    date: "12.09.2026",
-    location: "Berlin",
-    created: "05.07.2026",
-  },
-  artworks: [
-    {
-      id: 1,
-      image: "https://placehold.co/600x600",
-      title: "Sunset",
-      artist: "Jane Doe",
-      created: "17.07.2026",
-    },
-    {
-      id: 2,
-      image: "https://placehold.co/600x600",
-      title: "Forest",
-      artist: "Max Mustermann",
-      created: "12.07.2026",
-    },
-    {
-      id: 3,
-      image: "https://placehold.co/600x600",
-      title: "Ocean",
-      artist: "Anna Smith",
-      created: "08.07.2026",
-    },
-  ],
-};
-
-export default function ScreensPage() {
+export default function LandingPageScreens() {
   return (
-    <section className="space-y-20 py-8">
-      <div className="space-y-8">
-        <h1 className="text-5xl md:text-7xl sm:text-5xl lg:text-9xl font-light">
-          Display Management
-        </h1>
-        <p className="max-w-2xl tracking-widest leading-loose">
-          Manage connected displays and preview how exhibitions are presented
-          across screens.
-        </p>
+    <section className="mx-auto space-y-20 py-20">
+      <div className="space-y-6">
+        <H1>Display Management</H1>
+
+        <P>
+          Manage and curate digital content displayed throughout the museum.
+        </P>
       </div>
 
-      <section className="border-t border-neutral-200 pt-12 space-y-8">
-        <h2 className="text-3xl md:text-5xl font-light">Exhibition Screens</h2>
-        <ScreenCard screen={screenDemo} />
+      <section
+        id="current-screens"
+        className="border-t border-neutral-200 pt-12 space-y-12"
+      >
+        <H2>Exhibition Screens</H2>
+
+        <ScreenCarousel />
+      </section>
+
+      <section className="border-t border-neutral-200 pt-12 space-y-12">
+        <H2>Add new Screen</H2>
+        <Link to="/landingpage/screens/new">
+          {" "}
+          <Borderbutton>Add new screen →</Borderbutton>
+        </Link>
       </section>
     </section>
   );

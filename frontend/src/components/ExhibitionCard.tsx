@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import H3 from "./ui/typography/H3";
+import P from "./ui/typography/P";
 interface Exhibition {
   id: string | number;
   image: string;
@@ -13,21 +16,22 @@ interface ExhibitionCardProps {
 
 export default function ExhibitionCard({ exhibition }: ExhibitionCardProps) {
   return (
-    <article className="overflow-hidden border border-neutral-300 bg-white">
+    <Link
+      to={`/exhibitions/${exhibition.id}`}
+      className="group overflow-hidden border"
+    >
       <img
         src={exhibition.image}
         alt={exhibition.title}
-        className="aspect-[4/3] w-full object-cover"
+        className="aspect-4/3 w-full object-cover"
       />
 
       <div className="space-y-2 p-6">
-        <h3 className="text-xl font-light">{exhibition.title}</h3>
-        <p className="text-sm text-neutral-600">{exhibition.date}</p>
-        <p className="text-sm text-neutral-600">{exhibition.location}</p>
-        <p className="text-sm text-neutral-500">
-          Created: {exhibition.created}
-        </p>
+        <H3>{exhibition.title}</H3>
+        <P>{exhibition.date}</P>
+        <P>{exhibition.location}</P>
+        <p className="text-sm text-gray-500">Created: {exhibition.created}</p>
       </div>
-    </article>
+    </Link>
   );
 }
