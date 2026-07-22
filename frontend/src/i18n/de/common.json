@@ -1,0 +1,50 @@
+{
+  "app": {
+    "name": "D.A.M.N."
+  },
+
+  "navigation": {
+    "home": "Startseite",
+    "artworks": "Kunstwerke",
+    "exhibitions": "Ausstellungen",
+    "screens": "Bildschirme",
+    "settings": "Einstellungen",
+    "login": "Anmelden",
+    "logout": "Abmelden"
+  },
+
+  "buttons": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "create": "Erstellen",
+    "close": "Schließen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "reset": "Zurücksetzen"
+  },
+
+  "status": {
+    "loading": "Wird geladen ...",
+    "success": "Erfolgreich",
+    "error": "Ein Fehler ist aufgetreten.",
+    "empty": "Keine Daten verfügbar"
+  },
+
+  "dialogs": {
+    "confirmDelete": "Möchtest du dieses Element wirklich löschen?"
+  },
+
+  "labels": {
+    "name": "Name",
+    "title": "Titel",
+    "description": "Beschreibung",
+    "date": "Datum",
+    "created": "Erstellt",
+    "updated": "Aktualisiert"
+  }
+}

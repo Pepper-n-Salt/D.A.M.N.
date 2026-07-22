@@ -1,0 +1,50 @@
+{
+  "app": {
+    "name": "D.A.M.N."
+  },
+
+  "navigation": {
+    "home": "Home",
+    "artworks": "Artworks",
+    "exhibitions": "Exhibitions",
+    "screens": "Screens",
+    "settings": "Settings",
+    "login": "Login",
+    "logout": "Logout"
+  },
+
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset"
+  },
+
+  "status": {
+    "loading": "Loading ...",
+    "success": "Success",
+    "error": "An error occurred.",
+    "empty": "No data available"
+  },
+
+  "dialogs": {
+    "confirmDelete": "Are you sure you want to delete this item?"
+  },
+
+  "labels": {
+    "name": "Name",
+    "title": "Title",
+    "description": "Description",
+    "date": "Date",
+    "created": "Created",
+    "updated": "Updated"
+  }
+}
