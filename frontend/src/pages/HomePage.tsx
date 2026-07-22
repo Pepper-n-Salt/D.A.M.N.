@@ -66,7 +66,7 @@ export default function HomePage() {
           </div>
 
           <aside className="lg:col-span-4">
-            <H2>{t("showcase.workflow")}/H2>
+            <H2>{t("showcase.workflow")}</H2>
             <br />
             <br />
             <div className="space-y-6">
