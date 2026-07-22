@@ -1,13 +1,17 @@
+import { useTranslation } from "react-i18next";
+
 import P from "../components/ui/typography/P";
 import H1 from "../components/ui/typography/H1";
 import H2 from "../components/ui/typography/H2";
 import H3 from "../components/ui/typography/H3";
 
 export default function About() {
+  const { t } = useTranslation("about");
+
   return (
     <section className="space-y-20">
       <section className="space-y-20">
-        <H1>Pepper&apos;n&apos;Salt</H1>
+        <H1>{t("hero.title")}</H1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 tracking-widest leading-loose">
           <P>
