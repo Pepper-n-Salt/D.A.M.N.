@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "title": "Account Settings",
+    "subtitle": "Manage your account information and update your personal details."
+  },
+  "account": {
+    "title": "Account Information",
+    "form": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "E-mail",
+      "password": "Password",
+      "submit": "Save Changes"
+    }
+  },
+  "management": {
+    "title": "User Management",
+    "heading": "Create a New User",
+    "description": "Add new members to your organization and manage access to the Digital Artwork Management Network.",
+    "button": "Create User"
+  }
+}

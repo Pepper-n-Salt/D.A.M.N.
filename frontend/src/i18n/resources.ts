@@ -5,12 +5,14 @@ import deHome from "./de/home.json";
 import deAbout from "./de/about.json";
 import deContact from "./de/contact.json";
 import deLogin from "./de/login.json";
+import deUser from "./de/user.json";
 
 import enCommon from "./en/common.json";
 import enHome from "./en/home.json";
 import enAbout from "./en/about.json";
 import enContact from "./en/contact.json";
 import enLogin from "./en/login.json";
+import enUser from "./en/user.json";
 
 export const resources = {
   de: {
@@ -19,6 +21,7 @@ export const resources = {
     about: deAbout,
     contact: deContact,
     login: deLogin,
+    user: deUser,
   },
   en: {
     common: enCommon,
@@ -26,6 +29,7 @@ export const resources = {
     about: enAbout,
     contact: enContact,
     login: enLogin,
+    user: enUser,
   },
 } as const;
 
