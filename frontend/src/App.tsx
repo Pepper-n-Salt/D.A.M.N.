@@ -17,6 +17,9 @@ import NewExhibitionPage from "./pages/NewExhibitionPage";
 import NewScreenPage from "./pages/NewScreenPage";
 import NewUserPage from "./pages/NewUserPage";
 import LandingPage from "./pages/LandingPage";
+import ScreenExhibition from "./pages/ScreenExhibition";
+import ScreenArtwork from "./pages/ScreenArtwork";
+import ScreenArtist from "./pages/ScreenArtist";
 
 function App() {
   return (
@@ -49,6 +52,16 @@ function App() {
             <Route
               path="/landingpage/screens/new"
               element={<NewScreenPage />}
+            />
+            <Route
+              path="/display/static/exhibition"
+              element={<ScreenExhibition />}
+            />
+
+            <Route path="/display/static/artwork" element={<ScreenArtwork />} />
+            <Route
+              path="/display/static/artist/:id"
+              element={<ScreenArtist />}
             />
             <Route path="/landingpage/user" element={<UserPage />} />
             <Route path="/landingpage/user/new" element={<NewUserPage />} />

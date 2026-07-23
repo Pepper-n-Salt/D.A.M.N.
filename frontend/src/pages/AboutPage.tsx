@@ -25,8 +25,8 @@ export default function About() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
           <article className="space-y-8">
-            <div className="aspect-4/5 border border-neutral-300 bg-neutral-100 flex items-center justify-center text-neutral-400 uppercase tracking-[0.3em] text-sm">
-              {t("team.portrait")}
+            <div className="aspect-9/5 border border-neutral-300 bg-neutral-100 flex items-center justify-center text-neutral-400 uppercase tracking-[0.3em] text-sm">
+              <img src="/Pepper.png" alt="Pepper" />
             </div>
 
             <div>
@@ -39,8 +39,8 @@ export default function About() {
           </article>
 
           <article className="space-y-8">
-            <div className="aspect-4/5 border border-neutral-300 bg-neutral-100 flex items-center justify-center text-neutral-400 uppercase tracking-[0.3em] text-sm">
-              Portrait
+            <div className="aspect-9/5 border border-neutral-300 bg-neutral-100 flex items-center justify-center text-neutral-400 uppercase tracking-[0.3em] text-sm">
+              <img src="/Salt.png" alt="Salt" />
             </div>
 
             <div>

@@ -1,17 +1,16 @@
 import { useTranslation } from "react-i18next";
 
+import H1 from "../components/ui/typography/H1";
+import P from "../components/ui/typography/P";
 export default function NewExhibitionPage() {
   const { t } = useTranslation("newExhibition");
 
   return (
     <section className="space-y-10 py-8">
-      <div className="space-y-8">
-        <h1 className="text-5xl font-light sm:text-5xl md:text-7xl lg:text-9xl">
-          {t("newExhibition.title")}
-        </h1>
-        <p className="max-w-2xl tracking-widest leading-loose">
-          {t("newExhibition.paragraph")}
-        </p>
+      <div className="border-b border-neutral-200 pt-12 space-y-8">
+        <H1>{t("newExhibition.title")}</H1>
+        <P>{t("newExhibition.paragraph")}</P>
+        <br />
       </div>
 
       <form className="mx-auto flex w-full max-w-3xl flex-col gap-8 rounded-none border border-black p-8">

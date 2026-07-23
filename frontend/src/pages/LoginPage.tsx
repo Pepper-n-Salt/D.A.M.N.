@@ -8,14 +8,16 @@ export default function LoginPage() {
   const { t } = useTranslation("login");
 
   return (
-    <section className="max-w-md">
-      <H1>{t("hero.title")}</H1>
-      <br />
-      <br />
-      <P>{t("hero.subtitle")}</P>
-
-      <form action="/login" method="post" className="mt-12">
-        <div className="flex flex-col gap-8">
+    <section>
+      <div className="border-b border-neutral-200 pt-12 ">
+        <H1>{t("hero.title")}</H1>
+        <br />
+        <br />
+        <P>{t("hero.subtitle")}</P>
+        <br />
+      </div>
+      <form action="/login" method="post" className="mt-15">
+        <div className="flex flex-col gap-8 max-w-md">
           <div className="flex flex-col gap-2">
             <label
               htmlFor="username"

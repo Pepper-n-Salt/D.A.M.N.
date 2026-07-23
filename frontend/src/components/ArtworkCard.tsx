@@ -14,7 +14,7 @@ interface ArtworkCardProps {
 
 export default function ArtworkCard({ artwork }: ArtworkCardProps) {
   return (
-    <article className="group overflow-hidden border border-neutral-300 bg-white">
+    <article className="group overflow-hidden border border-black bg-white">
       <img
         src={artwork.image}
         alt={artwork.title}

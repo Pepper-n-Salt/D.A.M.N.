@@ -1,5 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 export default function Footer() {
+  const { pathname } = useLocation();
+  const isDisplay = pathname === "/display" || pathname.startsWith("/display/");
+
+  if (isDisplay) {
+    return null;
+  }
+
   return (
     <footer className="border-t border-gray-200 px-8 py-8">
       <div className="flex justify-between items-center text-sm uppercase tracking-[0.2em]">

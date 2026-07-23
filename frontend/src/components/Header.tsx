@@ -1,28 +1,37 @@
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header() {
   const { pathname } = useLocation();
   const isLandingPage =
     pathname === "/landingpage" || pathname.startsWith("/landingpage/");
+  const isDisplay = pathname === "/display" || pathname.startsWith("/display/");
+
+  if (isDisplay) {
+    return null;
+  }
 
   return (
     <header className="border-b border-gray-200 px-8 py-6">
       <div className="mb-20">
         {isLandingPage ? (
           // landingpage für eingeloggte user:innen
-          <Link to="/landingpage" aria-label="Go to landingpage">
+          <NavLink to="/landingpage" aria-label="Go to landingpage">
             <div className="leading-none">
               <p className="-ml-1 text-6xl tracking-[0.02em]">D.A.M.N.</p>
-              <p className="mt-1 text-sm">Digital Artwork Management Network</p>
+              <p className="mt-1 text-sm leading-loose">
+                Digital Artwork Management Network
+              </p>
             </div>
-          </Link>
+          </NavLink>
         ) : (
           // landingpage product
           // <div className="border-b border-gray-200 pb-6">
           <div className="leading-none">
             <p className="-ml-1 text-6xl tracking-[0.02em]">D.A.M.N.</p>
-            <p className="mt-1 text-sm">Digital Artwork Management Network</p>
+            <p className="mt-1 text-sm leading-loose">
+              Digital Artwork Management Network
+            </p>
           </div>
         )}
       </div>
@@ -31,22 +40,85 @@ export default function Header() {
         <nav className="flex gap-10 text-sm uppercase tracking-[0.2em]">
           {isLandingPage ? (
             <>
-              <Link to="/landingpage/artworks">Artworks</Link>
-              <Link to="/landingpage/exhibitions">Exhibitions</Link>
-              <Link to="/landingpage/screens">Screens</Link>
+              <NavLink
+                to="/landingpage/artworks"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-black font-semibold border-b border-black"
+                    : "text-black"
+                }
+              >
+                Artworks
+              </NavLink>
+              <NavLink
+                to="/landingpage/exhibitions"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-black font-semibold border-b border-black"
+                    : "text-black"
+                }
+              >
+                Exhibitions
+              </NavLink>
+              <NavLink
+                to="/landingpage/screens"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-black font-semibold border-b border-black"
+                    : "text-black"
+                }
+              >
+                Screens
+              </NavLink>
             </>
           ) : (
             <>
-              <Link to="/">Home</Link>
-              <Link to="/about">About</Link>
-              <Link to="/contact">Contact</Link>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-black font-semibold border-b border-black"
+                    : "text-black"
+                }
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/about"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-black font-semibold border-b border-black"
+                    : "text-black"
+                }
+              >
+                About
+              </NavLink>
+              <NavLink
+                to="/contact"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-black font-semibold border-b border-black"
+                    : "text-black"
+                }
+              >
+                Contact
+              </NavLink>
             </>
           )}
         </nav>
 
         {isLandingPage ? (
           <div className="flex items-center gap-8 text-sm uppercase tracking-[0.2em]">
-            <Link to="/landingpage/user">User</Link>
+            <NavLink
+              to="/landingpage/user"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-black font-semibold border-b border-black"
+                  : "text-black"
+              }
+            >
+              User
+            </NavLink>
 
             <p className="text-neutral-500 normal-case tracking-normal">
               Hello Superuser!
@@ -54,23 +126,23 @@ export default function Header() {
 
             <LanguageSwitcher />
 
-            <Link
+            <NavLink
               to="/login"
               className="border border-black px-8 py-2.5 transition-colors duration-300 hover:bg-black hover:text-white"
             >
               Logout
-            </Link>
+            </NavLink>
           </div>
         ) : (
           <div className="flex items-center uppercase gap-4">
             <LanguageSwitcher />
 
-            <Link
+            <NavLink
               to="/login"
               className="border border-black px-8 py-2.5 uppercase tracking-[0.25em] transition-colors duration-300 hover:bg-black hover:text-white"
             >
               Login
-            </Link>
+            </NavLink>
           </div>
         )}
       </div>
