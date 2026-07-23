@@ -9,7 +9,7 @@ import { useState } from "react";
 
 export default function NewScreenPage() {
   const { t } = useTranslation("newScreen");
-  
+
   const [selectedType, setSelectedType] = useState<
     "exhibition" | "artwork" | "artist" | null
   >(null);
@@ -46,7 +46,9 @@ export default function NewScreenPage() {
                 }
               `}
             >
-              <h3 className="text-xl font-light">{t("newScreen.staticScreens.exhibition.title")}</h3>
+              <h3 className="text-xl font-light">
+                {t("newScreen.staticScreens.exhibition.title")}
+              </h3>
 
               <p className="mt-3 text-sm text-neutral-500 group-hover:text-neutral-500">
                 {t("newScreen.staticScreens.exhibition.description")}
@@ -64,7 +66,10 @@ export default function NewScreenPage() {
                 }
               `}
             >
-              <h3 className="text-xl font-light"> {t("newScreen.staticScreens.artwork.title")}</h3>
+              <h3 className="text-xl font-light">
+                {" "}
+                {t("newScreen.staticScreens.artwork.title")}
+              </h3>
 
               <p className="mt-3 text-sm text-neutral-500">
                 {t("newScreen.staticScreens.artwork.description")}
@@ -82,7 +87,9 @@ export default function NewScreenPage() {
                 }
               `}
             >
-              <h3 className="text-xl font-light">{t("newScreen.staticScreens.artist.title")}</h3>
+              <h3 className="text-xl font-light">
+                {t("newScreen.staticScreens.artist.title")}
+              </h3>
 
               <p className="mt-3 text-sm text-neutral-500">
                 {t("newScreen.staticScreens.artist.description")}
@@ -130,7 +137,7 @@ export default function NewScreenPage() {
       </section>
 
       <section className="border-t border-neutral-200 pt-12">
-        <H2>t("newScreen.screenInformation.title")}</H2>
+        <H2>{t("newScreen.screenInformation.title")}</H2>
         <br />
 
         <div className="max-w-xl space-y-8">
@@ -142,7 +149,7 @@ export default function NewScreenPage() {
             <input
               type="text"
               placeholder={t(
-                "newScreen.screenInformation.screenName.placeholder",
+                "newScreen.screenInformation.screenName.placeholder"
               )}
               className="mt-3 w-full border-b border-black bg-transparent py-3 outline-none placeholder:text-neutral-400"
             />
@@ -150,13 +157,13 @@ export default function NewScreenPage() {
 
           <div>
             <label className="text-sm leading-loose tracking-widest text-neutral-500">
-             {t("newScreen.screenInformation.location.label")}
+              {t("newScreen.screenInformation.location.label")}
             </label>
 
             <input
               type="text"
               placeholder={t(
-                "newScreen.screenInformation.location.placeholder",
+                "newScreen.screenInformation.location.placeholder"
               )}
               className="mt-3 w-full border-b border-black bg-transparent py-3 outline-none placeholder:text-neutral-400"
             />
