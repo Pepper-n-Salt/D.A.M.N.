@@ -31,7 +31,7 @@ export default function NewArtworkPage() {
   const artworkResults = [
     {
       objectID: "123",
-      title: "The Starry Night",
+      title: "The Starry Night 2",
       artistName: "Vincent van Gogh",
       year: "1889",
       material: "Oil on canvas",
