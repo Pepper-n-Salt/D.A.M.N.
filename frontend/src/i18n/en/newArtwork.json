@@ -11,7 +11,7 @@
     "title": "Search The Met Collection",
     "placeholder": "Search by the title of the artwork.",
     "search": "Search",
-    "results": "{{count}} result(s) found.",
+    "results": "result(s) found.",
     "button": "Import"
   },
   "form": {

@@ -8,10 +8,10 @@
     "close": "Import schließen",
     "hint": "Suchen und importieren Sie Kunstwerkdaten aus der The Met Collection.",
     "label": "Kunstwerk importieren",
-    "title": "The Met Collection durchsuchen",
+    "title": "Die Met Sammlung durchsuchen",
     "placeholder": "Nach dem Titel des Kunstwerks suchen.",
     "search": "Suchen",
-    "results": "{{count}} Treffer gefunden.",
+    "results": "Treffer gefunden.",
     "button": "Importieren"
   },
   "form": {
@@ -22,7 +22,7 @@
     },
     "title": "Titel",
     "subtitle": "Untertitel",
-    "artist": "Künstler/in",
+    "artist": "Künstler:in",
     "biography": "Biografie (optional)",
     "year": "Entstehungsjahr",
     "country": "Land",

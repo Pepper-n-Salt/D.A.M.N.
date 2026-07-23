@@ -90,7 +90,7 @@ export default function NewArtworkPage() {
 
           {searchResults.length > 0 && (
             <p className="text-sm text-neutral-500">
-              {searchResults.length} result(s) found.
+              {searchResults.length} {t("import.results")}
             </p>
           )}
 
@@ -116,7 +116,7 @@ export default function NewArtworkPage() {
                     }}
                     className="mt-6 border border-black px-6 py-3 uppercase tracking-[0.2em] text-sm transition-colors duration-300 hover:bg-black hover:text-white"
                   >
-                    Import
+                    {t("import.button")}
                   </button>
                 </div>
               ))}
@@ -134,7 +134,7 @@ export default function NewArtworkPage() {
             htmlFor="language"
             className="text-sm uppercase tracking-[0.2em]"
           >
-            Form language
+            {t("form.language")}
           </label>
           <select
             id="language"
@@ -142,8 +142,8 @@ export default function NewArtworkPage() {
             onChange={(e) => setLanguage(e.target.value)}
             className="border-b border-black bg-transparent py-3 outline-none"
           >
-            <option value="german">German</option>
-            <option value="english">English</option>
+            <option value="german">{t("form.languages.german")}</option>
+            <option value="english">{t("form.languages.english")}</option>
           </select>
         </div>
 
@@ -153,7 +153,7 @@ export default function NewArtworkPage() {
               htmlFor="title"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Title
+              {t("form.title")}
             </label>
             <input
               type="text"
@@ -167,7 +167,7 @@ export default function NewArtworkPage() {
               htmlFor="subtitle"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Subtitle
+              {t("form.subtitle")}
             </label>
             <input
               type="text"
@@ -181,7 +181,7 @@ export default function NewArtworkPage() {
               htmlFor="artist"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Artist
+              {t("form.artist")}
             </label>
             <input
               type="text"
@@ -195,7 +195,7 @@ export default function NewArtworkPage() {
               htmlFor="biography"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Biography (optional)
+              {t("form.biography")}
             </label>
             <input
               type="text"
@@ -209,7 +209,7 @@ export default function NewArtworkPage() {
               htmlFor="year"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Year of creation
+              {t("form.year")}
             </label>
             <input
               type="number"
@@ -223,7 +223,7 @@ export default function NewArtworkPage() {
               htmlFor="land"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Land
+              {t("form.country")}
             </label>
             <input
               type="text"
@@ -237,7 +237,7 @@ export default function NewArtworkPage() {
               htmlFor="origin"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Origin
+              {t("form.origin")}
             </label>
             <input
               type="text"
@@ -251,7 +251,7 @@ export default function NewArtworkPage() {
               htmlFor="material"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Material
+              {t("form.material")}
             </label>
             <input
               type="text"
@@ -265,7 +265,7 @@ export default function NewArtworkPage() {
               htmlFor="dimensions"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Dimensions
+              {t("form.dimensions")}
             </label>
             <input
               type="text"
@@ -281,7 +281,7 @@ export default function NewArtworkPage() {
             htmlFor="description"
             className="text-sm uppercase tracking-[0.2em]"
           >
-            Description
+            {t("form.description")}
           </label>
           <textarea
             id="description"
@@ -293,7 +293,7 @@ export default function NewArtworkPage() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="image" className="text-sm uppercase tracking-[0.2em]">
-            Upload image
+            {t("form.image")}
           </label>
           <input
             type="file"
@@ -309,7 +309,7 @@ export default function NewArtworkPage() {
             type="submit"
             className="border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white"
           >
-            Save Artwork
+            {t("actions.save")}
           </button>
           <button
             type="button"
@@ -317,8 +317,8 @@ export default function NewArtworkPage() {
             className={`border px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${artworkSaved ? "border-black hover:bg-black hover:text-white" : "cursor-not-allowed border-gray-300 text-gray-400"}`}
           >
             {language === "german"
-              ? "Translate into English"
-              : "Translate into German"}
+              ? t("actions.translateToEnglish")
+              : t("actions.translateToGerman")}
           </button>
         </div>
       </form>
