@@ -1,12 +1,16 @@
+import { useTranslation } from "react-i18next";
+
 export default function NewExhibitionPage() {
+  const { t } = useTranslation("newExhibition");
+
   return (
     <section className="space-y-10 py-8">
       <div className="space-y-8">
         <h1 className="text-5xl font-light sm:text-5xl md:text-7xl lg:text-9xl">
-          Add new Exhibition
+          {t("newExhibition.title")}
         </h1>
         <p className="max-w-2xl tracking-widest leading-loose">
-          Fill in the details below to create a new exhibition entry.
+          {t("newExhibition.paragraph")}
         </p>
       </div>
 
@@ -17,7 +21,7 @@ export default function NewExhibitionPage() {
               htmlFor="title"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Title
+              {t("newExhibition.form.title")}
             </label>
             <input
               type="text"
@@ -31,7 +35,7 @@ export default function NewExhibitionPage() {
               htmlFor="subtitle"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Subtitle
+              {t("newExhibition.form.subtitle")}
             </label>
             <input
               type="text"
@@ -45,7 +49,7 @@ export default function NewExhibitionPage() {
               htmlFor="startDate"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Start Date
+              {t("newExhibition.form.startDate")}
             </label>
             <input
               type="date"
@@ -59,7 +63,7 @@ export default function NewExhibitionPage() {
               htmlFor="endDate"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              End Date
+              {t("newExhibition.form.endDate")}
             </label>
             <input
               type="date"
@@ -73,7 +77,7 @@ export default function NewExhibitionPage() {
               htmlFor="location"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Location
+              {t("newExhibition.form.location")}
             </label>
             <input
               type="text"
@@ -89,7 +93,7 @@ export default function NewExhibitionPage() {
             htmlFor="description"
             className="text-sm uppercase tracking-[0.2em]"
           >
-            Description
+            {t("newExhibition.form.description")}
           </label>
           <textarea
             id="description"
@@ -104,7 +108,7 @@ export default function NewExhibitionPage() {
             htmlFor="events"
             className="text-sm uppercase tracking-[0.2em]"
           >
-            Events
+            {t("newExhibition.form.events")}
           </label>
           <textarea
             id="events"
@@ -118,7 +122,7 @@ export default function NewExhibitionPage() {
           type="submit"
           className="self-start border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white"
         >
-          Save Exhibition
+          {t("newExhibition.form.submit")}
         </button>
       </form>
     </section>
