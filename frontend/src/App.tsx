@@ -17,6 +17,7 @@ import NewExhibitionPage from "./pages/NewExhibitionPage";
 import NewScreenPage from "./pages/NewScreenPage";
 import NewUserPage from "./pages/NewUserPage";
 import LandingPage from "./pages/LandingPage";
+import ScreenExhibition from "./pages/ScreenExhibition";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
               path="/landingpage/screens/new"
               element={<NewScreenPage />}
             />
+            <Route path="/display/exhibition" element={<ScreenExhibition />} />
             <Route path="/landingpage/user" element={<UserPage />} />
             <Route path="/landingpage/user/new" element={<NewUserPage />} />
           </Routes>

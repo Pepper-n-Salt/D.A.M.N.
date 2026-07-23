@@ -4,14 +4,16 @@ import P from "../components/ui/typography/P";
 
 export default function LoginPage() {
   return (
-    <section className="max-w-md">
-      <H1>Login</H1>
-      <br />
-      <br />
-      <P>Access the Digital Artwork Management Network!</P>
-
-      <form action="/login" method="post" className="mt-12">
-        <div className="flex flex-col gap-8">
+    <section>
+      <div className="border-b border-neutral-200 pt-12 ">
+        <H1>Login</H1>
+        <br />
+        <br />
+        <P>Access the Digital Artwork Management Network!</P>
+        <br />
+      </div>
+      <form action="/login" method="post" className="mt-15">
+        <div className="flex flex-col gap-8 max-w-md">
           <div className="flex flex-col gap-2">
             <label
               htmlFor="username"
