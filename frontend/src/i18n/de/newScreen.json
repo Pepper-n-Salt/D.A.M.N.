@@ -1,6 +1,6 @@
 {
   "newScreen": {
-    "title": "Bildschirm erstellen",
+    "title": "Display erstellen",
     "paragraph": "Konfiguriere eine digitale Präsentation für deine Ausstellungen, Kunstwerke und die ausgestellten Künstler:innen.",
 
     "selectType": "Bildschirmtyp auswählen",
@@ -53,7 +53,7 @@
         "placeholder": "Eingangshalle"
       },
 
-      "submit": "Bildschirm erstellen"
+      "submit": "Screen erstellen"
     }
   }
 }

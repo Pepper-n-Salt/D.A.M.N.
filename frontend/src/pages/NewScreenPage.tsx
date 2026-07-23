@@ -89,28 +89,36 @@ export default function NewScreenPage() {
 
       <section className="border-t border-neutral-200 pt-12">
         <p className="text-sm uppercase tracking-[0.25em] text-neutral-500 mb-8">
-          Screen Information
+          {t("newScreen.screenInformation.title")}
         </p>
 
         <div className="max-w-xl space-y-8">
           <div>
-            <label className="text-sm text-neutral-500">Screen Name</label>
+            <label className="text-sm text-neutral-500">
+              {t("newScreen.screenInformation.screenName.label")}
+            </label>
             <input
               type="text"
-              placeholder="Main Gallery Screen"
+              placeholder={t(
+                "newScreen.screenInformation.screenName.placeholder",
+              )}
               className="mt-3 w-full border-b border-black bg-transparent py-3 outline-none placeholder:text-neutral-400"
             />
           </div>
           <div>
-            <label className="text-sm text-neutral-500">Location</label>
+            <label className="text-sm text-neutral-500">
+              {t("newScreen.screenInformation.location.label")}
+            </label>
             <input
               type="text"
-              placeholder="Entrance Hall"
+              placeholder={t(
+                "newScreen.screenInformation.location.placeholder",
+              )}
               className="mt-3 w-full border-b border-black bg-transparent py-3 outline-none placeholder:text-neutral-400"
             />
           </div>
           <button className="border border-black px-8 py-3 text-sm uppercase tracking-[0.25em] transition hover:bg-black hover:text-white">
-            Create Screen
+            {t("newScreen.screenInformation.submit")}
           </button>
         </div>
       </section>
