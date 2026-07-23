@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { Link } from "react-router-dom";
 import H1 from "../components/ui/typography/H1";
 import H2 from "../components/ui/typography/H2";
@@ -6,18 +8,20 @@ import P from "../components/ui/typography/P";
 import Borderbutton from "../components/ui/buttons/Borderbutton";
 
 export default function User() {
+  const { t } = useTranslation("user");
+
   return (
     <section className="space-y-20">
       <section className="space-y-12">
-        <H1>Account settings</H1>
+        <H1>{t("hero.title")}</H1>
 
-        <P>Manage your account information and update your personal details.</P>
+        <P>{t("hero.subtitle")}</P>
       </section>
 
       <section className="border-t border-neutral-200 pt-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-4">
-            <H2>Account Information</H2>
+            <H2>{t("account.title")}</H2>
           </div>
 
           <form className="lg:col-span-8 max-w-md flex flex-col gap-8">
@@ -26,7 +30,7 @@ export default function User() {
                 htmlFor="firstname"
                 className="text-sm uppercase tracking-[0.2em]"
               >
-                First Name
+                {t("account.form.firstName")}
               </label>
 
               <input
@@ -42,7 +46,7 @@ export default function User() {
                 htmlFor="lastname"
                 className="text-sm uppercase tracking-[0.2em]"
               >
-                Last Name
+                {t("account.form.lastName")}
               </label>
 
               <input
@@ -58,7 +62,7 @@ export default function User() {
                 htmlFor="email"
                 className="text-sm uppercase tracking-[0.2em]"
               >
-                E-mail
+                {t("account.form.email")}
               </label>
 
               <input
@@ -74,7 +78,7 @@ export default function User() {
                 htmlFor="password"
                 className="text-sm uppercase tracking-[0.2em]"
               >
-                Password
+                {t("account.form.password")}
               </label>
 
               <input
@@ -89,7 +93,7 @@ export default function User() {
               type="submit"
               className="self-start mt-4 border border-black px-8 py-2.5 uppercase tracking-[0.25em] transition-colors duration-300 hover:bg-black hover:text-white"
             >
-              Save Changes
+              {t("account.form.submit")}
             </button>
           </form>
         </div>
@@ -98,21 +102,17 @@ export default function User() {
       <section className="border-t border-neutral-200 pt-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           <div className="lg:col-span-4">
-            <H2>User Management</H2>
+            <H2>{t("management.title")}</H2>
           </div>
 
           <div className="lg:col-span-8">
-            <H3>Create a new user</H3>
+            <H3>{t("management.heading")}</H3>
             <br />
-            <P>
-              Add new members to your organization and manage access to the
-              Digital Artwork Management Network.
-            </P>
+            <P>{t("management.description")}</P>
             <br />
             <br />
             <Link to="/landingpage/user/new">
-              {" "}
-              <Borderbutton>Create User</Borderbutton>
+              <Borderbutton>{t("management.button")}</Borderbutton>
             </Link>
           </div>
         </div>

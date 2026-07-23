@@ -1,15 +1,19 @@
+import { useTranslation } from "react-i18next";
+
 import { Link } from "react-router-dom";
 import H1 from "../components/ui/typography/H1";
 import P from "../components/ui/typography/P";
 
 export default function LoginPage() {
+  const { t } = useTranslation("login");
+
   return (
     <section>
       <div className="border-b border-neutral-200 pt-12 ">
-        <H1>Login</H1>
+        <H1>{t("hero.title")}</H1>
         <br />
         <br />
-        <P>Access the Digital Artwork Management Network!</P>
+        <P>{t("hero.subtitle")}</P>
         <br />
       </div>
       <form action="/login" method="post" className="mt-15">
@@ -19,7 +23,7 @@ export default function LoginPage() {
               htmlFor="username"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Username
+              {t("form.username")}
             </label>
 
             <input
@@ -35,7 +39,7 @@ export default function LoginPage() {
               htmlFor="password"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              Password
+              {t("form.password")}
             </label>
 
             <input
@@ -51,7 +55,7 @@ export default function LoginPage() {
             type="submit"
             className="mt-6 self-start border border-black px-8 py-3 uppercase tracking-[0.25em] text-sm transition-colors duration-300 hover:bg-black hover:text-white"
           >
-            Login
+            {t("form.submit")}
           </Link>
         </div>
       </form>

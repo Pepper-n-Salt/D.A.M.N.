@@ -1,0 +1,59 @@
+{
+  "newScreen": {
+    "title": "Create Screen",
+    "paragraph": "Configure a digital presentation for your exhibitions, artworks and presented artists.",
+
+    "selectType": "Select Screen Type",
+
+    "staticScreens": {
+      "title": "Static Screens",
+
+      "exhibition": {
+        "title": "Exhibition",
+        "description": "Display current exhibitions and related information."
+      },
+
+      "artwork": {
+        "title": "Artwork",
+        "description": "Present individual artworks with metadata."
+      },
+
+      "artist": {
+        "title": "Artist",
+        "description": "Show artist information and selected works."
+      }
+    },
+
+    "dynamicScreens": {
+      "title": "Dynamic Screens",
+
+      "interactiveArtwork": {
+        "title": "Interactive Artwork",
+        "description": "Explore artworks through zoom and interaction.",
+        "comingSoon": "Coming soon"
+      },
+
+      "digitalExperience": {
+        "title": "Digital Experience",
+        "description": "Create immersive and animated presentations.",
+        "comingSoon": "Coming soon"
+      }
+    },
+
+    "screenInformation": {
+      "title": "Screen Information",
+
+      "screenName": {
+        "label": "Screen Name",
+        "placeholder": "Main Gallery Screen"
+      },
+
+      "location": {
+        "label": "Location",
+        "placeholder": "Entrance Hall"
+      },
+
+      "submit": "Create Screen"
+    }
+  }
+}

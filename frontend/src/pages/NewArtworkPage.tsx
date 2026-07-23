@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import H1 from "../components/ui/typography/H1";
 import H2 from "../components/ui/typography/H2";
 import H3 from "../components/ui/typography/H3";
 import P from "../components/ui/typography/P";
 
 export default function NewArtworkPage() {
+  const { t } = useTranslation("newArtwork");
+
   const [showImport, setShowImport] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [hasSearched, setHasSearched] = useState(false);

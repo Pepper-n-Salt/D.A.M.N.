@@ -1,0 +1,17 @@
+{
+  "newUser": {
+    "title": "Add Member",
+    "paragraph": "Create a new account for another person in your organization and define the appropriate access level within D.A.M.N.",
+
+    "userInformation": "User Information",
+
+    "form": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "E-mail",
+      "password": "Password",
+      "repeatPassword": "Repeat Password",
+      "submit": "Save"
+    }
+  }
+}

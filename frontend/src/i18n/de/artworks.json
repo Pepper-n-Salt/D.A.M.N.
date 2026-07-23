@@ -1,0 +1,16 @@
+{
+  "hero": {
+    "title": "Kunstwerke",
+    "paragraph": "Verwalte und überprüfe deine digitale Kunstsammlung mit einer übersichtlichen und klar strukturierten Darstellung."
+  },
+  "current": {
+    "title": "Aktuelle Kunstwerke"
+  },
+  "create": {
+    "title": "Neues Kunstwerk",
+    "button": "Neues Kunstwerk hinzufügen →"
+  },
+  "deleted": {
+    "title": "Gelöschte Kunstwerke"
+  }
+}

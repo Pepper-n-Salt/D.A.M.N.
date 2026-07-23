@@ -1,0 +1,17 @@
+{
+  "hero": {
+    "titleLine1": "Lasst uns",
+    "titleLine2": "gemeinsame Sache machen."
+  },
+  "content": {
+    "title": "Kontakt aufnehmen",
+    "paragraph1": "Ob Museum, Galerie, Ausstellungsraum oder kulturelle Institution – D.A.M.N. wurde entwickelt, um die Verwaltung und Präsentation digitaler Kunstwerke zu vereinfachen. Unsere Plattform unterstützt dabei, ansprechende digitale Ausstellungen zu gestalten, ohne technisches Fachwissen vorauszusetzen. So können Sie sich auf Ihre Sammlungen und Besucher konzentrieren.",
+    "paragraph2": "Um eine persönliche und sichere Erfahrung zu gewährleisten, bitten wir alle Interessierte, vor dem Zugang zu unseren Services das Kontaktformular auszufüllen. Sobald wir deine Nachricht erhalten haben, prüfen wir deine Anfrage und melden uns schnellstmöglich zurück. Dieser erste Schritt hilft uns, mehr über deine Wünsche zu erfahren, Fragen zu beantworten und die passende Unterstützung anzubieten. Nachdem wir deine Anfrage überprüfz haben, erhälst du weitere Informationen zur Nutzung unserer Plattform. Wir freuen uns darauf, mit dir in Kontakt zu treten und dich willkommen zu heißen."
+  },
+  "form": {
+    "name": "Name",
+    "email": "E-Mail",
+    "message": "Nachricht",
+    "submit": "Senden"
+  }
+}

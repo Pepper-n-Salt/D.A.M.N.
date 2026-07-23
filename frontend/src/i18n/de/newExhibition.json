@@ -1,0 +1,17 @@
+{
+  "newExhibition": {
+    "title": "Neue Ausstellung hinzufügen",
+    "paragraph": "Fülle das untenstehende Formular aus, um einen neuen Ausstellungseintrag zu erstellen.",
+
+    "form": {
+      "title": "Titel",
+      "subtitle": "Untertitel",
+      "startDate": "Startdatum",
+      "endDate": "Enddatum",
+      "location": "Ort",
+      "description": "Beschreibung",
+      "events": "Veranstaltungen",
+      "submit": "Ausstellung speichern"
+    }
+  }
+}

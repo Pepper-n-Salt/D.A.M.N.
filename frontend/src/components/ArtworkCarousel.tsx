@@ -51,7 +51,7 @@ export default function ArtworkCarousel() {
           onClick={() => setStartIndex((prev) => Math.max(prev - 3, 0))}
           disabled={startIndex === 0}
         >
-          ← Previous
+          ← Prev
         </Carouselbutton>
         <P>01 / 03</P>
         <Carouselbutton

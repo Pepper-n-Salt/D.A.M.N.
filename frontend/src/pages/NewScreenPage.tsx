@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import H1 from "../components/ui/typography/H1";
 import H2 from "../components/ui/typography/H2";
 import H3 from "../components/ui/typography/H3";
@@ -6,6 +8,8 @@ import P from "../components/ui/typography/P";
 import { useState } from "react";
 
 export default function NewScreenPage() {
+  const { t } = useTranslation("newScreen");
+  
   const [selectedType, setSelectedType] = useState<
     "exhibition" | "artwork" | "artist" | null
   >(null);
@@ -19,16 +23,16 @@ export default function NewScreenPage() {
   return (
     <section className="space-y-20">
       <div className="space-y-6">
-        <H1>Create Screen</H1>
+        <H1>{t("newScreen.title")}</H1>
 
-        <P>Configure a digital presentation for your museum displays.</P>
+        <P>{t("newScreen.paragraph")}</P>
       </div>
 
       <section className="space-y-8">
-        <H2>Select Screen Type</H2>
+        <H2>{t("newScreen.selectType")}</H2>
 
         <div className="space-y-6">
-          <H3>Static Screens</H3>
+          <H3>{t("newScreen.staticScreens.title")}</H3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button
@@ -42,10 +46,10 @@ export default function NewScreenPage() {
                 }
               `}
             >
-              <h3 className="text-xl font-light">Exhibition</h3>
+              <h3 className="text-xl font-light">{t("newScreen.staticScreens.exhibition.title")}</h3>
 
               <p className="mt-3 text-sm text-neutral-500 group-hover:text-neutral-500">
-                Display current exhibitions and related information.
+                {t("newScreen.staticScreens.exhibition.description")}
               </p>
             </button>
 
@@ -60,10 +64,10 @@ export default function NewScreenPage() {
                 }
               `}
             >
-              <h3 className="text-xl font-light">Artwork</h3>
+              <h3 className="text-xl font-light"> {t("newScreen.staticScreens.artwork.title")}</h3>
 
               <p className="mt-3 text-sm text-neutral-500">
-                Present individual artworks with metadata.
+                {t("newScreen.staticScreens.artwork.description")}
               </p>
             </button>
 
@@ -78,31 +82,31 @@ export default function NewScreenPage() {
                 }
               `}
             >
-              <h3 className="text-xl font-light">Artist</h3>
+              <h3 className="text-xl font-light">{t("newScreen.staticScreens.artist.title")}</h3>
 
               <p className="mt-3 text-sm text-neutral-500">
-                Show artist information and selected works.
+                {t("newScreen.staticScreens.artist.description")}
               </p>
             </button>
           </div>
         </div>
 
         {/* <div className="space-y-6 pt-8">
-          <h2 className="text-2xl font-light">Dynamic Screens</h2>
+          <h2 className="text-2xl font-light">{t("newScreen.dynamicScreens.title")}</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <button
               disabled
               className="border border-neutral-200 p-6 text-left opacity-40 cursor-not-allowed"
             >
-              <h3 className="text-xl font-light">Interactive Artwork</h3>
+              <h3 className="text-xl font-light">{t("newScreen.dynamicScreens.interactiveArtwork.title")}</h3>
 
               <p className="mt-3 text-sm text-neutral-500">
-                Explore artworks through zoom and interaction.
+                {t("newScreen.dynamicScreens.interactiveArtwork.description")}
               </p>
 
               <p className="mt-4 text-xs uppercase tracking-[0.2em]">
-                Coming soon
+                {t("newScreen.dynamicScreens.interactiveArtwork.comingSoon")}
               </p>
             </button>
 
@@ -110,14 +114,15 @@ export default function NewScreenPage() {
               disabled
               className="border border-neutral-200 p-6 text-left opacity-40 cursor-not-allowed"
             >
-              <h3 className="text-xl font-light">Digital Experience</h3>
-
+              <h3 className="text-xl font-light">
+                {t("newScreen.dynamicScreens.digitalExperience.title")}
+              </h3>
               <p className="mt-3 text-sm text-neutral-500">
-                Create immersive and animated presentations.
+                {t("newScreen.dynamicScreens.digitalExperience.description")}
               </p>
 
               <p className="mt-4 text-xs uppercase tracking-[0.2em]">
-                Coming soon
+                {t("newScreen.dynamicScreens.digitalExperience.comingSoon")}
               </p>
             </button>
           </div>
@@ -125,30 +130,34 @@ export default function NewScreenPage() {
       </section>
 
       <section className="border-t border-neutral-200 pt-12">
-        <H2>Screen Information</H2>
+        <H2>t("newScreen.screenInformation.title")}</H2>
         <br />
 
         <div className="max-w-xl space-y-8">
           <div>
             <label className="text-sm text-neutral-500 leading-loose tracking-widest">
-              Screen Name
+              {t("newScreen.screenInformation.screenName.label")}
             </label>
 
             <input
               type="text"
-              placeholder="Main Gallery Screen"
+              placeholder={t(
+                "newScreen.screenInformation.screenName.placeholder",
+              )}
               className="mt-3 w-full border-b border-black bg-transparent py-3 outline-none placeholder:text-neutral-400"
             />
           </div>
 
           <div>
             <label className="text-sm leading-loose tracking-widest text-neutral-500">
-              Location
+             {t("newScreen.screenInformation.location.label")}
             </label>
 
             <input
               type="text"
-              placeholder="Entrance Hall"
+              placeholder={t(
+                "newScreen.screenInformation.location.placeholder",
+              )}
               className="mt-3 w-full border-b border-black bg-transparent py-3 outline-none placeholder:text-neutral-400"
             />
           </div>
@@ -171,7 +180,7 @@ export default function NewScreenPage() {
               disabled:opacity-30
             "
           >
-            Create Screen
+            {t("newScreen.screenInformation.submit")}
           </button>
         </div>
       </section>

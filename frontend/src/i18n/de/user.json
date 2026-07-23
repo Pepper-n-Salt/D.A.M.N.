@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "title": "Account-Einstellungen",
+    "subtitle": "Verwalte deine Kontoeinstellungen und deine persönlichen Daten."
+  },
+  "account": {
+    "title": "Kontoinformationen",
+    "form": {
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Änderungen speichern"
+    }
+  },
+  "management": {
+    "title": "Benutzerverwaltung",
+    "heading": "Neuen Benutzer erstellen",
+    "description": "Fügen Sie neue Mitglieder zu Ihrer Organisation hinzu und verwalten Sie den Zugriff auf das Digital Artwork Management Network.",
+    "button": "Benutzer erstellen"
+  }
+}
