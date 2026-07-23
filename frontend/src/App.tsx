@@ -54,11 +54,14 @@ function App() {
               element={<NewScreenPage />}
             />
             <Route
-              path="/display/static/exhibition"
+              path="/display/static/exhibition/:id"
               element={<ScreenExhibition />}
             />
 
-            <Route path="/display/static/artwork" element={<ScreenArtwork />} />
+            <Route
+              path="/display/static/artwork/:id"
+              element={<ScreenArtwork />}
+            />
             <Route
               path="/display/static/artist/:id"
               element={<ScreenArtist />}
