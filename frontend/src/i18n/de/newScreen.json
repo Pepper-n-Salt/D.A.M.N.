@@ -1,1 +1,59 @@
-{}
+{
+  "newScreen": {
+    "title": "Bildschirm erstellen",
+    "paragraph": "Konfiguriere eine digitale Präsentation für deine Ausstellungen, Kunstwerke und die ausgestellten Künstler:innen.",
+
+    "selectType": "Bildschirmtyp auswählen",
+
+    "staticScreens": {
+      "title": "Statische Bildschirme",
+
+      "exhibition": {
+        "title": "Ausstellung",
+        "description": "Zeigt aktuelle Ausstellungen und zugehörige Informationen an."
+      },
+
+      "artwork": {
+        "title": "Kunstwerk",
+        "description": "Präsentiert einzelne Kunstwerke mit Metadaten."
+      },
+
+      "artist": {
+        "title": "Künstler:in",
+        "description": "Zeigt Informationen über Künstler:innen und ausgewählte Werke."
+      }
+    },
+
+    "dynamicScreens": {
+      "title": "Dynamische Bildschirme",
+
+      "interactiveArtwork": {
+        "title": "Interaktives Kunstwerk",
+        "description": "Erkunden Sie Kunstwerke durch Zoomen und Interaktion.",
+        "comingSoon": "Demnächst verfügbar"
+      },
+
+      "digitalExperience": {
+        "title": "Digitales Erlebnis",
+        "description": "Erstellen Sie immersive und animierte Präsentationen.",
+        "comingSoon": "Demnächst verfügbar"
+      }
+    },
+
+    "screenInformation": {
+      "title": "Bildschirminformationen",
+
+      "screenName": {
+        "label": "Bildschirmname",
+        "placeholder": "Hauptbildschirm der Galerie"
+      },
+
+      "location": {
+        "label": "Standort",
+        "placeholder": "Eingangshalle"
+      },
+
+      "submit": "Bildschirm erstellen"
+    }
+  }
+}
