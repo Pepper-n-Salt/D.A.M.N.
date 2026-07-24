@@ -18,7 +18,7 @@ export default function NewArtworkPage() {
   const [formData, setFormData] = useState({
     title: "",
     subtitle: "",
-    artist: "",
+    artists: [] as string[],
     biography: "",
     year: "",
     origin: "",
@@ -27,6 +27,14 @@ export default function NewArtworkPage() {
     dimensions: "",
     description: "",
   });
+
+  const artists = [
+    "Vincent van Gogh",
+    "Pablo Picasso",
+    "Claude Monet",
+    "Leonardo da Vinci",
+    "Frida Kahlo",
+  ];
 
   const artworkResults = [
     {
@@ -118,7 +126,9 @@ export default function NewArtworkPage() {
                           setFormData({
                             ...formData,
                             title: artwork.title ?? "",
-                            artist: artwork.artistName ?? "",
+                            artists: artwork.artistName
+                              ? [artwork.artistName]
+                              : [],
                             year: artwork.year ?? "",
                             material: artwork.material ?? "",
                           });
@@ -139,7 +149,7 @@ export default function NewArtworkPage() {
           className="mx-auto flex w-full max-w-3xl flex-col gap-8 rounded-none border border-black p-8"
           onSubmit={handleSubmit}
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 mb-10">
             <label
               htmlFor="language"
               className="text-sm uppercase tracking-[0.2em]"
@@ -188,32 +198,73 @@ export default function NewArtworkPage() {
             </div>
             <div className="flex flex-col gap-2">
               <label
-                htmlFor="artist"
+                htmlFor="artists"
                 className="text-sm uppercase tracking-[0.2em]"
               >
                 {t("form.artist")}
               </label>
-              <input
-                type="text"
-                id="artist"
-                name="artist"
-                className="border-b border-black bg-transparent py-3 outline-none"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="biography"
-                className="text-sm uppercase tracking-[0.2em]"
+
+              <select
+                id="artists"
+                value=""
+                onChange={(e) => {
+                  const selectedArtist = e.target.value;
+
+                  if (
+                    selectedArtist &&
+                    !formData.artists.includes(selectedArtist)
+                  ) {
+                    setFormData({
+                      ...formData,
+                      artists: [...formData.artists, selectedArtist],
+                    });
+                  }
+                }}
+                className="tracking-widest leading-loose
+                border-b
+                border-black
+                bg-transparent
+                py-3
+                outline-none uppercase text-neutral-500"
               >
-                {t("form.biography")}
-              </label>
-              <input
-                type="text"
-                id="biography"
-                name="biography"
-                className="border-b border-black bg-transparent py-3 outline-none"
-              />
+                <option value="">select Artist</option>
+
+                {artists.map((artist) => (
+                  <option key={artist} value={artist}>
+                    {artist}
+                  </option>
+                ))}
+              </select>
+
+              {formData.artists.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {formData.artists.map((artist) => (
+                    <div
+                      key={artist}
+                      className="flex items-center gap-2 border border-black px-3 py-2 text-sm tracking-widest leading-looses uppercase"
+                    >
+                      {artist}
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            artists: formData.artists.filter(
+                              (a) => a !== artist
+                            ),
+                          })
+                        }
+                        className="text-xs"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="year"
@@ -285,7 +336,6 @@ export default function NewArtworkPage() {
               />
             </div>
           </div>
-
           <div className="flex flex-col gap-2">
             <label
               htmlFor="description"
@@ -300,7 +350,6 @@ export default function NewArtworkPage() {
               className="resize-none border-b border-black bg-transparent py-3 outline-none"
             />
           </div>
-
           <div className="flex flex-col gap-2">
             <label
               htmlFor="image"
@@ -316,7 +365,6 @@ export default function NewArtworkPage() {
               className="cursor-pointer border border-black bg-transparent p-3"
             />
           </div>
-
           <div className="flex flex-wrap gap-4">
             <button
               type="submit"

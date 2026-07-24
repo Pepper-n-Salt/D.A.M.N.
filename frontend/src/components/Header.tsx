@@ -40,6 +40,17 @@ export default function Header() {
         <nav className="flex gap-10 text-sm uppercase tracking-[0.2em]">
           {isLandingPage ? (
             <>
+              {" "}
+              <NavLink
+                to="/landingpage/artists"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-black font-semibold border-b border-black"
+                    : "text-black"
+                }
+              >
+                Artists
+              </NavLink>
               <NavLink
                 to="/landingpage/artworks"
                 className={({ isActive }) =>

@@ -20,6 +20,8 @@ import LandingPage from "./pages/LandingPage";
 import ScreenExhibition from "./pages/ScreenExhibition";
 import ScreenArtwork from "./pages/ScreenArtwork";
 import ScreenArtist from "./pages/ScreenArtist";
+import ArtistsPage from "./pages/ArtistsPage";
+import NewArtistPage from "./pages/NewArtistPage";
 
 function App() {
   return (
@@ -52,6 +54,11 @@ function App() {
             <Route
               path="/landingpage/screens/new"
               element={<NewScreenPage />}
+            />
+            <Route path="/landingpage/artists" element={<ArtistsPage />} />
+            <Route
+              path="/landingpage/artists/new"
+              element={<NewArtistPage />}
             />
             <Route
               path="/display/static/exhibition/:id"
