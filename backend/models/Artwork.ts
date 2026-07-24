@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import db from "../libs/db.js";
+import db from "../lib/db.js";
 
 export default class Artwork extends Model {
   declare id: string;
@@ -47,7 +47,7 @@ Artwork.init(
     },
   },
   {
-    sequelize,
+    db,
     tableName: "artwork",
     timestamps: true,
     underscored: true,
