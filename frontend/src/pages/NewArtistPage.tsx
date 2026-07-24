@@ -2,21 +2,24 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import H1 from "../components/ui/typography/H1";
 import P from "../components/ui/typography/P";
-export default function NewExhibitionPage() {
-  const { t } = useTranslation("newExhibition");
+
+export default function NewArtistPage() {
+  const { t } = useTranslation("newArtist");
   const [language, setLanguage] = useState("german");
-  const [exhibitionSaved, setExhibitionSaved] = useState(false);
+  const [artistSaved, setArtistSaved] = useState(false);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setExhibitionSaved(true);
+    setArtistSaved(true);
   };
+
   return (
     <section className="space-y-10 py-8">
       <div className="border-b border-neutral-200 pt-12 space-y-8">
-        <H1>{t("newExhibition.title")}</H1>
-        <P>{t("newExhibition.paragraph")}</P>
+        <H1>{t("newArtist.title")}</H1>
+        <P>{t("newArtist.paragraph")}</P>
         <br />
       </div>
+
       <form
         className="mx-auto flex w-full max-w-3xl flex-col gap-8 rounded-none border border-black p-8"
         onSubmit={handleSubmit}
@@ -42,71 +45,75 @@ export default function NewExhibitionPage() {
         <div className="grid gap-12 md:grid-cols-2">
           <div className="flex flex-col gap-2">
             <label
-              htmlFor="title"
+              htmlFor="firstname"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.title")}
+              {t("newArtist.form.firstname")}
             </label>
             <input
               type="text"
-              id="title"
-              name="title"
+              id="firstname"
+              name="firstname"
               className="border-b border-black bg-transparent py-3 outline-none"
             />
           </div>
+
           <div className="flex flex-col gap-2">
             <label
-              htmlFor="subtitle"
+              htmlFor="lastname"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.subtitle")}
+              {t("newArtist.form.lastname")}
             </label>
             <input
               type="text"
-              id="subtitle"
-              name="subtitle"
+              id="lastname"
+              name="lastname"
               className="border-b border-black bg-transparent py-3 outline-none"
             />
           </div>
+
           <div className="flex flex-col gap-2">
             <label
-              htmlFor="startDate"
+              htmlFor="dateOfBirth"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.startDate")}
+              {t("newArtist.form.dateOfBirth")}
             </label>
             <input
               type="date"
-              id="startDate"
-              name="startDate"
+              id="dateOfBirth"
+              name="dateOfBirth"
               className="border-b border-black bg-transparent py-3 outline-none"
             />
           </div>
+
           <div className="flex flex-col gap-2">
             <label
-              htmlFor="endDate"
+              htmlFor="dateOfDeath"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.endDate")}
+              {t("newArtist.form.dateOfDeath")}
             </label>
             <input
               type="date"
-              id="endDate"
-              name="endDate"
+              id="dateOfDeath"
+              name="dateOfDeath"
               className="border-b border-black bg-transparent py-3 outline-none"
             />
           </div>
+
           <div className="flex flex-col gap-2 md:col-span-2">
             <label
-              htmlFor="location"
+              htmlFor="country"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.location")}
+              {t("newArtist.form.country")}
             </label>
             <input
               type="text"
-              id="location"
-              name="location"
+              id="country"
+              name="country"
               className="border-b border-black bg-transparent py-3 outline-none"
             />
           </div>
@@ -117,27 +124,13 @@ export default function NewExhibitionPage() {
             htmlFor="description"
             className="text-sm uppercase tracking-[0.2em]"
           >
-            {t("newExhibition.form.description")}
+            {t("newArtist.form.description")}
           </label>
+
           <textarea
             id="description"
             name="description"
             rows={6}
-            className="resize-none border-b border-black bg-transparent py-3 outline-none"
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="events"
-            className="text-sm uppercase tracking-[0.2em]"
-          >
-            {t("newExhibition.form.events")}
-          </label>
-          <textarea
-            id="events"
-            name="events"
-            rows={4}
             className="resize-none border-b border-black bg-transparent py-3 outline-none"
           />
         </div>
@@ -162,8 +155,8 @@ export default function NewExhibitionPage() {
           </button>
           <button
             type="button"
-            disabled={!exhibitionSaved}
-            className={`border px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${exhibitionSaved ? "border-black hover:bg-black hover:text-white" : "cursor-not-allowed border-gray-300 text-gray-400"}`}
+            disabled={!artistSaved}
+            className={`border px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${artistSaved ? "border-black hover:bg-black hover:text-white" : "cursor-not-allowed border-gray-300 text-gray-400"}`}
           >
             {language === "german"
               ? t("actions.translateToEnglish")
