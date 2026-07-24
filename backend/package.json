@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "dev": "bun --watch server.js",
+    "start": "bun server.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -16,7 +18,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.1.1",
     "@types/ws": "^8.18.1",
-    "prettier": "^3.9.6"
+    "prettier": "^3.9.6",
+    "sequelize-auto": "^0.8.8"
   },
   "peerDependencies": {
     "typescript": "^7.0.2"
