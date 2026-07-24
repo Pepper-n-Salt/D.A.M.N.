@@ -1,4 +1,5 @@
 const mockExhibition = {
+  id: "van-gogh-light-and-color",
   title: "Van Gogh",
   subtitle: "Light and Color",
   period: "15 April – 30 August 2026",
@@ -8,6 +9,7 @@ const mockExhibition = {
 };
 
 type Exhibition = {
+  id: string;
   title: string;
   subtitle: string;
   period: string;

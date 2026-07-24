@@ -98,6 +98,8 @@ export default function NewScreenPage() {
           </div>
         </div>
 
+        {/* Hier brauchen wir eine Auswahl an - was auch immer du oben angeklickt hast */}
+
         {/* <div className="space-y-6 pt-8">
           <h2 className="text-2xl font-light">{t("newScreen.dynamicScreens.title")}</h2>
 

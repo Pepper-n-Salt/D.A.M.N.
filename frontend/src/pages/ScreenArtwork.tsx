@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 
 const mockArtwork = {
+  id: "starry-night",
   title: "The Starry Night",
   subtitle: "De sterrennacht",
   artist: "Vincent van Gogh",
+  artistId: "vincent-van-gogh",
   year: 1889,
   artistBio:
     "Vincent van Gogh (1853–1890) was a Dutch Post-Impressionist painter whose expressive use of color and brushwork profoundly influenced modern art. Despite producing over 2,000 artworks, he achieved little commercial success during his lifetime.",
@@ -17,9 +19,11 @@ const mockArtwork = {
 };
 
 type Artwork = {
+  id: string;
   title: string;
   subtitle: string;
   artist: string;
+  artistId: string;
   year: number;
   artistBio: string;
   land: string;
@@ -54,15 +58,17 @@ function ArtworkScreen({ artwork }: ArtworkScreenProps) {
           <p>
             by{" "}
             <Link
-              to="/display/static/artist/van-gogh"
+              to={`/display/static/artist/${artwork.artistId}`}
               className="underline underline-offset-4 hover:text-white/80"
             >
               {artwork.artist}
             </Link>
           </p>
+
           <p className="max-w-3xl text-lg leading-relaxed text-white/90 md:text-xl">
             {artwork.year} in {artwork.land}
           </p>
+
           <h2 className="text-3xl font-light text-white/80 md:text-5xl">
             {artwork.subtitle}
           </h2>
