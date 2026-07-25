@@ -1,6 +1,6 @@
 import express from "express";
 // hier middleware checkAuth importieren
-// hier controller importieren
+import { getLatestEntries } from "../controllers/historyController";
 
 const router = express.Router();
 
