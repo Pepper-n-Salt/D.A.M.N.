@@ -20,3 +20,5 @@ router.patch("/update", () => {}, updateArtwork);
 // ist patch hier richtig oder lieber put?
 
 router.delete("/delete", () => {}, deleteArtwork);
+
+export default router;

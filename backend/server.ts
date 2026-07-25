@@ -5,7 +5,14 @@ import cookieParser from "cookie-parser";
 import db from "./lib/db.js";
 import "./models/associations.js";
 
-// hier später import { checkAuth } from "../middleware/checkAuth.js";Routes importieren
+// hier später Routes importieren
+import authRouter from "./routes/authRoutes.ts";
+import userRouter from "./routes/userRoutes.ts";
+import exhibitionRouter from "./routes/exhibitionRoutes.ts";
+import artworkRouter from "./routes/artworkRoutes.ts";
+import artistRouter from "./routes/artistRoutes.ts";
+import metArtworkRouter from "./routes/metArtworkRoutes.ts";
+import aiRouter from "./routes/aiRoutes.ts";
 
 const PORT = process.env.PORT || 3000;
 const ORIGIN = process.env.ORIGIN;
@@ -18,18 +25,20 @@ app.use(
   cors({
     origin: ORIGIN,
     credentials: true, // so werden Cookies wirklich mitgeschickt
-  }),
+  })
 );
 
 app.use(express.json());
 app.use(cookieParser());
 
 // Route Prefix + Routes einbinden
-app.use("/api/auth", () => {});
-app.use("/api/user", () => {});
-app.use("/api/exhibition", () => {});
-app.use("/api/artwork", () => {});
-app.use("/api/artist", () => {});
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+app.use("/api/exhibition", exhibitionRouter);
+app.use("/api/artwork", artworkRouter);
+app.use("/api/artist", artistRouter);
+app.use("/api/metartwork", metArtworkRouter);
+app.use("/api/ai", aiRouter);
 
 // await db.sync({ force: true }); // hier hinterher alter reinsetzen // würde Sequelize-Models mot der DB vergleichen und Tabellen anpassen
 
