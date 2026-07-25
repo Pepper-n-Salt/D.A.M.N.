@@ -5,6 +5,6 @@ export const checkAuth = (
   res: Response,
   next: NextFunction
 ): void => {
-  // TODO: Authentifizierung implementieren
+  // hier logik reinschreiebn
   next();
 };
