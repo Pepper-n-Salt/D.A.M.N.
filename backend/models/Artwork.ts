@@ -8,7 +8,7 @@ class Artwork extends Model {
   declare imageId: string;
   declare createdBy: string;
   declare lastEditedBy: string | null;
-  declare deleted: boolean;
+  declare isDeleted: boolean;
 }
 
 Artwork.init(
@@ -40,10 +40,11 @@ Artwork.init(
       allowNull: true,
       field: "last_edited_by",
     },
-    deleted: {
+    isDeleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+      field: "is_deleted",
     },
   },
   {
