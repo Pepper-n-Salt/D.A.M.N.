@@ -1,4 +1,4 @@
-export const chat = async (res: Response, req: Request) => {
+export const translateWithAI = async (res: Response, req: Request) => {
   try {
   } catch (e) {
     console.error("AI chat error:", e);
