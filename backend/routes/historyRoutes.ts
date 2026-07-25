@@ -4,6 +4,6 @@ import { getLatestEntries } from "../controllers/historyController";
 
 const router = express.Router();
 
-router.get("/entries", () => {}, getLatestEntries);
+router.get("/", () => {}, getLatestEntries); // evtl. Route wieder als "/entries" benennen, falls noch weitere dazu kommen
 
 export default router;

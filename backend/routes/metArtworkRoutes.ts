@@ -4,6 +4,6 @@ import { getMetArtwork } from "../controllers/metArtworkController";
 
 const router = express.Router();
 
-router.get("/:metArtworkId/details", () => {}, getMetArtwork);
+router.get("/:metArtworkId", () => {}, getMetArtwork);
 
 export default router;

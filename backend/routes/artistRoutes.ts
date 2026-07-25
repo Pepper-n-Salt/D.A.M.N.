@@ -10,15 +10,14 @@ import {
 
 const router = express.Router();
 
-router.get("/:artistID", () => {}, showOneArtist);
+router.get("/", () => {}, showAllArtists);
 
-router.get("/all", () => {}, showAllArtists);
+router.get("/:artistId", () => {}, showOneArtist);
 
-router.post("/create", () => {}, createArtist);
+router.post("/", () => {}, createArtist);
 
-router.patch("/update", () => {}, updateArtist);
-// ist patch hier richtig oder lieber put?
+router.patch("/:artistId", () => {}, updateArtist);
 
-router.delete("/delete", () => {}, deleteArtist);
+router.delete("/:artistId", () => {}, deleteArtist);
 
 export default router;

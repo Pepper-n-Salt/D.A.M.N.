@@ -1,24 +1,23 @@
 import express from "express";
 // an dieser Stelle noch die middleware importieren
 import {
-  createArtwork,
-  showOneArtwork,
   showAllArtworks,
+  showOneArtwork,
+  createArtwork,
   updateArtwork,
   deleteArtwork,
 } from "../controllers/artworkController";
 
 const router = express.Router();
 
-router.get("/:artworkID", () => {}, showOneArtwork);
+router.get("/", () => {}, showAllArtworks);
 
-router.get("/all", () => {}, showAllArtworks);
+router.get("/:artworkId", () => {}, showOneArtwork);
 
-router.post("/create", () => {}, createArtwork);
+router.post("/", () => {}, createArtwork);
 
-router.patch("/update", () => {}, updateArtwork);
-// ist patch hier richtig oder lieber put?
+router.patch("/:artworkId", () => {}, updateArtwork);
 
-router.delete("/delete", () => {}, deleteArtwork);
+router.delete("/:artworkId", () => {}, deleteArtwork);
 
 export default router;
