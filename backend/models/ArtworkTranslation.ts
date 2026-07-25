@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import db from "../lib/db.ts";
+import db from "../lib/db.js";
 
 class ArtworkTranslation extends Model {
   declare artworkId: string;

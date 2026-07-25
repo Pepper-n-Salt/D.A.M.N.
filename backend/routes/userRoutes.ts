@@ -1,6 +1,6 @@
 import express from "express";
-import { showUser, createNewUser } from "../controllers/userController";
 // an dieser Stelle später die Auth Middleware importieren
+import { showUser, createNewUser } from "../controllers/userController";
 
 const router = express.Router();
 

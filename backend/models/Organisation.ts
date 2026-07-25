@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import db from "../lib/db.ts";
+import db from "../lib/db.js";
 
 class Organisation extends Model {
   declare id: string;
