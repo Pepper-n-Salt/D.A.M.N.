@@ -4,6 +4,6 @@ import { translateWithAI } from "../controllers/aiController";
 
 const router = express.Router();
 
-router.post("/chat", () => {}, translateWithAI);
+router.post("/translate", () => {}, translateWithAI);
 
 export default router;
