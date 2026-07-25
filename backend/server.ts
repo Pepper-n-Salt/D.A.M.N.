@@ -8,6 +8,7 @@ import "./models/associations.js";
 // hier später Routes importieren
 import authRouter from "./routes/authRoutes.ts";
 import userRouter from "./routes/userRoutes.ts";
+import historyRouter from "./routes/historyRoutes.ts";
 import exhibitionRouter from "./routes/exhibitionRoutes.ts";
 import artworkRouter from "./routes/artworkRoutes.ts";
 import artistRouter from "./routes/artistRoutes.ts";
@@ -34,6 +35,7 @@ app.use(cookieParser());
 // Route Prefix + Routes einbinden
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/history", historyRouter);
 app.use("/api/exhibition", exhibitionRouter);
 app.use("/api/artwork", artworkRouter);
 app.use("/api/artist", artistRouter);

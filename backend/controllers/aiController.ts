@@ -1,3 +1,5 @@
+import type { Request, Response } from "express";
+
 export const translateWithAI = async (res: Response, req: Request) => {
   try {
   } catch (e) {
