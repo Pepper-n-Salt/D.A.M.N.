@@ -11,17 +11,17 @@ import {
 
 const router = express.Router();
 
-router.get("/:artistID", () => {}, showOneExhibition);
+router.get("/:artistId", () => {}, showOneExhibition);
 
 router.get("/all", () => {}, showAllExhibitions);
 
-router.post("/create", () => {}, createExhibition);
+router.post("/", () => {}, createExhibition);
 
-router.patch("/update", () => {}, updateExhibition);
-// ist patch hier richtig oder lieber put?
+router.patch("/:artistId", () => {}, updateExhibition);
+// patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wäre den kompletten Datensatz zu ändern
 
-router.delete("/archive", () => {}, archiveExhibition); // vllt ist delete hier falsch? gegenchecken!
+router.patch("/:artistId/archive", () => {}, archiveExhibition);
 
-router.delete("/delete", () => {}, deleteExhibition);
+router.delete("/:artistId", () => {}, deleteExhibition);
 
 export default router;
