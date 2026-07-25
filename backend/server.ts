@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import db from "./lib/db.js";
 import "./models/associations.js";
 
-// hier späternRoutes importieren
+// hier später import { checkAuth } from "../middleware/checkAuth.js";Routes importieren
 
 const PORT = process.env.PORT || 3000;
 const ORIGIN = process.env.ORIGIN;
@@ -18,7 +18,7 @@ app.use(
   cors({
     origin: ORIGIN,
     credentials: true, // so werden Cookies wirklich mitgeschickt
-  })
+  }),
 );
 
 app.use(express.json());
