@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
 
   port: Number(process.env.SMTP_PORT),
-
+  //secure false, weil wir den Port 587 benutzen, der STARTTLS verwendet. Das bedeutet, dass die Verbindung zunächst unverschlüsselt ist und dann auf TLS umgestellt wird. Wenn wir den Port 465 verwenden würden, wäre secure true, da dieser Port für SMTPS (SMTP über SSL/TLS) reserviert ist. Aber STARTTLS ist heutzutage der empfohlene Weg, um E-Mails sicher zu versenden, da es flexibler ist und besser mit verschiedenen Mailservern funktioniert.
   secure: false,
 
   auth: {
