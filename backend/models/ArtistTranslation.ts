@@ -43,12 +43,10 @@ ArtistTranslation.init(
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    // hier könnte es Probleme geben - wenn der Künstler in englisch und deutsch  ja der gleiche ist, dann ist der slug in beiden Sprachen gleich. Dann würde die unique constraint verletzt werden. Wir müssen also den slug pro Sprache eindeutig machen. Das bedeutet, dass wir die unique constraint auf (slug, language_code) setzen müssen. Dann kann der slug in verschiedenen Sprachen gleich sein, aber nicht in der gleichen Sprache.
-    //  hier müssen wir unique: true weglassen - aber siehe Zeile 71
-    slug: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
+    // slug: {
+    //   type: DataTypes.STRING(100),
+    //   allowNull: false,
+    // },
     aiGenerated: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -67,7 +65,6 @@ ArtistTranslation.init(
     tableName: "artist_translation",
     timestamps: false,
     underscored: true,
-    // hier müssen wir die unique constraint auf (slug, language_code) setzen. Dann kann der slug in verschiedenen Sprachen gleich sein, aber nicht in der gleichen Sprache.
     // indexes: [
     //   {
     //     unique: true,

@@ -46,10 +46,10 @@ ArtworkTranslation.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    slug: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
+    // slug: {
+    //   type: DataTypes.STRING(100),
+    //   allowNull: false,
+    // },
     aiGenerated: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

@@ -86,11 +86,12 @@ export const createExhibition = async (req: Request, res: Response) => {
       subtitle,
       location,
       description,
-      slug,
+      // slug,
     } = req.body;
 
     const exhibition = await Exhibition.create({
       id: crypto.randomUUID(),
+      coverImageId,
       startDate,
       endDate,
       // openingEvent,
@@ -116,7 +117,7 @@ export const createExhibition = async (req: Request, res: Response) => {
       subtitle,
       location,
       description,
-      slug,
+      // slug,
       aiGenerated: false, // kommt irgendwann vom BE
       isScreen: false, // hier genauso: Info kommt irgendwann vom BE
     });
