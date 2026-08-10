@@ -15,7 +15,7 @@ router.get("/", showAllExhibitions); // hinterher wieder middleware einfügen
 
 router.get("/:exhibitionId", showOneExhibition); // hier auch nach dem testen wieder middlewae einfügen
 
-router.post("/", () => {}, createExhibition);
+router.post("/", createExhibition); // hier auch nach dem testen wieder middlewae einfügen
 
 router.patch("/:exhibitionId", () => {}, updateExhibition);
 // patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wäre den kompletten Datensatz zu ändern

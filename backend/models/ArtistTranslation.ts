@@ -68,13 +68,13 @@ ArtistTranslation.init(
     timestamps: false,
     underscored: true,
     // hier müssen wir die unique constraint auf (slug, language_code) setzen. Dann kann der slug in verschiedenen Sprachen gleich sein, aber nicht in der gleichen Sprache.
-    indexes: [
-      {
-        unique: true,
-        name: "unique_artist_translation_slug_per_language",
-        fields: ["language_code", "slug"],
-      },
-    ],
+    // indexes: [
+    //   {
+    //     unique: true,
+    //     name: "unique_artist_translation_slug_per_language",
+    //     fields: ["language_code", "slug"],
+    //   },
+    // ],
   }
 );
 

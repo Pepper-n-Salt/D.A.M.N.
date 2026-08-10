@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { Exhibition } from "../models";
 import { ExhibitionTranslation } from "../models";
 
+// funktioniert
 export const showOneExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
@@ -25,6 +26,7 @@ export const showOneExhibition = async (
   }
 };
 
+// geht auch
 export const showAllExhibitions = async (req: Request, res: Response) => {
   try {
     const exhibitions = await Exhibition.findAll({
@@ -42,21 +44,43 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
   }
 }; // den brauchen wir für das select- oder suchfeld in artwork
 
+// mit testdaten überprüft:
+// {
+//   "startDate": "2026-09-01",
+//   "endDate": "2026-10-15",
+//   "openingEvent": "Vernissage",
+//   "specialEvent": "Artist Talk am 20. September",
+//   "closingEvent": "Finissage",
+//   "primaryColor": "#1A1A1A",
+//   "secondaryColor": "#D4AF37",
+//   "backgroundColor": "#F5F2EA",
+//   "textColor": "#1A1A1A",
+//   "headlineFont": "Helvetica",
+//   "textFont": "Arial",
+//   "roundness": "medium",
+//   "languageCode": "de",
+//   "title": "Zwischen Licht und Raum",
+//   "subtitle": "Zeitgenössische Positionen",
+//   "location": "Leipzig",
+//   "description": "Eine Ausstellung mit zeitgenössischen Positionen zur Beziehung zwischen Licht, Raum und Wahrnehmung.",
+//   "slug": "zwischen-licht-und-raum"
+// }
 export const createExhibition = async (req: Request, res: Response) => {
   try {
     const {
+      coverImageId,
       startDate,
       endDate,
-      openingEvent,
-      specialEvent,
-      closingEvent,
-      primaryColor,
-      secondaryColor,
-      backgroundColor,
-      textColor,
-      headlineFont,
-      textFont,
-      roundness,
+      // openingEvent,
+      // specialEvent,
+      // closingEvent,
+      // primaryColor,
+      // secondaryColor,
+      // backgroundColor,
+      // textColor,
+      // headlineFont,
+      // textFont,
+      // roundness,
       languageCode,
       title,
       subtitle,
@@ -69,17 +93,20 @@ export const createExhibition = async (req: Request, res: Response) => {
       id: crypto.randomUUID(),
       startDate,
       endDate,
-      openingEvent,
-      specialEvent,
-      closingEvent,
+      // openingEvent,
+      // specialEvent,
+      // closingEvent,
       createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imker eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist
-      primaryColor,
-      secondaryColor,
-      backgroundColor,
-      textColor,
-      headlineFont,
-      textFont,
-      roundness,
+      lastEditedBy: null, // Info kommt vom BE
+      isArchived: false, // Info kommt vom BE
+      isDeleted: false, // Info kommt vom BE
+      // primaryColor,
+      // secondaryColor,
+      // backgroundColor,
+      // textColor,
+      // headlineFont,
+      // textFont,
+      // roundness,
     });
 
     const translation = await ExhibitionTranslation.create({
@@ -90,6 +117,8 @@ export const createExhibition = async (req: Request, res: Response) => {
       location,
       description,
       slug,
+      aiGenerated: false, // kommt irgendwann vom BE
+      isScreen: false, // hier genauso: Info kommt irgendwann vom BE
     });
 
     return res.status(201).json({

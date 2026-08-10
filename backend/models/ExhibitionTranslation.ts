@@ -63,13 +63,6 @@ ExhibitionTranslation.init(
     tableName: "exhibition_translation",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        unique: true,
-        name: "unique_exhibition_translation_slug_per_language",
-        fields: ["language_code", "slug"],
-      },
-    ],
   }
 );
 
