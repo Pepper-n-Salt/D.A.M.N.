@@ -4,7 +4,7 @@
     "subtitle": "Logge dich ins Digital Artwork Management Network ein!"
   },
   "form": {
-    "username": "Benutzer:innenname",
+    "email": "E-Mail",
     "password": "Passwort",
     "submit": "Login"
   }
