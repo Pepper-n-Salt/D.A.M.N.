@@ -44,7 +44,7 @@ ExhibitionTranslation.init(
     slug: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: true,
+      unique: false,
     },
     aiGenerated: {
       type: DataTypes.BOOLEAN,
@@ -64,6 +64,13 @@ ExhibitionTranslation.init(
     tableName: "exhibition_translation",
     timestamps: false,
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        name: "unique_slug_per_language",
+        fields: ["slug", "language_code"],
+      },
+    ],
   }
 );
 

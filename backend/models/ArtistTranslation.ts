@@ -48,7 +48,7 @@ ArtistTranslation.init(
     slug: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: true,
+      unique: false,
     },
     aiGenerated: {
       type: DataTypes.BOOLEAN,
@@ -69,14 +69,13 @@ ArtistTranslation.init(
     timestamps: false,
     underscored: true,
     // hier müssen wir die unique constraint auf (slug, language_code) setzen. Dann kann der slug in verschiedenen Sprachen gleich sein, aber nicht in der gleichen Sprache.
-    // indexes: [
-    // {
-    //   unique: true,
-    //   name: "unique_slug_per_language",
-    //   fields: [
-    //     "slug",
-    //     "language_code",
-    //   ],
+    indexes: [
+      {
+        unique: true,
+        name: "unique_slug_per_language",
+        fields: ["slug", "language_code"],
+      },
+    ],
   }
 );
 
