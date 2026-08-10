@@ -97,7 +97,7 @@ export const createExhibition = async (req: Request, res: Response) => {
       // openingEvent,
       // specialEvent,
       // closingEvent,
-      createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imker eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist
+      createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imke eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist
       lastEditedBy: null, // Info kommt vom BE
       isArchived: false, // Info kommt vom BE
       isDeleted: false, // Info kommt vom BE

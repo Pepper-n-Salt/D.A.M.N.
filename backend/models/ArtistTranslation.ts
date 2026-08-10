@@ -8,7 +8,7 @@ class ArtistTranslation extends Model {
   declare lastName: string;
   declare description: string | null;
   declare country: string;
-  declare slug: string;
+  // declare slug: string;
   declare aiGenerated: boolean;
   declare isScreen: boolean;
 }
