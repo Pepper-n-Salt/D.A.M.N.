@@ -11,7 +11,18 @@
       "email": "E-mail",
       "password": "Password",
       "repeatPassword": "Repeat Password",
-      "submit": "Save"
-    }
+      "role": "Role",
+      "organisation": "Organisation",
+      "organisationPlaceholder": "Enter organisation name",
+      "submit": "Save",
+      "passwordMismatch": "Passwords do not match.",
+      "error": "An error occurred while creating the user.",
+      "success": "New user created successfully.",
+      "roleOptions": {
+        "admin": "Admin",
+        "user": "User"
+      }
+    },
+    "noPermission": "You do not have permission to create new users."
   }
 }

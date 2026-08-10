@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 import type { Request, Response } from "express";
 import User from "../models/User.js";
+import Organisation from "../models/Organisation.js";
+import Media from "../models/Media.js";
 import type { AuthenticatedRequest } from "../middleware/checkAuth.ts";
 
 const safeUserFields = [
@@ -28,13 +30,16 @@ export const showAllUsers = async (req: Request, res: Response) => {
   try {
     const authReq = req as AuthenticatedRequest;
     const organisationId = authReq.user?.organisationId;
+    const role = authReq.user?.role;
 
-    if (!organisationId) {
+    if (!organisationId && role !== "super") {
       return res.status(401).json({ msg: "Nicht autorisiert." });
     }
 
+    const whereClause = role === "super" ? undefined : { organisationId };
+
     const users = await User.findAll({
-      where: { organisationId },
+      where: whereClause,
       attributes: safeUserFields,
     });
 
@@ -49,15 +54,16 @@ export const showUser = async (req: Request, res: Response) => {
   try {
     const authReq = req as AuthenticatedRequest;
     const organisationId = authReq.user?.organisationId;
+    const role = authReq.user?.role;
     const { userId } = req.params as { userId: string };
 
-    if (!organisationId) {
+    if (!organisationId && role !== "super") {
       return res.status(401).json({ msg: "Nicht autorisiert." });
     }
 
     const user = await User.findByPk(userId, { attributes: safeUserFields });
 
-    if (!user || user.organisationId !== organisationId) {
+    if (!user || (role !== "super" && user.organisationId !== organisationId)) {
       return res.status(403).json({ msg: "Zugriff verweigert." });
     }
 
@@ -73,7 +79,14 @@ export const createUser = async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     const organisationId = authReq.user?.organisationId;
     const role = authReq.user?.role;
-    const { email, password, firstName, lastName, userRole } = req.body;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      userRole,
+      organisationName: requestedOrganisationName,
+    } = req.body;
 
     if (role !== "admin" && role !== "super") {
       return res.status(403).json({ msg: "Admin-Rechte erforderlich." });
@@ -96,14 +109,41 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const roleToCreate =
+      role === "super" && userRole === "admin" ? "admin" : "user";
+
+    let createdOrganisationId = organisationId;
+
+    if (role === "super" && requestedOrganisationName?.trim()) {
+      const organisationName = requestedOrganisationName.trim();
+      // create a tiny Media row so logo_id can be non-null (DB may enforce NOT NULL)
+      const logoId = crypto.randomUUID();
+      await Media.create({
+        id: logoId,
+        fileName: "auto",
+        mimeType: "image/png",
+        fileUrl: "",
+      });
+
+      const [organisation] = await Organisation.findOrCreate({
+        where: { name: organisationName },
+        defaults: {
+          id: crypto.randomUUID(),
+          name: organisationName,
+          logoId,
+        },
+      });
+      createdOrganisationId = organisation.id;
+    }
+
     const newUser = await User.create({
       id: crypto.randomUUID(),
       email: email.toLowerCase(),
       password: hashedPassword,
       firstName,
       lastName,
-      organisationId,
-      role: userRole === "admin" ? "admin" : "user",
+      organisationId: createdOrganisationId,
+      role: roleToCreate,
     });
 
     return res.status(201).json({ user: sanitizeUser(newUser) });
@@ -121,13 +161,18 @@ export const updateUser = async (req: Request, res: Response) => {
     const currentUserId = authReq.user?.userId;
     const { userId } = req.params as { userId: string };
 
-    if (!organisationId || !currentUserId) {
+    if (!currentUserId) {
+      return res.status(401).json({ msg: "Nicht autorisiert." });
+    }
+
+    // allow super to operate across organisations
+    if (role !== "super" && !organisationId) {
       return res.status(401).json({ msg: "Nicht autorisiert." });
     }
 
     const user = await User.findByPk(userId);
 
-    if (!user || user.organisationId !== organisationId) {
+    if (!user || (role !== "super" && user.organisationId !== organisationId)) {
       return res.status(403).json({ msg: "Zugriff verweigert." });
     }
 
@@ -137,7 +182,14 @@ export const updateUser = async (req: Request, res: Response) => {
       return res.status(403).json({ msg: "Admin-Rechte erforderlich." });
     }
 
-    const { email, password, firstName, lastName, userRole } = req.body;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      userRole,
+      organisationName: requestedOrganisationName,
+    } = req.body;
 
     if (email) {
       user.email = email.toLowerCase();
@@ -155,8 +207,41 @@ export const updateUser = async (req: Request, res: Response) => {
       user.lastName = lastName;
     }
 
-    if (userRole && (role === "admin" || role === "super")) {
-      user.role = userRole === "admin" ? "admin" : "user";
+    if (requestedOrganisationName && (role === "admin" || role === "super")) {
+      if (isSelf || role === "super") {
+        const organisationName = requestedOrganisationName.trim();
+        const logoId = crypto.randomUUID();
+        await Media.create({
+          id: logoId,
+          fileName: "auto",
+          mimeType: "image/png",
+          fileUrl: "",
+        });
+
+        const [organisation] = await Organisation.findOrCreate({
+          where: { name: organisationName },
+          defaults: {
+            id: crypto.randomUUID(),
+            name: organisationName,
+            logoId,
+          },
+        });
+        user.organisationId = organisation.id;
+      }
+    }
+
+    if (userRole) {
+      if (isSelf) {
+        return res
+          .status(403)
+          .json({ msg: "Sie können Ihre eigene Rolle nicht ändern." });
+      }
+
+      if (role === "super") {
+        user.role = userRole === "admin" ? "admin" : "user";
+      } else if (role === "admin" && userRole === "user") {
+        user.role = "user";
+      }
     }
 
     await user.save();
@@ -181,7 +266,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     const user = await User.findByPk(userId);
 
-    if (!user || user.organisationId !== organisationId) {
+    if (!user || (role !== "super" && user.organisationId !== organisationId)) {
       return res.status(403).json({ msg: "Zugriff verweigert." });
     }
 
