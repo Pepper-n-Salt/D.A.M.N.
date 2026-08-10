@@ -43,7 +43,8 @@ app.use("/api/artist", artistRouter);
 app.use("/api/metartwork", metArtworkRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/contact", contactRouter);
-// await db.sync({ force: true }); // hier hinterher alter reinsetzen // würde Sequelize-Models mot der DB vergleichen und Tabellen anpassen
+
+// await db.sync({ force: true }); // hier hinterher alter reinsetzen // würde Sequelize-Models mit der DB vergleichen und Tabellen anpassen
 
 async function startServer() {
   await db.authenticate(); // prüft die Verbindung von Sequelize zur DB
