@@ -44,7 +44,6 @@ ExhibitionTranslation.init(
     slug: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: false,
     },
     aiGenerated: {
       type: DataTypes.BOOLEAN,
