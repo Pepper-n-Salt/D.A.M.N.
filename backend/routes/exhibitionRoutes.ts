@@ -11,17 +11,17 @@ import {
 
 const router = express.Router();
 
-router.get("/:artistId", () => {}, showOneExhibition);
+router.get("/", () => {}, showAllExhibitions);
 
-router.get("/all", () => {}, showAllExhibitions);
+router.get("/:exhibitionId", () => {}, showOneExhibition);
 
 router.post("/", () => {}, createExhibition);
 
-router.patch("/:artistId", () => {}, updateExhibition);
+router.patch("/:exhibitionId", () => {}, updateExhibition);
 // patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wäre den kompletten Datensatz zu ändern
 
-router.patch("/:artistId/archive", () => {}, archiveExhibition);
+router.patch("/:exhibitionId/archive", () => {}, archiveExhibition);
 
-router.delete("/:artistId", () => {}, deleteExhibition);
+router.delete("/:exhibitionId", () => {}, deleteExhibition);
 
 export default router;
