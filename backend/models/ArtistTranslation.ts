@@ -8,7 +8,7 @@ class ArtistTranslation extends Model {
   declare lastName: string;
   declare description: string | null;
   declare country: string;
-  declare slug: string;
+  // declare slug: string;
   declare aiGenerated: boolean;
   declare isScreen: boolean;
 }
@@ -43,10 +43,10 @@ ArtistTranslation.init(
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    slug: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-    },
+    // slug: {
+    //   type: DataTypes.STRING(100),
+    //   allowNull: false,
+    // },
     aiGenerated: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
