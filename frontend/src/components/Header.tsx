@@ -1,5 +1,6 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
   const { pathname } = useLocation();
@@ -10,6 +11,14 @@ export default function Header() {
   if (isDisplay) {
     return null;
   }
+
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
   return (
     <header className="border-b border-gray-200 px-8 py-6">
@@ -132,17 +141,17 @@ export default function Header() {
             </NavLink>
 
             <p className="text-neutral-500 normal-case tracking-normal">
-              Hello Superuser!
+              {`Hello ${user?.firstName || "Superuser"}!`}
             </p>
 
             <LanguageSwitcher />
 
-            <NavLink
-              to="/login"
+            <button
+              onClick={handleLogout}
               className="border border-black px-8 py-2.5 transition-colors duration-300 hover:bg-black hover:text-white"
             >
               Logout
-            </NavLink>
+            </button>
           </div>
         ) : (
           <div className="flex items-center uppercase gap-4">
