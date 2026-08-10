@@ -19,7 +19,7 @@ Organisation.init(
     },
     logoId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       field: "logo_id",
     },
   },

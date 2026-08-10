@@ -10,13 +10,28 @@
       "lastName": "Last Name",
       "email": "E-mail",
       "password": "Password",
-      "submit": "Save Changes"
+      "role": "Role",
+      "organisation": "Organisation",
+      "organisationPlaceholder": "Enter organisation name",
+      "submit": "Save Changes",
+      "error": "An error occurred while saving the changes.",
+      "success": "Changes saved successfully.",
+      "roleOptions": {
+        "admin": "Admin",
+        "user": "User"
+      }
     }
   },
   "management": {
     "title": "User Management",
     "heading": "Create a New User",
     "description": "Add new members to your organization and manage access to the Digital Artwork Management Network.",
-    "button": "Create User"
+    "button": "Create User",
+    "usersListTitle": "Users in this organization",
+    "loading": "Loading users...",
+    "edit": "Edit",
+    "delete": "Delete",
+    "noUsers": "No users found",
+    "noPermission": "You do not have permission to create new users."
   }
 }

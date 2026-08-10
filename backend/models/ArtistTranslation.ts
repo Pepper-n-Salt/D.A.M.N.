@@ -72,7 +72,7 @@ ArtistTranslation.init(
     indexes: [
       {
         unique: true,
-        name: "unique_slug_per_language",
+        name: "unique_artist_translation_slug_per_language",
         fields: ["language_code", "slug"],
       },
     ],
