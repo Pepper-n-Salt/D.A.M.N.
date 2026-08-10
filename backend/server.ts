@@ -6,15 +6,15 @@ import db from "./lib/db.js";
 import "./models/associations.js";
 
 // hier später Routes importieren
-import authRouter from "./routes/authRoutes.ts";
-import userRouter from "./routes/userRoutes.ts";
-import historyRouter from "./routes/historyRoutes.ts";
-import exhibitionRouter from "./routes/exhibitionRoutes.ts";
-import artworkRouter from "./routes/artworkRoutes.ts";
-import artistRouter from "./routes/artistRoutes.ts";
-import metArtworkRouter from "./routes/metArtworkRoutes.ts";
-import aiRouter from "./routes/aiRoutes.ts";
-import contactRouter from "./routes/contactRoutes.ts";
+import authRouter from "./routes/authRoutes.js";
+import userRouter from "./routes/userRoutes.js";
+import historyRouter from "./routes/historyRoutes.js";
+import exhibitionRouter from "./routes/exhibitionRoutes.js";
+import artworkRouter from "./routes/artworkRoutes.js";
+import artistRouter from "./routes/artistRoutes.js";
+import metArtworkRouter from "./routes/metArtworkRoutes.js";
+import aiRouter from "./routes/aiRoutes.js";
+import contactRouter from "./routes/contactRoutes.js";
 
 const PORT = process.env.PORT || 3000;
 const ORIGIN = process.env.ORIGIN;
@@ -44,11 +44,12 @@ app.use("/api/metartwork", metArtworkRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/contact", contactRouter);
 
-await db.sync({ force: true }); // hier hinterher alter reinsetzen // würde Sequelize-Models mit der DB vergleichen und Tabellen anpassen
-
 async function startServer() {
   await db.authenticate(); // prüft die Verbindung von Sequelize zur DB
   console.log("Database connection has been established successfully.");
+
+  await db.sync({ alter: true }); // hier hinterher alter reinsetzen // würde Sequelize-Models mit der DB vergleichen und Tabellen anpassen
+  console.log("Database synchronized successfully.");
 
   app.listen(PORT, () => {
     console.log(`Server hört auf Port ${PORT}.`);

@@ -14,7 +14,7 @@ export const showOneExhibition = async (
 
     // Fehlermeldung, wenn Exhibition nicht gefunden wurde
     if (!exhibition) {
-      return res.status(404).json({ msg: "Exhibition not found" });
+      return res.status(404).json({ msg: "Exhibition not found." });
     }
 
     // Exhibition zurückgeben, wenn efolgreich
@@ -26,7 +26,19 @@ export const showOneExhibition = async (
 
 export const showAllExhibitions = async (req: Request, res: Response) => {
   try {
-  } catch (e) {}
+    const exhibitions = await Exhibition.findAll({
+      where: { isDeleted: false },
+    });
+
+    // da findAll() ein Array zurückgibt, über die Länge des Arrays prüfen
+    if (exhibitions.length === 0) {
+      return res.status(404).json({ msg: "Not a single exhibition found." });
+    }
+
+    return res.status(200).json(exhibitions);
+  } catch (e) {
+    return res.status(500).json({ msg: "Server error." });
+  }
 }; // den brauchen wir für das select- oder suchfeld in artwork
 
 export const createExhibition = async (req: Request, res: Response) => {
