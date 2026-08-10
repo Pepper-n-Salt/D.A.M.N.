@@ -68,7 +68,7 @@ ExhibitionTranslation.init(
       {
         unique: true,
         name: "unique_slug_per_language",
-        fields: ["slug", "language_code"],
+        fields: ["language_code", "slug"],
       },
     ],
   }
