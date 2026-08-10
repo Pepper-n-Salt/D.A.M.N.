@@ -11,9 +11,9 @@ import {
 
 const router = express.Router();
 
-router.get("/", () => {}, showAllExhibitions);
+router.get("/", showAllExhibitions); // hinterher wieder middleware einfügen
 
-router.get("/:exhibitionId", () => {}, showOneExhibition);
+router.get("/:exhibitionId", showOneExhibition); // hier auch nach dem testen wieder middlewae einfügen
 
 router.post("/", () => {}, createExhibition);
 
