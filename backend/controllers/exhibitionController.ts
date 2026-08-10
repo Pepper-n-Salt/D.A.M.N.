@@ -12,7 +12,7 @@ export const showOneExhibition = async (
     // Exhibition über ID in DB suchen
     const exhibition = await Exhibition.findByPk(exhibitionId);
 
-    // Fehlermeldung, falls Exhibition nicht gefunden wurde
+    // Fehlermeldung, wenn Exhibition nicht gefunden wurde
     if (!exhibition) {
       return res.status(404).json({ msg: "Exhibition not found" });
     }
