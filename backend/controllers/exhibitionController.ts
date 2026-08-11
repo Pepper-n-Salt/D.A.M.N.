@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { Exhibition, ExhibitionTranslation } from "../models";
 import db from "../lib/db";
 
-// getestet: funktioniert
+// Einzelne, nicht gelöschte Exhibition abrufen
 export const showOneExhibition = async (
   req: Request<{ exhibitionId: string }>, // für TS: Parameter req mit einem generischen Request-Typ typisiert, dessen Type Argument ein Object Type Literal ist
   res: Response
@@ -19,7 +19,6 @@ export const showOneExhibition = async (
       },
     });
 
-    // Fehlermeldung, wenn Exhibition nicht gefunden wurde
     if (!exhibition) {
       return res.status(404).json({ msg: "Exhibition nicht gefunden." });
     }
@@ -33,7 +32,7 @@ export const showOneExhibition = async (
   }
 };
 
-// getestet: geht auch
+// Alle nicht gelöschten Exhibitions abrufen
 export const showAllExhibitions = async (req: Request, res: Response) => {
   try {
     const exhibitions = await Exhibition.findAll({
@@ -46,9 +45,9 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
 
     return res.status(500).json({ msg: "Server-Fehler" });
   }
-}; // den brauchen wir für das select- oder suchfeld in artwork
+};
 
-// getestet: klappt!
+// Neue Exhibition inklusive der ersten Übersetzung erstellen
 export const createExhibition = async (req: Request, res: Response) => {
   const t = await db.transaction();
 
@@ -106,12 +105,11 @@ export const createExhibition = async (req: Request, res: Response) => {
 
     return res.status(500).json({
       msg: "Server error.",
-      // error: e instanceof Error ? e.message : e,
     });
   }
 };
 
-// noch testen?
+// Exhibition und die dazugehörige Übersetzung aktualisieren
 export const updateExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
@@ -143,7 +141,6 @@ export const updateExhibition = async (
       transaction: t,
     });
 
-    // Fehlermeldung, wenn Exhibition nicht gefunden wurde
     if (!exhibition) {
       await t.rollback();
 
@@ -152,13 +149,12 @@ export const updateExhibition = async (
         .json({ msg: "Die Exhibition wurde nicht gefunden." });
     }
 
-    // die zur Exhibition gehörige Translation suchen
+    // languageCode ist Bestandteil des zusammengesetzten Primary Keys der Translation.
     const translation = await ExhibitionTranslation.findOne({
-      where: { exhibitionId, languageCode }, // languageCode unbedingt drin lassen, weil Bestandteil des PrimaryKeys
+      where: { exhibitionId, languageCode },
       transaction: t,
     });
 
-    // Rollback der Transaction und Fehler, falls Translation nicht gefunden
     if (!translation) {
       await t.rollback();
 
@@ -167,7 +163,6 @@ export const updateExhibition = async (
       });
     }
 
-    // diese Felder können nun upgedatet werden // ggfs. hier noch weitere Felder in Silver-Edition hinzufügen
     await exhibition.update(
       {
         coverImageId,
@@ -178,16 +173,13 @@ export const updateExhibition = async (
       { transaction: t }
     );
 
-    // die Daten in der ExhibitionTranslation aktualisieren
     await translation.update(
       { title, subtitle, location, description },
       { transaction: t }
     );
 
-    // wenn alles erfolgreich war, Transaction durchführen
     await t.commit();
 
-    // aktualisierte Datensätze zurückgeben
     return res.status(200).json({ exhibition, translation });
   } catch (e) {
     await t.rollback();
@@ -195,21 +187,19 @@ export const updateExhibition = async (
     console.error(e);
 
     return res.status(500).json({
-      msg: "Die Exhibition konnte nicht upgedatet werden.",
+      msg: "Die Exhibition konnte nicht aktualisiert werden.",
     });
   }
 };
 
-// getestet: klappt!
+// noch nicht gelöschte Exhibition archivieren
 export const archiveExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
 ) => {
   try {
-    // exhibition ID aus den Params holen
     const { exhibitionId } = req.params;
 
-    // die noch nicht gelöschte Exhibition in der DB suchen
     const exhibition = await Exhibition.findOne({
       where: {
         id: exhibitionId,
@@ -217,17 +207,14 @@ export const archiveExhibition = async (
       },
     });
 
-    // Fehler ausgeben, wenn keine Exhibition gefunden wurde
     if (!exhibition) {
       return res
         .status(404)
         .json({ msg: "Die Exhibition konnte nicht gefunden werden." });
     }
 
-    // Status isArchived zu archiviert aktualisieren
     await exhibition.update({ isArchived: true, lastEditedBy: req.user!.id });
 
-    // aktualisierten Datensatz zurückgeben
     return res.status(200).json(exhibition);
   } catch (e) {
     console.error(e);
@@ -238,16 +225,14 @@ export const archiveExhibition = async (
   }
 };
 
-// getestet: klappt!
+// Exhibition per Soft Delete als gelöscht markieren
 export const deleteExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
 ) => {
   try {
-    // wieder exhibition ID aus den Params holen
     const { exhibitionId } = req.params;
 
-    // die nicht gelöschte Exhibition in der DB suchen
     const exhibition = await Exhibition.findOne({
       where: {
         id: exhibitionId,
@@ -255,17 +240,14 @@ export const deleteExhibition = async (
       },
     });
 
-    // wieder Fehler ausgeben, wenn keine Exhibition gefunden wurde
     if (!exhibition) {
       return res
         .status(404)
         .json({ msg: "Die Exhibition konnte nicht gefunden werden." });
     }
 
-    // Status isDeleted zu true ändern
     await exhibition.update({ isDeleted: true, lastEditedBy: req.user!.id });
 
-    // aktualisierten Datensatz zurückgeben
     return res.status(200).json(exhibition);
   } catch (e) {
     console.error(e);
