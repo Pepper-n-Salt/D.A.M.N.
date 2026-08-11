@@ -4,7 +4,7 @@ import { ExhibitionTranslation } from "../models";
 
 // funktioniert
 export const showOneExhibition = async (
-  req: Request<{ exhibitionId: string }>,
+  req: Request<{ exhibitionId: string }>, // für TS: Parameter req mit einem generischen Request-Typ typisiert, dessen Type Argument ein Object Type Literal ist
   res: Response
 ) => {
   try {
@@ -44,27 +44,7 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
   }
 }; // den brauchen wir für das select- oder suchfeld in artwork
 
-// mit testdaten überprüft:
-// {
-//   "startDate": "2026-09-01",
-//   "endDate": "2026-10-15",
-//   "openingEvent": "Vernissage",
-//   "specialEvent": "Artist Talk am 20. September",
-//   "closingEvent": "Finissage",
-//   "primaryColor": "#1A1A1A",
-//   "secondaryColor": "#D4AF37",
-//   "backgroundColor": "#F5F2EA",
-//   "textColor": "#1A1A1A",
-//   "headlineFont": "Helvetica",
-//   "textFont": "Arial",
-//   "roundness": "medium",
-//   "languageCode": "de",
-//   "title": "Zwischen Licht und Raum",
-//   "subtitle": "Zeitgenössische Positionen",
-//   "location": "Leipzig",
-//   "description": "Eine Ausstellung mit zeitgenössischen Positionen zur Beziehung zwischen Licht, Raum und Wahrnehmung.",
-//   "slug": "zwischen-licht-und-raum"
-// }
+// mit testdaten überprüft, klappt!
 export const createExhibition = async (req: Request, res: Response) => {
   try {
     const {
@@ -134,8 +114,57 @@ export const createExhibition = async (req: Request, res: Response) => {
   }
 };
 
-export const updateExhibition = async (req: Request, res: Response) => {
+export const updateExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
   try {
+    // Exhibition ID wieder aus der URL holen
+    const { exhibitionId } = req.params;
+
+    // Exhibition über ID in DB suchen
+    const exhibition = await Exhibition.findByPk(exhibitionId);
+
+    // Fehlermeldung, wenn Exhibition nicht gefunden wurde
+    if (!exhibition) {
+      return res.status(404).json({ msg: "Exhibition not found." });
+    }
+
+    const {
+      coverImageId,
+      startDate,
+      endDate,
+      // openingEvent,
+      // specialEvent,
+      // closingEvent,
+      // primaryColor,
+      // secondaryColor,
+      // backgroundColor,
+      // textColor,
+      // headlineFont,
+      // textFont,
+      // roundness,
+      languageCode,
+      title,
+      subtitle,
+      location,
+      description,
+      // slug,
+    } = req.body;
+
+    // hier legen wir alle Felder fest, die upgedatet werden können // ggfs. noch weitere Felder hinzufügen
+    await exhibition.update({
+      coverImageId,
+      startDate,
+      endDate,
+      languageCode,
+      title,
+      subtitle,
+      location,
+      description,
+    });
+
+    return res.status(200).json(exhibition);
   } catch (e) {}
 };
 
