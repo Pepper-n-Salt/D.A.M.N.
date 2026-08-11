@@ -12,7 +12,7 @@ const run = async () => {
 
     // zuerst brauchen wir Media (Logo), Organisation und User, weil User von beiden (indirekt) abhängt
 
-    await Media.sync();
+    // await Media.sync();
     await Organisation.sync();
     await User.sync();
     console.log(
@@ -20,20 +20,20 @@ const run = async () => {
     );
 
     // findOrCreate gibt ein Array zurück
-    const [logo] = await Media.findOrCreate({
-      where: { fileUrl: "https://example.com/super-organisation-logo.png" },
-      defaults: {
-        id: crypto.randomUUID(),
-        fileName: "super-organisation-logo.png",
-        mimeType: "image/png",
-      },
-    });
+    // const [logo] = await Media.findOrCreate({
+    //   where: { fileUrl: "https://example.com/super-organisation-logo.png" },
+    //   defaults: {
+    //     id: crypto.randomUUID(),
+    //     fileName: "super-organisation-logo.png",
+    //     mimeType: "image/png",
+    //   },
+    // });
 
     const [organisation] = await Organisation.findOrCreate({
       where: { name: "Salt and Pepper" },
       defaults: {
         id: crypto.randomUUID(),
-        logoId: logo.id,
+        // logoId: logo.id,
       },
     });
 
@@ -74,6 +74,19 @@ const run = async () => {
 
       console.log(`Super-User ${userData.email} angelegt.`);
     }
+
+    // const allUsers = await User.findAll({
+    //   attributes: [
+    //     "id",
+    //     "firstName",
+    //     "lastName",
+    //     "email",
+    //     "role",
+    //     "organisationId",
+    //   ],
+    // });
+
+    // console.table(allUsers);
 
     console.log("Seed fertig.");
     process.exit(0);
