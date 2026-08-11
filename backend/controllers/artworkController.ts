@@ -102,5 +102,26 @@ export const updateArtwork = async (req: Request, res: Response) => {
 
 export const deleteArtwork = async (req: Request, res: Response) => {
   try {
-  } catch (e) {}
+    const { artworkId } = req.params;
+
+    const artwork = await Artwork.findOne({
+      where: { id: artworkId, isDeleted: false },
+    });
+
+    if (!artwork) {
+      return res.status(404).json({
+        msg: "Das Artwork konnte nicht gefunden werden.",
+      });
+    }
+
+    await artwork.update({ isDeleted: true, lastEditedBy: req.user!.id });
+
+    return res.status(200).json(artwork);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Das Artwork konnte nicht als gelöscht markiert werden.",
+    });
+  }
 };
