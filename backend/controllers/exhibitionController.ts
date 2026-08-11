@@ -3,7 +3,7 @@ import { Exhibition } from "../models";
 import { ExhibitionTranslation } from "../models";
 import db from "../lib/db";
 
-// funktioniert
+// getestet: funktioniert
 export const showOneExhibition = async (
   req: Request<{ exhibitionId: string }>, // für TS: Parameter req mit einem generischen Request-Typ typisiert, dessen Type Argument ein Object Type Literal ist
   res: Response
@@ -27,7 +27,7 @@ export const showOneExhibition = async (
   }
 };
 
-// geht auch
+// getestet: geht auch
 export const showAllExhibitions = async (req: Request, res: Response) => {
   try {
     const exhibitions = await Exhibition.findAll({
@@ -45,7 +45,7 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
   }
 }; // den brauchen wir für das select- oder suchfeld in artwork
 
-// mit testdaten überprüft, klappt!
+// getestet: klappt!
 export const createExhibition = async (req: Request, res: Response) => {
   const t = await db.transaction();
 
@@ -61,14 +61,14 @@ export const createExhibition = async (req: Request, res: Response) => {
       description,
     } = req.body;
 
-    // aus Exhibition.create() und aus ExhibitionTranslation.create() in einem späteren Schritt eine Transaction machen, also nur wenn beides geklappt hat, dann wird gespeichert! // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
+    // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
     const exhibition = await Exhibition.create(
       {
         id: crypto.randomUUID(),
         coverImageId,
         startDate,
         endDate,
-        createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imke eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
+        createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
         lastEditedBy: null, // Info kommt vom BE
         isArchived: false, // Info kommt vom BE
         isDeleted: false, // Info kommt vom BE
@@ -84,9 +84,8 @@ export const createExhibition = async (req: Request, res: Response) => {
         subtitle,
         location,
         description,
-        // slug,
-        aiGenerated: false, // kommt irgendwann vom BE
-        isScreen: false, // hier genauso: Info kommt irgendwann vom BE
+        aiGenerated: false, // Info kommt vom BE
+        isScreen: false, // Info kommt vom BE
       },
       { transaction: t }
     );
@@ -98,35 +97,29 @@ export const createExhibition = async (req: Request, res: Response) => {
       translation,
     });
   } catch (e) {
-    console.error("CREATE EXHIBITION ERROR:", e);
-
     await t.rollback();
+
+    console.error(e);
 
     return res.status(500).json({
       msg: "Server error.",
-      error: e instanceof Error ? e.message : e,
+      // error: e instanceof Error ? e.message : e,
     });
   }
 };
 
-// update gehört zu Exhibition und ExhibitionTranslation, daher nochmal überarbeiten
+// noch testen!
 export const updateExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
 ) => {
+  const t = await db.transaction();
+
   try {
     // Exhibition ID wieder aus der URL holen
     const { exhibitionId } = req.params;
 
-    // Exhibition über ID in DB suchen
-    const exhibition = await Exhibition.findByPk(exhibitionId);
-
-    // Fehlermeldung, wenn Exhibition nicht gefunden wurde
-    if (!exhibition) {
-      return res.status(404).json({ msg: "Exhibition not found." });
-    }
-
-    // Formularfelder aus req.body holen // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
+    // Formularfelder aus dem FE holen // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
     const {
       coverImageId,
       startDate,
@@ -138,27 +131,66 @@ export const updateExhibition = async (
       description,
     } = req.body;
 
-    // hier legen wir alle Felder fest, die upgedatet werden können // ggfs. hier genauso noch weitere Felder in Silver-Edition hinzufügen
-    await exhibition.update({
-      coverImageId,
-      startDate,
-      endDate,
-      languageCode,
-      title,
-      subtitle,
-      location,
-      description,
+    // Exhibition über ID in DB suchen
+    const exhibition = await Exhibition.findByPk(exhibitionId, {
+      transaction: t,
     });
+
+    // Fehlermeldung, wenn Exhibition nicht gefunden wurde
+    if (!exhibition) {
+      await t.rollback();
+
+      return res.status(404).json({ msg: "Exhibition not found." });
+    }
+
+    // diese Felder können nun upgedatet werden // ggfs. hier noch weitere Felder in Silver-Edition hinzufügen
+    await exhibition.update(
+      {
+        coverImageId,
+        startDate,
+        endDate,
+      },
+      { transaction: t }
+    );
+
+    // die zur Exhibition gehörige Translation suchen
+    const translation = await ExhibitionTranslation.findOne({
+      where: { exhibitionId, languageCode },
+      transaction: t,
+    });
+
+    // Rollback der Transaction und Fehler, falls Translation nicht gefunden
+    if (!translation) {
+      await t.rollback();
+
+      return res.status(404).json({
+        msg: "Exhibition translation not found.",
+      });
+    }
+
+    // die Daten in der ExhibitionTranslation aktualisieren
+    await translation?.update(
+      { title, subtitle, location, description },
+      { transaction: t }
+    );
+
+    // wenn alles erfolgreich war, Transaction durchführen
+    await t.commit();
 
     // aktualisierten Datensatz zurückgeben
     return res.status(200).json(exhibition);
   } catch (e) {
+    await t.rollback();
+
+    console.error(e);
+
     return res.status(500).json({
       msg: "Failed to update exhibition.",
     });
   }
 };
 
+// getestet: klappt!
 export const archiveExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
@@ -187,6 +219,7 @@ export const archiveExhibition = async (
   }
 };
 
+// getestet: klappt!
 export const deleteExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response

@@ -40,7 +40,6 @@ Exhibition.init(
       allowNull: false,
       field: "end_date",
     },
-
     createdBy: {
       type: DataTypes.UUID,
       allowNull: false,
