@@ -3,6 +3,7 @@ import { Exhibition, ExhibitionTranslation } from "../models";
 import db from "../lib/db";
 
 // Einzelne, nicht gelöschte Exhibition abrufen
+// getestet: klappt!
 export const showOneExhibition = async (
   req: Request<{ exhibitionId: string }>, // für TS: Parameter req mit einem generischen Request-Typ typisiert, dessen Type Argument ein Object Type Literal ist
   res: Response
@@ -33,6 +34,7 @@ export const showOneExhibition = async (
 };
 
 // Alle nicht gelöschten Exhibitions abrufen
+// getestet: klappt!
 export const showAllExhibitions = async (req: Request, res: Response) => {
   try {
     const exhibitions = await Exhibition.findAll({
@@ -48,6 +50,7 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
 };
 
 // Neue Exhibition inklusive der ersten Übersetzung erstellen
+// getestet: klappt!
 export const createExhibition = async (req: Request, res: Response) => {
   const t = await db.transaction();
 
@@ -110,6 +113,7 @@ export const createExhibition = async (req: Request, res: Response) => {
 };
 
 // Exhibition und die dazugehörige Übersetzung aktualisieren
+// getestet: klappt!
 export const updateExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
@@ -193,6 +197,7 @@ export const updateExhibition = async (
 };
 
 // noch nicht gelöschte Exhibition archivieren
+// getestet: klappt!
 export const archiveExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
@@ -226,6 +231,7 @@ export const archiveExhibition = async (
 };
 
 // Exhibition per Soft Delete als gelöscht markieren
+// getestet: klappt!
 export const deleteExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
