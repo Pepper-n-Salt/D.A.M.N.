@@ -9,7 +9,12 @@
     "dev": "bun --watch server.ts",
     "start": "bun run server.ts",
     "db:reset": "bun run scripts/resetDatabase.ts",
-    "db:seed": "bun run scripts/seedSuperUsers.ts",
+    "db:seed:organisation": "bun run scripts/seedOrganisation.ts",
+    "db:seed:users": "bun run scripts/seedSuperUsers.ts",
+    "db:seed:media": "bun run scripts/seedMedia.ts",
+    "db:seed:exhibition": "bun run scripts/seedExhibition.ts",
+    "db:seed:translation": "bun run scripts/seedExhibitionTranslation.ts",
+    "db:seed": "bun run db:seed:organisation && bun run db:seed:users && bun run db:seed:media && bun run db:seed:exhibition && bun run db:seed:translation",
     "db:setup": "bun run db:reset && bun run db:seed"
   },
   "devDependencies": {

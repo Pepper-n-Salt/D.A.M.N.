@@ -17,13 +17,13 @@ export const showOneExhibition = async (
 
     // Fehlermeldung, wenn Exhibition nicht gefunden wurde
     if (!exhibition) {
-      return res.status(404).json({ msg: "Exhibition not found." });
+      return res.status(404).json({ msg: "Exhibition nicht gefunden." });
     }
 
     // Exhibition zurückgeben, wenn efolgreich
     return res.status(200).json(exhibition);
   } catch (e) {
-    return res.status(500).json({ msg: "Server error." });
+    return res.status(500).json({ msg: "Server-Fehler" });
   }
 };
 
@@ -36,12 +36,14 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
 
     // da findAll() ein Array zurückgibt, über die Länge des Arrays prüfen
     if (exhibitions.length === 0) {
-      return res.status(404).json({ msg: "Not a single exhibition found." });
+      return res
+        .status(404)
+        .json({ msg: "Die einzelne Ausstellung wurde nicht gefunden." });
     }
 
     return res.status(200).json(exhibitions);
   } catch (e) {
-    return res.status(500).json({ msg: "Server error." });
+    return res.status(500).json({ msg: "Server-Fehler" });
   }
 }; // den brauchen wir für das select- oder suchfeld in artwork
 
@@ -140,7 +142,9 @@ export const updateExhibition = async (
     if (!exhibition) {
       await t.rollback();
 
-      return res.status(404).json({ msg: "Exhibition not found." });
+      return res
+        .status(404)
+        .json({ msg: "Die Exhibition wurde nicht gefunden." });
     }
 
     // diese Felder können nun upgedatet werden // ggfs. hier noch weitere Felder in Silver-Edition hinzufügen
@@ -164,7 +168,7 @@ export const updateExhibition = async (
       await t.rollback();
 
       return res.status(404).json({
-        msg: "Exhibition translation not found.",
+        msg: "Die ExhibitionTranslation wurde nicht gefunden.",
       });
     }
 
@@ -185,7 +189,7 @@ export const updateExhibition = async (
     console.error(e);
 
     return res.status(500).json({
-      msg: "Failed to update exhibition.",
+      msg: "Die Exhibition konnte nicht upgedatet werden.",
     });
   }
 };
@@ -204,7 +208,9 @@ export const archiveExhibition = async (
 
     // Fehler ausgeben, wenn keine Exhibition gefunden wurde
     if (!exhibition) {
-      return res.status(404).json({ msg: "Exhibition not found." });
+      return res
+        .status(404)
+        .json({ msg: "Die Exhibition konnte nicht gefunden werden." });
     }
 
     // Status isArchived zu archiviert aktualisieren
@@ -214,7 +220,7 @@ export const archiveExhibition = async (
     return res.status(200).json(exhibition);
   } catch (e) {
     return res.status(500).json({
-      msg: "Failed to archive exhibition.",
+      msg: "Die Exhibition konnte nicht archiviert werden.",
     });
   }
 };
@@ -233,7 +239,9 @@ export const deleteExhibition = async (
 
     // wieder Fehler ausgeben, wenn keine Exhibition gefunden wurde
     if (!exhibition) {
-      return res.status(404).json({ msg: "Exhibition not found." });
+      return res
+        .status(404)
+        .json({ msg: "Die Exhibition konnte nicht gefunden werden." });
     }
 
     // die jeweilige Exhibition löschen
@@ -246,7 +254,7 @@ export const deleteExhibition = async (
     return res.status(200).json(exhibition);
   } catch (e) {
     return res.status(500).json({
-      msg: "Failed to delete exhibition.",
+      msg: "Die Exhibition konnte nicht mit dem Status gelöscht versehen werden.",
     });
   }
 };
