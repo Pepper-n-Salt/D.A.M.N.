@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
-import { Exhibition } from "../models";
-import { ExhibitionTranslation } from "../models";
+import { Exhibition, ExhibitionTranslation } from "../models";
 import db from "../lib/db";
 
 // getestet: funktioniert
@@ -135,8 +134,12 @@ export const updateExhibition = async (
       description,
     } = req.body;
 
-    // Exhibition über ID in DB suchen
-    const exhibition = await Exhibition.findByPk(exhibitionId, {
+    // einzelne, nicht gelöschte Exhibition in DB suchen
+    const exhibition = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: false,
+      },
       transaction: t,
     });
 
@@ -149,20 +152,9 @@ export const updateExhibition = async (
         .json({ msg: "Die Exhibition wurde nicht gefunden." });
     }
 
-    // diese Felder können nun upgedatet werden // ggfs. hier noch weitere Felder in Silver-Edition hinzufügen
-    await exhibition.update(
-      {
-        coverImageId,
-        startDate,
-        endDate,
-        lastEditedBy: req.user!.id,
-      },
-      { transaction: t }
-    );
-
     // die zur Exhibition gehörige Translation suchen
     const translation = await ExhibitionTranslation.findOne({
-      where: { exhibitionId, languageCode },
+      where: { exhibitionId, languageCode }, // languageCode unbedingt drin lassen, weil Bestandteil des PrimaryKeys
       transaction: t,
     });
 
@@ -174,6 +166,17 @@ export const updateExhibition = async (
         msg: "Die ExhibitionTranslation wurde nicht gefunden.",
       });
     }
+
+    // diese Felder können nun upgedatet werden // ggfs. hier noch weitere Felder in Silver-Edition hinzufügen
+    await exhibition.update(
+      {
+        coverImageId,
+        startDate,
+        endDate,
+        lastEditedBy: req.user!.id,
+      },
+      { transaction: t }
+    );
 
     // die Daten in der ExhibitionTranslation aktualisieren
     await translation.update(
@@ -206,8 +209,13 @@ export const archiveExhibition = async (
     // exhibition ID aus den Params holen
     const { exhibitionId } = req.params;
 
-    // mit ID aus den Params die Exhibition in der DB suchen
-    const exhibition = await Exhibition.findByPk(exhibitionId);
+    // die noch nicht gelöschte Exhibition in der DB suchen
+    const exhibition = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: false,
+      },
+    });
 
     // Fehler ausgeben, wenn keine Exhibition gefunden wurde
     if (!exhibition) {
@@ -239,8 +247,13 @@ export const deleteExhibition = async (
     // wieder exhibition ID aus den Params holen
     const { exhibitionId } = req.params;
 
-    // mit ID aus den Params die Exhibition in der DB suchen
-    const exhibition = await Exhibition.findByPk(exhibitionId);
+    // die nicht gelöschte Exhibition in der DB suchen
+    const exhibition = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: false,
+      },
+    });
 
     // wieder Fehler ausgeben, wenn keine Exhibition gefunden wurde
     if (!exhibition) {
