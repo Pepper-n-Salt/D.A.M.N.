@@ -33,7 +33,7 @@ const run = async () => {
       where: { name: "Salt and Pepper" },
       defaults: {
         id: crypto.randomUUID(),
-        // logoId: logo.id,
+        logoId: null,
       },
     });
 
