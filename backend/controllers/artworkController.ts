@@ -36,9 +36,32 @@ export const showOneArtwork = async (
   }
 };
 
+// Neues Artwork inklusive der ersten Übersetzung anlegen
 export const createArtwork = async (req: Request, res: Response) => {
   try {
-  } catch (e) {}
+    // im FE ist noch "country" mit drin und auch "artist" als select. "country" nicht mit in models drin. Nochmal abgleichen!
+    const {
+      year,
+      dimensions,
+      imageId,
+      languageCode,
+      title,
+      subtitle,
+      origin,
+      material,
+      description,
+    } = req.body;
+
+    const artwork = await Artwork.create({});
+
+    const artworkTranslation = await ArtworkTranslation.create({});
+
+    return res.status(201).json({ artwork, artworkTranslation });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({ msg: "Server-Fehler." });
+  }
 };
 
 export const updateArtwork = async (req: Request, res: Response) => {

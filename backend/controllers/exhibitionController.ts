@@ -107,7 +107,7 @@ export const createExhibition = async (req: Request, res: Response) => {
     console.error(e);
 
     return res.status(500).json({
-      msg: "Server error.",
+      msg: "Server-Fehler.",
     });
   }
 };
