@@ -9,7 +9,7 @@ class ArtworkTranslation extends Model {
   declare origin: string | null;
   declare material: string | null;
   declare description: string | null;
-  declare slug: string;
+  // declare slug: string;
   declare aiGenerated: boolean;
   declare isScreen: boolean;
 }
@@ -46,11 +46,10 @@ ArtworkTranslation.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    slug: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      unique: false,
-    },
+    // slug: {
+    //   type: DataTypes.STRING(100),
+    //   allowNull: false,
+    // },
     aiGenerated: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -69,13 +68,6 @@ ArtworkTranslation.init(
     tableName: "artwork_translation",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        unique: true,
-        name: "unique_artwork_translation_slug_per_language",
-        fields: ["language_code", "slug"],
-      },
-    ],
   }
 );
 
