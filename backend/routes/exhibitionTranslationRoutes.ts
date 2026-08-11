@@ -1,6 +1,9 @@
 import express from "express";
 import { checkAuth } from "../middleware/checkAuth.js";
-import {} from "../controllers/exhibitionTranslationController.js";
+import {
+  createExhibitionTranslation,
+  updateExhibitionTranslation,
+} from "../controllers/exhibitionTranslationController.js";
 
 const router = express.Router();
 

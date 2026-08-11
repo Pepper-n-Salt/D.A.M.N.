@@ -6,7 +6,10 @@ export const createExhibitionTranslation = async (
   } catch (e) {}
 };
 
-export const updateExhibitionTranslation = async () => {
+export const updateExhibitionTranslation = async (
+  req: Request,
+  res: Response
+) => {
   try {
   } catch (e) {}
 };

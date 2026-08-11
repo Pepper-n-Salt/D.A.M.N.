@@ -5,13 +5,15 @@ import cookieParser from "cookie-parser";
 import db from "./lib/db.js";
 import "./models/associations.js";
 
-// hier später Routes importieren
 import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import historyRouter from "./routes/historyRoutes.js";
 import exhibitionRouter from "./routes/exhibitionRoutes.js";
+import exhibitionTranslationRouter from "./routes/exhibitionTranslationRoutes.js";
 import artworkRouter from "./routes/artworkRoutes.js";
+import artworkTranslationRouter from "./routes/ArtworkTranslation.js";
 import artistRouter from "./routes/artistRoutes.js";
+import artistTranslationRouter from "./routes/ArtistTranslation.js";
 import metArtworkRouter from "./routes/metArtworkRoutes.js";
 import aiRouter from "./routes/aiRoutes.js";
 import contactRouter from "./routes/contactRoutes.js";
@@ -38,8 +40,11 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/history", historyRouter);
 app.use("/api/exhibition", exhibitionRouter);
+app.use("/api/exhibitiontranslation", exhibitionTranslationRouter);
 app.use("/api/artwork", artworkRouter);
+app.use("/api/artworktranslation", artworkTranslationRouter);
 app.use("/api/artist", artistRouter);
+app.use("/api/artisttranslation", artistTranslationRouter);
 app.use("/api/metartwork", metArtworkRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/contact", contactRouter);
