@@ -5,12 +5,28 @@
 
   "navigation": {
     "home": "Startseite",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "artists": "Künstler:innen",
     "artworks": "Kunstwerke",
     "exhibitions": "Ausstellungen",
     "screens": "Bildschirme",
     "settings": "Einstellungen",
     "login": "Anmelden",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "user": "Benutzer"
+  },
+
+  "header": {
+    "welcome": "Hallo {{name}}!",
+    "brandSubtitle": "Digital Artwork Management Network",
+    "goToLandingpage": "Zur Landingpage gehen"
+  },
+
+  "footer": {
+    "copyright": "© {{appName}} {{year}}",
+    "imprint": "Impressum",
+    "privacy": "Datenschutz"
   },
 
   "buttons": {

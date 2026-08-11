@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 const mockExhibition = {
   id: "van-gogh-light-and-color",
   title: "Van Gogh",
@@ -22,6 +24,8 @@ type ExhibitionScreenProps = {
 };
 
 function ExhibitionScreen({ exhibition }: ExhibitionScreenProps) {
+  const { t } = useTranslation("display");
+
   return (
     <main className="relative min-h-screen overflow-hidden">
       <img
@@ -35,19 +39,19 @@ function ExhibitionScreen({ exhibition }: ExhibitionScreenProps) {
       <section className="relative z-10 flex min-h-screen flex-col justify-end px-12 py-16 text-white">
         <div className="max-w-4xl space-y-6">
           <p className="text-sm uppercase tracking-[0.35em] text-white/80">
-            {exhibition.period}
+            {t("exhibition.period")}
           </p>
 
           <h1 className="text-6xl font-light leading-tight md:text-8xl">
-            {exhibition.title}
+            {t("exhibition.title")}
           </h1>
 
           <h2 className="text-3xl font-light text-white/80 md:text-5xl">
-            {exhibition.subtitle}
+            {t("exhibition.subtitle")}
           </h2>
 
           <p className="max-w-3xl text-lg leading-relaxed text-white/90 md:text-xl">
-            {exhibition.description}
+            {t("exhibition.description")}
           </p>
         </div>
       </section>

@@ -34,10 +34,10 @@ export default function LoginPage() {
         return;
       }
 
-      setError(data?.msg || "Login fehlgeschlagen");
+      setError(data?.msg || t("form.loginFailed"));
     } catch (err) {
       console.error(err);
-      setError("Netzwerkfehler");
+      setError(t("form.networkError"));
     }
   };
 

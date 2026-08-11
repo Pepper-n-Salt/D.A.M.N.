@@ -231,16 +231,14 @@ export default function ContactPage() {
               disabled:opacity-50
             "
           >
-            {status === "sending" ? "Sending..." : t("form.submit")}
+            {status === "sending" ? t("form.sending") : t("form.submit")}
           </button>
 
           {status === "success" && (
-            <p className="text-sm">Message has been sent.</p>
+            <p className="text-sm">{t("form.success")}</p>
           )}
 
-          {status === "error" && (
-            <p className="text-sm">Message could not be sent.</p>
-          )}
+          {status === "error" && <p className="text-sm">{t("form.error")}</p>}
         </form>
       </div>
     </section>

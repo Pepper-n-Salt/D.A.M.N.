@@ -6,6 +6,8 @@
   "form": {
     "email": "Email",
     "password": "Password",
-    "submit": "Login"
+    "submit": "Login",
+    "loginFailed": "Login failed",
+    "networkError": "Network error"
   }
 }

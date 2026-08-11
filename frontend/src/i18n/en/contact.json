@@ -12,6 +12,9 @@
     "name": "Name",
     "email": "E-mail",
     "message": "Message",
-    "submit": "Send"
+    "submit": "Send",
+    "sending": "Sending...",
+    "success": "Message has been sent.",
+    "error": "Message could not be sent."
   }
 }

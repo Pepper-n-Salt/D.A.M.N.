@@ -7,14 +7,17 @@ import deContact from "./de/contact.json";
 import deLogin from "./de/login.json";
 import deUser from "./de/user.json";
 import deArtworks from "./de/artworks.json";
+import deArtists from "./de/artists.json";
 import deExhibitions from "./de/exhibitions.json";
 import deScreens from "./de/screens.json";
 import deImprint from "./de/imprint.json";
 import dePrivacy from "./de/privacy.json";
 import deNewUser from "./de/newUser.json";
 import deNewArtwork from "./de/newArtwork.json";
+import deNewArtist from "./de/newArtist.json";
 import deNewExhibition from "./de/newExhibition.json";
 import deNewScreen from "./de/newScreen.json";
+import deDisplay from "./de/display.json";
 
 import enCommon from "./en/common.json";
 import enHome from "./en/home.json";
@@ -23,14 +26,17 @@ import enContact from "./en/contact.json";
 import enLogin from "./en/login.json";
 import enUser from "./en/user.json";
 import enArtworks from "./en/artworks.json";
+import enArtists from "./en/artists.json";
 import enExhibitions from "./en/exhibitions.json";
 import enScreens from "./en/screens.json";
-import enImprint from "./de/imprint.json";
+import enImprint from "./en/imprint.json";
 import enPrivacy from "./en/privacy.json";
 import enNewUser from "./en/newUser.json";
 import enNewArtwork from "./en/newArtwork.json";
+import enNewArtist from "./en/newArtist.json";
 import enNewExhibition from "./en/newExhibition.json";
 import enNewScreen from "./en/newScreen.json";
+import enDisplay from "./en/display.json";
 
 export const resources = {
   de: {
@@ -41,14 +47,17 @@ export const resources = {
     login: deLogin,
     user: deUser,
     artworks: deArtworks,
+    artists: deArtists,
     exhibitions: deExhibitions,
     screens: deScreens,
     imprint: deImprint,
     privacy: dePrivacy,
     newUser: deNewUser,
     newArtwork: deNewArtwork,
+    newArtist: deNewArtist,
     newExhibition: deNewExhibition,
     newScreen: deNewScreen,
+    display: deDisplay,
   },
   en: {
     common: enCommon,
@@ -58,14 +67,17 @@ export const resources = {
     login: enLogin,
     user: enUser,
     artworks: enArtworks,
+    artists: enArtists,
     exhibitions: enExhibitions,
     screens: enScreens,
     imprint: enImprint,
     privacy: enPrivacy,
     newUser: enNewUser,
     newArtwork: enNewArtwork,
+    newArtist: enNewArtist,
     newExhibition: enNewExhibition,
     newScreen: enNewScreen,
+    display: enDisplay,
   },
 } as const;
 
