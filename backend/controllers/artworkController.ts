@@ -38,6 +38,8 @@ export const showOneArtwork = async (
 
 // Neues Artwork inklusive der ersten Übersetzung anlegen
 export const createArtwork = async (req: Request, res: Response) => {
+  const t = await db.transaction();
+
   try {
     // im FE ist noch "country" mit drin und auch "artist" als select. "country" nicht mit in models drin. Nochmal abgleichen!
     const {
@@ -52,12 +54,41 @@ export const createArtwork = async (req: Request, res: Response) => {
       description,
     } = req.body;
 
-    const artwork = await Artwork.create({});
+    const artwork = await Artwork.create(
+      {
+        id: crypto.randomUUID(),
+        year,
+        dimensions,
+        imageId,
+        createdBy: req.user!.id,
+        lastEditedBy: req.user!.id,
+        isDeleted: false,
+      },
+      { transaction: t }
+    );
 
-    const artworkTranslation = await ArtworkTranslation.create({});
+    // noch füllen
+    const artworkTranslation = await ArtworkTranslation.create(
+      {
+        artworkId: artwork.id,
+        languageCode,
+        title,
+        subtitle,
+        origin,
+        material,
+        description,
+        aiGenerated: false, // oder sollte hier true rein?
+        isScreen: false,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
 
     return res.status(201).json({ artwork, artworkTranslation });
   } catch (e) {
+    await t.rollback();
+
     console.error(e);
 
     return res.status(500).json({ msg: "Server-Fehler." });

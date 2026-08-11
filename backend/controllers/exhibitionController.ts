@@ -83,7 +83,7 @@ export const createExhibition = async (req: Request, res: Response) => {
 
     const translation = await ExhibitionTranslation.create(
       {
-        exhibitionId: exhibition.id,
+        exhibitionId: exhibition.id, // Info kommt vom BE
         languageCode,
         title,
         subtitle,
