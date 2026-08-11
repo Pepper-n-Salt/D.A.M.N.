@@ -130,7 +130,7 @@ export const updateExhibition = async (
       return res.status(404).json({ msg: "Exhibition not found." });
     }
 
-    // Formularfelder aus req.body holen
+    // Formularfelder aus req.body holen // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
     const {
       coverImageId,
       startDate,
@@ -142,7 +142,7 @@ export const updateExhibition = async (
       description,
     } = req.body;
 
-    // hier legen wir alle Felder fest, die upgedatet werden können // ggfs. noch weitere Felder in Silver-Edition hinzufügen
+    // hier legen wir alle Felder fest, die upgedatet werden können // ggfs. hier genauso noch weitere Felder in Silver-Edition hinzufügen
     await exhibition.update({
       coverImageId,
       startDate,
@@ -156,7 +156,11 @@ export const updateExhibition = async (
 
     // aktualisierten Datensatz zurückgeben
     return res.status(200).json(exhibition);
-  } catch (e) {}
+  } catch (e) {
+    return res.status(500).json({
+      msg: "Failed to update exhibition.",
+    });
+  }
 };
 
 export const archiveExhibition = async (
@@ -167,22 +171,53 @@ export const archiveExhibition = async (
     // exhibition ID aus den Params holen
     const { exhibitionId } = req.params;
 
-    // damit die Exhibition in der DB suchen
+    // mit ID aus den Params die Exhibition in der DB suchen
     const exhibition = await Exhibition.findByPk(exhibitionId);
 
+    // Fehler ausgeben, wenn keine Exhibition gefunden wurde
     if (!exhibition) {
       return res.status(404).json({ msg: "Exhibition not found." });
     }
 
-    // isArchived updaten
+    // Status isArchived zu archiviert aktualisieren
     await exhibition.update({ isArchived: true });
 
     // aktualisierten Datensatz zurückgeben
     return res.status(200).json(exhibition);
-  } catch (e) {}
+  } catch (e) {
+    return res.status(500).json({
+      msg: "Failed to archive exhibition.",
+    });
+  }
 };
 
-export const deleteExhibition = async (req: Request, res: Response) => {
+export const deleteExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
   try {
-  } catch (e) {}
+    // wieder exhibition ID aus den Params holen
+    const { exhibitionId } = req.params;
+
+    // mit ID aus den Params die Exhibition in der DB suchen
+    const exhibition = await Exhibition.findByPk(exhibitionId);
+
+    // wieder Fehler ausgeben, wenn keine Exhibition gefunden wurde
+    if (!exhibition) {
+      return res.status(404).json({ msg: "Exhibition not found." });
+    }
+
+    // die jeweilige Exhibition löschen
+    // await exhibition.destroy(); // doch nicht, das wäre ein Hard Delete, erledigen wir aber irgendwann mit CronJob
+
+    // Status isDeleted zu true ändern
+    await exhibition.update({ isDeleted: true });
+
+    // aktualisierten Datensatz zurückgeben
+    return res.status(200).json(exhibition);
+  } catch (e) {
+    return res.status(500).json({
+      msg: "Failed to delete exhibition.",
+    });
+  }
 };

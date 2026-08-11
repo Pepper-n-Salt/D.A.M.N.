@@ -22,6 +22,6 @@ router.patch("/:exhibitionId", () => {}, updateExhibition);
 
 router.patch("/:exhibitionId/archive", () => {}, archiveExhibition);
 
-router.delete("/:exhibitionId", () => {}, deleteExhibition);
+router.patch("/:exhibitionId", () => {}, deleteExhibition); // patch, weil Soft Delete, denn mit delete würden wir den Datensatz komplett löschen, hier ändern wir aber nur den "Status" von isDeleted zu true
 
 export default router;
