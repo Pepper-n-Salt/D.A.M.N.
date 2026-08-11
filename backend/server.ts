@@ -48,9 +48,6 @@ async function startServer() {
   await db.authenticate(); // prüft die Verbindung von Sequelize zur DB
   console.log("Database connection has been established successfully.");
 
-  await db.sync({ alter: true }); // hier hinterher alter reinsetzen // würde Sequelize-Models mit der DB vergleichen und Tabellen anpassen
-  console.log("Database synchronized successfully.");
-
   app.listen(PORT, () => {
     console.log(`Server hört auf Port ${PORT}.`);
   });

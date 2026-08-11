@@ -6,8 +6,11 @@
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "dev": "bun --watch server.js",
-    "start": "bun server.js"
+    "dev": "bun --watch server.ts",
+    "start": "bun run server.ts",
+    "db:reset": "bun run scripts/resetDatabase.ts",
+    "db:seed": "bun run scripts/seedSuperUsers.ts",
+    "db:setup": "bun run db:reset && bun run db:seed"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

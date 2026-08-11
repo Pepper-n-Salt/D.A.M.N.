@@ -3,37 +3,16 @@ import bcrypt from "bcrypt";
 import db from "../lib/db.js";
 import User from "../models/User.js";
 import Organisation from "../models/Organisation.js";
-import Media from "../models/Media.js";
 
 const run = async () => {
   try {
     await db.authenticate();
     console.log("DB verbunden.");
 
-    // zuerst brauchen wir Media (Logo), Organisation und User, weil User von beiden (indirekt) abhängt
-
-    // await Media.sync();
-    await Organisation.sync();
-    await User.sync();
-    console.log(
-      "Media-, Organisation- und User-Tabellen kontrolliert / erstellt."
-    );
-
-    // findOrCreate gibt ein Array zurück
-    // const [logo] = await Media.findOrCreate({
-    //   where: { fileUrl: "https://example.com/super-organisation-logo.png" },
-    //   defaults: {
-    //     id: crypto.randomUUID(),
-    //     fileName: "super-organisation-logo.png",
-    //     mimeType: "image/png",
-    //   },
-    // });
-
     const [organisation] = await Organisation.findOrCreate({
       where: { name: "Salt and Pepper" },
       defaults: {
         id: crypto.randomUUID(),
-        // logoId: logo.id,
       },
     });
 
@@ -89,11 +68,12 @@ const run = async () => {
     // console.table(allUsers);
 
     console.log("Seed fertig.");
-    process.exit(0);
   } catch (error) {
     console.error("Seed-Fehler", error);
-    process.exit(1);
+    process.exitCode = 1;
+  } finally {
+    await db.close();
   }
 };
 
-run();
+await run();
