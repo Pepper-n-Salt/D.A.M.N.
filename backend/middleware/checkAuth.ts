@@ -8,14 +8,6 @@ if (!JWT_SECRET) {
   throw new Error("Das JWT_SECRET fehlt!");
 }
 
-export interface AuthenticatedRequest extends Request {
-  user?: {
-    userId: string;
-    organisationId: string;
-    role: "super" | "admin" | "user";
-  };
-}
-
 export const checkAuth = async (
   req: Request,
   res: Response,
@@ -37,8 +29,8 @@ export const checkAuth = async (
       return res.status(401).json({ msg: "Ungültiger Token." });
     }
 
-    (req as AuthenticatedRequest).user = {
-      userId: user.id,
+    req.user = {
+      id: user.id,
       organisationId: user.organisationId,
       role: user.role,
     };

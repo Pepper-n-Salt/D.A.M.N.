@@ -11,7 +11,6 @@ class ExhibitionTranslation extends Model {
   declare openingEvent: string | null;
   declare specialEvent: string | null;
   declare closingEvent: string | null;
-  // declare slug: string;
   declare aiGenerated: boolean;
   declare isScreen: boolean;
 }
