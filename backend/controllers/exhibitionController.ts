@@ -51,44 +51,23 @@ export const createExhibition = async (req: Request, res: Response) => {
       coverImageId,
       startDate,
       endDate,
-      // openingEvent,
-      // specialEvent,
-      // closingEvent,
-      // primaryColor,
-      // secondaryColor,
-      // backgroundColor,
-      // textColor,
-      // headlineFont,
-      // textFont,
-      // roundness,
       languageCode,
       title,
       subtitle,
       location,
       description,
-      // slug,
     } = req.body;
 
-    // aus Exhibition.create() und aus ExhibitionTranslation.create() in einem späteren Schritt eine Transaction machen, also nur wenn beides geklappt hat, dann wird gespeichert!
+    // aus Exhibition.create() und aus ExhibitionTranslation.create() in einem späteren Schritt eine Transaction machen, also nur wenn beides geklappt hat, dann wird gespeichert! // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
     const exhibition = await Exhibition.create({
       id: crypto.randomUUID(),
       coverImageId,
       startDate,
       endDate,
-      // openingEvent,
-      // specialEvent,
-      // closingEvent,
       createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imke eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
       lastEditedBy: null, // Info kommt vom BE
       isArchived: false, // Info kommt vom BE
       isDeleted: false, // Info kommt vom BE
-      // primaryColor,
-      // secondaryColor,
-      // backgroundColor,
-      // textColor,
-      // headlineFont,
-      // textFont,
-      // roundness,
     });
 
     const translation = await ExhibitionTranslation.create({
