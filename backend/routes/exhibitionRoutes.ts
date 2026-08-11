@@ -18,7 +18,7 @@ router.get("/", checkAuth, showAllExhibitions);
 
 router.get("/:exhibitionId", checkAuth, showOneExhibition);
 
-router.post("/", checkAuth, createExhibition);
+router.post("/", createExhibition);
 
 router.patch("/:exhibitionId", checkAuth, updateExhibition);
 // patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wäre der komplette Datensatz zu ändern

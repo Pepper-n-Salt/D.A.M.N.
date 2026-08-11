@@ -52,7 +52,7 @@ async function startServer() {
   console.log("Database synchronized successfully.");
 
   app.listen(PORT, () => {
-    console.log(`Server hört auf Port ${PORT}.`);
+    console.log(`Server is listening on port ${PORT}.`);
   });
 }
 

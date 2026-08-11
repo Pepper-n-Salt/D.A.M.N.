@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { Exhibition } from "../models";
 import { ExhibitionTranslation } from "../models";
+import db from "../lib/db";
 
 // funktioniert
 export const showOneExhibition = async (
@@ -46,6 +47,8 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
 
 // mit testdaten überprüft, klappt!
 export const createExhibition = async (req: Request, res: Response) => {
+  const t = await db.transaction();
+
   try {
     const {
       coverImageId,
@@ -59,40 +62,54 @@ export const createExhibition = async (req: Request, res: Response) => {
     } = req.body;
 
     // aus Exhibition.create() und aus ExhibitionTranslation.create() in einem späteren Schritt eine Transaction machen, also nur wenn beides geklappt hat, dann wird gespeichert! // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
-    const exhibition = await Exhibition.create({
-      id: crypto.randomUUID(),
-      coverImageId,
-      startDate,
-      endDate,
-      createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imke eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
-      lastEditedBy: null, // Info kommt vom BE
-      isArchived: false, // Info kommt vom BE
-      isDeleted: false, // Info kommt vom BE
-    });
+    const exhibition = await Exhibition.create(
+      {
+        id: crypto.randomUUID(),
+        coverImageId,
+        startDate,
+        endDate,
+        createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imke eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
+        lastEditedBy: null, // Info kommt vom BE
+        isArchived: false, // Info kommt vom BE
+        isDeleted: false, // Info kommt vom BE
+      },
+      { transaction: t }
+    );
 
-    const translation = await ExhibitionTranslation.create({
-      exhibitionId: exhibition.id,
-      languageCode,
-      title,
-      subtitle,
-      location,
-      description,
-      // slug,
-      aiGenerated: false, // kommt irgendwann vom BE
-      isScreen: false, // hier genauso: Info kommt irgendwann vom BE
-    });
+    const translation = await ExhibitionTranslation.create(
+      {
+        exhibitionId: exhibition.id,
+        languageCode,
+        title,
+        subtitle,
+        location,
+        description,
+        // slug,
+        aiGenerated: false, // kommt irgendwann vom BE
+        isScreen: false, // hier genauso: Info kommt irgendwann vom BE
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
 
     return res.status(201).json({
       exhibition,
       translation,
     });
   } catch (e) {
+    console.error("CREATE EXHIBITION ERROR:", e);
+
+    await t.rollback();
+
     return res.status(500).json({
       msg: "Server error.",
+      error: e instanceof Error ? e.message : e,
     });
   }
 };
 
+// update gehört zu Exhibition und ExhibitionTranslation, daher nochmal überarbeiten
 export const updateExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
