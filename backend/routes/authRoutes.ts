@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
-router.post("/logout", logout); // hier keine middleware checkAuth, damit logout unter allen umständen funktioniert
+router.post("/logout", logout); // hier keine middleware checkAuth, damit logout unter allen Umständen funktioniert
 router.get("/profile", checkAuth, getMe);
 
 export default router;
