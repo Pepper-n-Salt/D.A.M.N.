@@ -12,6 +12,9 @@
     "name": "Name",
     "email": "E-Mail",
     "message": "Nachricht",
-    "submit": "Senden"
+    "submit": "Senden",
+    "sending": "Wird gesendet...",
+    "success": "Nachricht wurde gesendet.",
+    "error": "Nachricht konnte nicht gesendet werden."
   }
 }

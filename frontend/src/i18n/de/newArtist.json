@@ -1,0 +1,25 @@
+{
+  "newArtist": {
+    "title": "Neuen Künstler oder eine Künstlerin hinzufügen",
+    "paragraph": "Erstelle einen neuen Eintrag für eine Künstlerin oder einen Künstler auf der Plattform.",
+    "form": {
+      "language": "Formularsprache",
+      "languages": {
+        "german": "Deutsch",
+        "english": "Englisch"
+      },
+      "firstname": "Vorname",
+      "lastname": "Nachname",
+      "dateOfBirth": "Geburtsdatum",
+      "dateOfDeath": "Sterbedatum",
+      "country": "Land",
+      "description": "Beschreibung",
+      "image": "Bild hochladen"
+    },
+    "actions": {
+      "save": "Künstler:in speichern",
+      "translateToEnglish": "Ins Englische übersetzen",
+      "translateToGerman": "Ins Deutsche übersetzen"
+    }
+  }
+}

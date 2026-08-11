@@ -69,13 +69,6 @@ ArtworkTranslation.init(
     tableName: "artwork_translation",
     timestamps: false,
     underscored: true,
-    indexes: [
-      {
-        unique: true,
-        name: "unique_artwork_translation_slug_per_language",
-        fields: ["language_code", "slug"],
-      },
-    ],
   }
 );
 

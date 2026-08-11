@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const mockArtwork = {
@@ -39,6 +40,8 @@ type ArtworkScreenProps = {
 };
 
 function ArtworkScreen({ artwork }: ArtworkScreenProps) {
+  const { t } = useTranslation("display");
+
   return (
     <main className="relative min-h-screen overflow-hidden">
       <img
@@ -52,11 +55,11 @@ function ArtworkScreen({ artwork }: ArtworkScreenProps) {
       <section className="relative z-10 flex min-h-screen flex-col justify-end px-12 py-16 text-white">
         <div className="max-w-4xl space-y-6">
           <h1 className="text-6xl font-light leading-tight md:text-8xl">
-            {artwork.title}
+            {t("artwork.title")}
           </h1>
 
           <p>
-            by{" "}
+            {t("artwork.by")}{" "}
             <Link
               to={`/display/static/artist/${artwork.artistId}`}
               className="underline underline-offset-4 hover:text-white/80"
@@ -66,15 +69,18 @@ function ArtworkScreen({ artwork }: ArtworkScreenProps) {
           </p>
 
           <p className="max-w-3xl text-lg leading-relaxed text-white/90 md:text-xl">
-            {artwork.year} in {artwork.land}
+            {t("artwork.yearLocation", {
+              year: artwork.year,
+              land: artwork.land,
+            })}
           </p>
 
           <h2 className="text-3xl font-light text-white/80 md:text-5xl">
-            {artwork.subtitle}
+            {t("artwork.subtitle")}
           </h2>
 
           <p className="max-w-3xl text-lg leading-relaxed text-white/90 md:text-xl">
-            {artwork.description}
+            {t("artwork.description")}
           </p>
         </div>
       </section>

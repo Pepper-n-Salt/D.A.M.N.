@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
 type Artist = {
@@ -26,6 +27,7 @@ const artists: Artist[] = [
 ];
 
 export default function ArtistScreen() {
+  const { t } = useTranslation("display");
   const { id } = useParams();
 
   const artist = artists.find((artist) => artist.id === id);
@@ -33,7 +35,7 @@ export default function ArtistScreen() {
   if (!artist) {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <h1 className="text-3xl font-light">Artist not found.</h1>
+        <h1 className="text-3xl font-light">{t("artist.notFound")}</h1>
       </main>
     );
   }
@@ -63,7 +65,7 @@ export default function ArtistScreen() {
           </p>
 
           <p className="max-w-3xl text-lg leading-relaxed text-white/90">
-            {artist.biography}
+            {t("artist.biography")}
           </p>
         </div>
       </section>

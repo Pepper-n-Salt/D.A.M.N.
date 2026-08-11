@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import P from "../components/ui/typography/P";
 import H1 from "../components/ui/typography/H1";
 import H2 from "../components/ui/typography/H2";
@@ -5,46 +7,46 @@ import H3 from "../components/ui/typography/H3";
 import Carouselbutton from "../components/ui/buttons/Carouselbutton";
 
 export default function LandingPage() {
+  const { t } = useTranslation("home");
+
   return (
     <section className="space-y-20">
-      <H1>Digital Display Platform</H1>
-      <P>
-        Create, manage and present digital artworks across connected screens.
-      </P>
+      <H1>{t("hero.title")}</H1>
+      <P>{t("hero.paragraph")}</P>
 
       <section className="border-t border-neutral-200 pt-12 space-y-12">
         <div className="mb-8">
-          <H2>Current Collection</H2>
+          <H2>{t("landing.currentCollection")}</H2>
         </div>
 
         <div className="border border-neutral-300">
           <div className="aspect-video bg-neutral-100 flex items-center justify-center">
             {" "}
             {/* später keine Umrandung mehr verwenden, lieber overflow-hidden */}
-            <P>Artwork Preview</P>
+            <P>{t("landing.preview")}</P>
           </div>
 
           <div className="border-t border-neutral-300 flex justify-between items-end p-6">
             <div>
-              <H3>Untitled No. 24</H3>
+              <H3>{t("landing.artworkTitle")}</H3>
 
-              <P>Digital Artwork · 2026</P>
+              <P>{t("landing.artworkMeta")}</P>
             </div>
           </div>
         </div>
         <div className="flex justify-between gap-4">
-          <Carouselbutton aria-label="Previous artwork">
+          <Carouselbutton aria-label={t("landing.previousArtwork")}>
             <span className="transition-transform duration-300 group-hover:-translate-x-1">
               ←
             </span>
-            Previous
+            {t("landing.previous")}
           </Carouselbutton>
           <P>01 / 12</P>
           <Carouselbutton
-            aria-label="Next artwork"
+            aria-label={t("landing.nextArtwork")}
             className="group flex items-center gap-2 text-sm uppercase tracking-[0.2em]"
           >
-            Next
+            {t("landing.next")}
             <span className="transition-transform duration-300 group-hover:translate-x-1">
               →
             </span>
@@ -54,81 +56,82 @@ export default function LandingPage() {
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-neutral-200 pt-12">
         <div>
-          <H2>Collection</H2>
+          <H2>{t("landing.collection")}</H2>
 
           <div className="mt-4 flex items-baseline gap-3">
             <H3>124</H3>
-            <P>artworks</P>
+            <P>{t("landing.artworks")}</P>
           </div>
         </div>
 
         <div>
-          <H2>Exhibitions</H2>
+          <H2>{t("landing.exhibitions")}</H2>
           <div className="mt-4 flex items-baseline gap-3">
             <H3>8</H3>
-            <P>active projects</P>
+            <P>{t("landing.activeProjects")}</P>
           </div>
         </div>
 
         <div>
-          <H2>Screens</H2>
+          <H2>{t("landing.screens")}</H2>
           <div className="mt-4 flex items-baseline gap-3">
             <H3>16</H3>
-            <P>connected displays</P>
+            <P>{t("landing.connectedDisplays")}</P>
           </div>
         </div>
       </section>
 
       <section className="border-t border-neutral-200 pt-12">
-        <H2>Recent Activity</H2>
+        <H2>{t("landing.recentActivity")}</H2>
 
         <div className="divide-y divide-neutral-200">
           <div className="grid grid-cols-1 md:grid-cols-3 py-6">
             <p className="text-sm text-neutral-400 md:col-span-1">12.02.2026</p>
 
-            <P>New artwork added</P>
+            <P>{t("landing.activityArtwork")}</P>
 
-            <p className="md:col-span-1 text-neutral-500">Untitled No. 24</p>
+            <p className="md:col-span-1 text-neutral-500">
+              {t("landing.activityArtworkTitle")}
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 py-6">
             <p className="md:col-span-1 text-sm text-neutral-400">08.02.2026</p>
 
-            <P>Exhibition updated</P>
+            <P>{t("landing.activityExhibition")}</P>
 
-            <p className="md:col-span-1 text-neutral-500">Digital Landscapes</p>
+            <p className="md:col-span-1 text-neutral-500">
+              {t("landing.activityExhibitionTitle")}
+            </p>
           </div>
         </div>
       </section>
       <section className="border-t border-neutral-200 pt-12">
         <div className="mb-8">
-          <H2>Current Exhibition</H2>
+          <H2>{t("landing.currentExhibition")}</H2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div className="md:col-span-2">
-            <H3>Digital Landscapes</H3>
+            <H3>{t("landing.exhibitionTitle")}</H3>
 
-            <P>
-              A synchronized presentation of digital artworks across connected
-              information screens.
-            </P>
+            <P>{t("landing.exhibitionDescription")}</P>
           </div>
 
           <div className="text-sm space-y-4">
             <div className="flex justify-between border-b border-neutral-200 pb-3">
-              <P>Screens</P>
+              <P>{t("landing.screensLabel")}</P>
               <P>4</P>
             </div>
 
             <div className="flex justify-between border-b border-neutral-200 pb-3">
-              <P>Artworks</P>
+              <P>{t("landing.artworksLabel")}</P>
               <P>12</P>
             </div>
 
             <div className="flex justify-between border-b border-neutral-200 pb-3">
-              <P>Status</P>
-              <P>Active</P>
+              <P>{t("landing.statusLabel")}</P>
+              <P>{t("landing.statusValue")}</P>
             </div>
           </div>
         </div>

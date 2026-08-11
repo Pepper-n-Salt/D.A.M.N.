@@ -10,7 +10,7 @@ export default function NewArtworkPage() {
   const { t } = useTranslation("newArtwork");
 
   const [showImport, setShowImport] = useState(false);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [, setSearchResults] = useState<any[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [language, setLanguage] = useState("german");
   const [artworkSaved, setArtworkSaved] = useState(false);
@@ -227,7 +227,7 @@ export default function NewArtworkPage() {
                 py-3
                 outline-none uppercase text-neutral-500"
               >
-                <option value="">select Artist</option>
+                <option value="">{t("form.selectArtist")}</option>
 
                 {artists.map((artist) => (
                   <option key={artist} value={artist}>

@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
+  const { t } = useTranslation("common");
   const { pathname } = useLocation();
   const isLandingPage =
     pathname === "/landingpage" || pathname.startsWith("/landingpage/");
@@ -25,11 +27,13 @@ export default function Header() {
       <div className="mb-20">
         {isLandingPage ? (
           // landingpage für eingeloggte user:innen
-          <NavLink to="/landingpage" aria-label="Go to landingpage">
+          <NavLink to="/landingpage" aria-label={t("header.goToLandingpage")}>
             <div className="leading-none">
-              <p className="-ml-1 text-6xl tracking-[0.02em]">D.A.M.N.</p>
+              <p className="-ml-1 text-6xl tracking-[0.02em]">
+                {t("app.name")}
+              </p>
               <p className="mt-1 text-sm leading-loose">
-                Digital Artwork Management Network
+                {t("header.brandSubtitle")}
               </p>
             </div>
           </NavLink>
@@ -37,9 +41,9 @@ export default function Header() {
           // landingpage product
           // <div className="border-b border-gray-200 pb-6">
           <div className="leading-none">
-            <p className="-ml-1 text-6xl tracking-[0.02em]">D.A.M.N.</p>
+            <p className="-ml-1 text-6xl tracking-[0.02em]">{t("app.name")}</p>
             <p className="mt-1 text-sm leading-loose">
-              Digital Artwork Management Network
+              {t("header.brandSubtitle")}
             </p>
           </div>
         )}
@@ -58,7 +62,7 @@ export default function Header() {
                     : "text-black"
                 }
               >
-                Artists
+                {t("navigation.artists")}
               </NavLink>
               <NavLink
                 to="/landingpage/artworks"
@@ -68,7 +72,7 @@ export default function Header() {
                     : "text-black"
                 }
               >
-                Artworks
+                {t("navigation.artworks")}
               </NavLink>
               <NavLink
                 to="/landingpage/exhibitions"
@@ -78,7 +82,7 @@ export default function Header() {
                     : "text-black"
                 }
               >
-                Exhibitions
+                {t("navigation.exhibitions")}
               </NavLink>
               <NavLink
                 to="/landingpage/screens"
@@ -88,7 +92,7 @@ export default function Header() {
                     : "text-black"
                 }
               >
-                Screens
+                {t("navigation.screens")}
               </NavLink>
             </>
           ) : (
@@ -101,7 +105,7 @@ export default function Header() {
                     : "text-black"
                 }
               >
-                Home
+                {t("navigation.home")}
               </NavLink>
               <NavLink
                 to="/about"
@@ -111,7 +115,7 @@ export default function Header() {
                     : "text-black"
                 }
               >
-                About
+                {t("navigation.about")}
               </NavLink>
               <NavLink
                 to="/contact"
@@ -121,7 +125,7 @@ export default function Header() {
                     : "text-black"
                 }
               >
-                Contact
+                {t("navigation.contact")}
               </NavLink>
             </>
           )}
@@ -137,11 +141,11 @@ export default function Header() {
                   : "text-black"
               }
             >
-              User
+              {t("navigation.user")}
             </NavLink>
 
             <p className="text-neutral-500 normal-case tracking-normal">
-              {`Hello ${user?.firstName || "Superuser"}!`}
+              {t("header.welcome", { name: user?.firstName || "Superuser" })}
             </p>
 
             <LanguageSwitcher />
@@ -150,7 +154,7 @@ export default function Header() {
               onClick={handleLogout}
               className="border border-black px-8 py-2.5 transition-colors duration-300 hover:bg-black hover:text-white"
             >
-              Logout
+              {t("navigation.logout")}
             </button>
           </div>
         ) : (
@@ -161,7 +165,7 @@ export default function Header() {
               to="/login"
               className="border border-black px-8 py-2.5 uppercase tracking-[0.25em] transition-colors duration-300 hover:bg-black hover:text-white"
             >
-              Login
+              {t("navigation.login")}
             </NavLink>
           </div>
         )}

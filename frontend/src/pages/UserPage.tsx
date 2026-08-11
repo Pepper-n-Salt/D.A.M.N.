@@ -52,10 +52,10 @@ export default function User() {
         const res = await fetch("/api/user", { credentials: "include" });
         const data = await res.json();
         if (!res.ok)
-          throw new Error(data.msg || "Fehler beim Laden der Nutzer");
+          throw new Error(data.msg || t("management.loadUsersError"));
         setUsers(data.users || []);
       } catch (err: any) {
-        setError(err.message || "Fehler beim Laden der Nutzer");
+        setError(err.message || t("management.loadUsersError"));
       } finally {
         setLoadingUsers(false);
       }
@@ -65,7 +65,7 @@ export default function User() {
   }, [user]);
 
   const handleDelete = async (userIdToDelete: string) => {
-    if (!confirm("Benutzer wirklich löschen?")) return;
+    if (!confirm(t("management.confirmDelete"))) return;
     setError(null);
     try {
       const res = await fetch(`/api/user/${userIdToDelete}`, {
@@ -73,13 +73,13 @@ export default function User() {
         credentials: "include",
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.msg || "Löschen fehlgeschlagen");
+      if (!res.ok) throw new Error(data.msg || t("management.deleteError"));
       setUsers((prev) =>
         prev ? prev.filter((u) => u.id !== userIdToDelete) : prev
       );
-      setMessage(data.msg || "Gelöscht.");
+      setMessage(data.msg || t("management.deleteSuccess"));
     } catch (err: any) {
-      setError(err.message || "Löschen fehlgeschlagen");
+      setError(err.message || t("management.deleteError"));
     }
   };
 
