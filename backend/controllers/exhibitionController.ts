@@ -130,29 +130,19 @@ export const updateExhibition = async (
       return res.status(404).json({ msg: "Exhibition not found." });
     }
 
+    // Formularfelder aus req.body holen
     const {
       coverImageId,
       startDate,
       endDate,
-      // openingEvent,
-      // specialEvent,
-      // closingEvent,
-      // primaryColor,
-      // secondaryColor,
-      // backgroundColor,
-      // textColor,
-      // headlineFont,
-      // textFont,
-      // roundness,
       languageCode,
       title,
       subtitle,
       location,
       description,
-      // slug,
     } = req.body;
 
-    // hier legen wir alle Felder fest, die upgedatet werden können // ggfs. noch weitere Felder hinzufügen
+    // hier legen wir alle Felder fest, die upgedatet werden können // ggfs. noch weitere Felder in Silver-Edition hinzufügen
     await exhibition.update({
       coverImageId,
       startDate,
@@ -164,12 +154,31 @@ export const updateExhibition = async (
       description,
     });
 
+    // aktualisierten Datensatz zurückgeben
     return res.status(200).json(exhibition);
   } catch (e) {}
 };
 
-export const archiveExhibition = async (req: Request, res: Response) => {
+export const archiveExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
   try {
+    // exhibition ID aus den Params holen
+    const { exhibitionId } = req.params;
+
+    // damit die Exhibition in der DB suchen
+    const exhibition = await Exhibition.findByPk(exhibitionId);
+
+    if (!exhibition) {
+      return res.status(404).json({ msg: "Exhibition not found." });
+    }
+
+    // isArchived updaten
+    await exhibition.update({ isArchived: true });
+
+    // aktualisierten Datensatz zurückgeben
+    return res.status(200).json(exhibition);
   } catch (e) {}
 };
 

@@ -18,7 +18,7 @@ router.get("/:exhibitionId", showOneExhibition); // hier auch nach dem testen wi
 router.post("/", createExhibition); // hier auch nach dem testen wieder middlewae einfügen
 
 router.patch("/:exhibitionId", () => {}, updateExhibition);
-// patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wäre den kompletten Datensatz zu ändern
+// patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wäre der komplette Datensatz zu ändern
 
 router.patch("/:exhibitionId/archive", () => {}, archiveExhibition);
 
