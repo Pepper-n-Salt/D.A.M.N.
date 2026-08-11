@@ -1,11 +1,22 @@
 import type { Request, Response } from "express";
+import { Artwork, ArtworkTranslation } from "../models";
+import db from "../lib/db";
 
-export const showOneArtwork = async (req: Request, res: Response) => {
+// Alle Artworks abrufen
+export const showAllArtworks = async (req: Request, res: Response) => {
   try {
-  } catch (e) {}
+    const artworks = await Artwork.findAll({ where: { isDeleted: false } });
+
+    return res.status(200).json(artworks);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({ msg: "Server-Fehler." });
+  }
 };
 
-export const showAllArtworks = async (req: Request, res: Response) => {
+// Einzelnes Artwork abrufen
+export const showOneArtwork = async (req: Request, res: Response) => {
   try {
   } catch (e) {}
 };

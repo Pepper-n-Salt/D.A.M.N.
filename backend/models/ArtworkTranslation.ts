@@ -9,7 +9,6 @@ class ArtworkTranslation extends Model {
   declare origin: string | null;
   declare material: string | null;
   declare description: string | null;
-  // declare slug: string;
   declare aiGenerated: boolean;
   declare isScreen: boolean;
 }

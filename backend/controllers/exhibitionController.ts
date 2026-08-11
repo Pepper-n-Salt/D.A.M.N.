@@ -2,6 +2,22 @@ import type { Request, Response } from "express";
 import { Exhibition, ExhibitionTranslation } from "../models";
 import db from "../lib/db";
 
+// Alle nicht gelöschten Exhibitions abrufen
+// getestet: klappt!
+export const showAllExhibitions = async (req: Request, res: Response) => {
+  try {
+    const exhibitions = await Exhibition.findAll({
+      where: { isDeleted: false },
+    });
+
+    return res.status(200).json(exhibitions);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({ msg: "Server-Fehler." });
+  }
+};
+
 // Einzelne, nicht gelöschte Exhibition abrufen
 // getestet: klappt!
 export const showOneExhibition = async (
@@ -26,22 +42,6 @@ export const showOneExhibition = async (
 
     // Exhibition zurückgeben, wenn efolgreich
     return res.status(200).json(exhibition);
-  } catch (e) {
-    console.error(e);
-
-    return res.status(500).json({ msg: "Server-Fehler" });
-  }
-};
-
-// Alle nicht gelöschten Exhibitions abrufen
-// getestet: klappt!
-export const showAllExhibitions = async (req: Request, res: Response) => {
-  try {
-    const exhibitions = await Exhibition.findAll({
-      where: { isDeleted: false },
-    });
-
-    return res.status(200).json(exhibitions);
   } catch (e) {
     console.error(e);
 
