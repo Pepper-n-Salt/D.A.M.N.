@@ -1,3 +1,5 @@
+import type { Request, Response } from "express";
+
 export const createArtistTranslation = async (req: Request, res: Response) => {
   try {
   } catch (e) {}

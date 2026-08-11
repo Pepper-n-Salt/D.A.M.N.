@@ -1,3 +1,5 @@
+import type { Request, Response } from "express";
+
 export const createExhibitionTranslation = async (
   req: Request,
   res: Response
