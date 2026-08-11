@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
 import { Exhibition } from "../models";
 import { ExhibitionTranslation } from "../models";
+import db from "../lib/db";
 
 // funktioniert
 export const showOneExhibition = async (
-  req: Request<{ exhibitionId: string }>,
+  req: Request<{ exhibitionId: string }>, // für TS: Parameter req mit einem generischen Request-Typ typisiert, dessen Type Argument ein Object Type Literal ist
   res: Response
 ) => {
   try {
@@ -44,107 +45,175 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
   }
 }; // den brauchen wir für das select- oder suchfeld in artwork
 
-// mit testdaten überprüft:
-// {
-//   "startDate": "2026-09-01",
-//   "endDate": "2026-10-15",
-//   "openingEvent": "Vernissage",
-//   "specialEvent": "Artist Talk am 20. September",
-//   "closingEvent": "Finissage",
-//   "primaryColor": "#1A1A1A",
-//   "secondaryColor": "#D4AF37",
-//   "backgroundColor": "#F5F2EA",
-//   "textColor": "#1A1A1A",
-//   "headlineFont": "Helvetica",
-//   "textFont": "Arial",
-//   "roundness": "medium",
-//   "languageCode": "de",
-//   "title": "Zwischen Licht und Raum",
-//   "subtitle": "Zeitgenössische Positionen",
-//   "location": "Leipzig",
-//   "description": "Eine Ausstellung mit zeitgenössischen Positionen zur Beziehung zwischen Licht, Raum und Wahrnehmung.",
-//   "slug": "zwischen-licht-und-raum"
-// }
+// mit testdaten überprüft, klappt!
 export const createExhibition = async (req: Request, res: Response) => {
+  const t = await db.transaction();
+
   try {
     const {
       coverImageId,
       startDate,
       endDate,
-      // openingEvent,
-      // specialEvent,
-      // closingEvent,
-      // primaryColor,
-      // secondaryColor,
-      // backgroundColor,
-      // textColor,
-      // headlineFont,
-      // textFont,
-      // roundness,
       languageCode,
       title,
       subtitle,
       location,
       description,
-      // slug,
     } = req.body;
 
-    // aus Exhibition.create() und aus ExhibitionTranslation.create() in einem späteren Schritt eine Transaction machen, also nur wenn beides geklappt hat, dann wird gespeichert!
-    const exhibition = await Exhibition.create({
-      id: crypto.randomUUID(),
-      coverImageId,
-      startDate,
-      endDate,
-      // openingEvent,
-      // specialEvent,
-      // closingEvent,
-      createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imke eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
-      lastEditedBy: null, // Info kommt vom BE
-      isArchived: false, // Info kommt vom BE
-      isDeleted: false, // Info kommt vom BE
-      // primaryColor,
-      // secondaryColor,
-      // backgroundColor,
-      // textColor,
-      // headlineFont,
-      // textFont,
-      // roundness,
-    });
+    // aus Exhibition.create() und aus ExhibitionTranslation.create() in einem späteren Schritt eine Transaction machen, also nur wenn beides geklappt hat, dann wird gespeichert! // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
+    const exhibition = await Exhibition.create(
+      {
+        id: crypto.randomUUID(),
+        coverImageId,
+        startDate,
+        endDate,
+        createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imke eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
+        lastEditedBy: null, // Info kommt vom BE
+        isArchived: false, // Info kommt vom BE
+        isDeleted: false, // Info kommt vom BE
+      },
+      { transaction: t }
+    );
 
-    const translation = await ExhibitionTranslation.create({
-      exhibitionId: exhibition.id,
-      languageCode,
-      title,
-      subtitle,
-      location,
-      description,
-      // slug,
-      aiGenerated: false, // kommt irgendwann vom BE
-      isScreen: false, // hier genauso: Info kommt irgendwann vom BE
-    });
+    const translation = await ExhibitionTranslation.create(
+      {
+        exhibitionId: exhibition.id,
+        languageCode,
+        title,
+        subtitle,
+        location,
+        description,
+        // slug,
+        aiGenerated: false, // kommt irgendwann vom BE
+        isScreen: false, // hier genauso: Info kommt irgendwann vom BE
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
 
     return res.status(201).json({
       exhibition,
       translation,
     });
   } catch (e) {
+    console.error("CREATE EXHIBITION ERROR:", e);
+
+    await t.rollback();
+
     return res.status(500).json({
       msg: "Server error.",
+      error: e instanceof Error ? e.message : e,
     });
   }
 };
 
-export const updateExhibition = async (req: Request, res: Response) => {
+// update gehört zu Exhibition und ExhibitionTranslation, daher nochmal überarbeiten
+export const updateExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
   try {
-  } catch (e) {}
+    // Exhibition ID wieder aus der URL holen
+    const { exhibitionId } = req.params;
+
+    // Exhibition über ID in DB suchen
+    const exhibition = await Exhibition.findByPk(exhibitionId);
+
+    // Fehlermeldung, wenn Exhibition nicht gefunden wurde
+    if (!exhibition) {
+      return res.status(404).json({ msg: "Exhibition not found." });
+    }
+
+    // Formularfelder aus req.body holen // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
+    const {
+      coverImageId,
+      startDate,
+      endDate,
+      languageCode,
+      title,
+      subtitle,
+      location,
+      description,
+    } = req.body;
+
+    // hier legen wir alle Felder fest, die upgedatet werden können // ggfs. hier genauso noch weitere Felder in Silver-Edition hinzufügen
+    await exhibition.update({
+      coverImageId,
+      startDate,
+      endDate,
+      languageCode,
+      title,
+      subtitle,
+      location,
+      description,
+    });
+
+    // aktualisierten Datensatz zurückgeben
+    return res.status(200).json(exhibition);
+  } catch (e) {
+    return res.status(500).json({
+      msg: "Failed to update exhibition.",
+    });
+  }
 };
 
-export const archiveExhibition = async (req: Request, res: Response) => {
+export const archiveExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
   try {
-  } catch (e) {}
+    // exhibition ID aus den Params holen
+    const { exhibitionId } = req.params;
+
+    // mit ID aus den Params die Exhibition in der DB suchen
+    const exhibition = await Exhibition.findByPk(exhibitionId);
+
+    // Fehler ausgeben, wenn keine Exhibition gefunden wurde
+    if (!exhibition) {
+      return res.status(404).json({ msg: "Exhibition not found." });
+    }
+
+    // Status isArchived zu archiviert aktualisieren
+    await exhibition.update({ isArchived: true });
+
+    // aktualisierten Datensatz zurückgeben
+    return res.status(200).json(exhibition);
+  } catch (e) {
+    return res.status(500).json({
+      msg: "Failed to archive exhibition.",
+    });
+  }
 };
 
-export const deleteExhibition = async (req: Request, res: Response) => {
+export const deleteExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
   try {
-  } catch (e) {}
+    // wieder exhibition ID aus den Params holen
+    const { exhibitionId } = req.params;
+
+    // mit ID aus den Params die Exhibition in der DB suchen
+    const exhibition = await Exhibition.findByPk(exhibitionId);
+
+    // wieder Fehler ausgeben, wenn keine Exhibition gefunden wurde
+    if (!exhibition) {
+      return res.status(404).json({ msg: "Exhibition not found." });
+    }
+
+    // die jeweilige Exhibition löschen
+    // await exhibition.destroy(); // doch nicht, das wäre ein Hard Delete, erledigen wir aber irgendwann mit CronJob
+
+    // Status isDeleted zu true ändern
+    await exhibition.update({ isDeleted: true });
+
+    // aktualisierten Datensatz zurückgeben
+    return res.status(200).json(exhibition);
+  } catch (e) {
+    return res.status(500).json({
+      msg: "Failed to delete exhibition.",
+    });
+  }
 };

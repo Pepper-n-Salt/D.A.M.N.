@@ -8,20 +8,23 @@ import {
   archiveExhibition,
   deleteExhibition,
 } from "../controllers/exhibitionController";
+import { checkAuth } from "../middleware/checkAuth";
 
 const router = express.Router();
 
-router.get("/", showAllExhibitions); // hinterher wieder middleware einfügen
+// in alle routes noch die middleware checkAuth reinschreiben!
 
-router.get("/:exhibitionId", showOneExhibition); // hier auch nach dem testen wieder middlewae einfügen
+router.get("/", checkAuth, showAllExhibitions);
 
-router.post("/", createExhibition); // hier auch nach dem testen wieder middlewae einfügen
+router.get("/:exhibitionId", checkAuth, showOneExhibition);
 
-router.patch("/:exhibitionId", () => {}, updateExhibition);
-// patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wäre den kompletten Datensatz zu ändern
+router.post("/", createExhibition);
 
-router.patch("/:exhibitionId/archive", () => {}, archiveExhibition);
+router.patch("/:exhibitionId", checkAuth, updateExhibition);
+// patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wäre der komplette Datensatz zu ändern
 
-router.delete("/:exhibitionId", () => {}, deleteExhibition);
+router.patch("/:exhibitionId/archive", checkAuth, archiveExhibition);
+
+router.patch("/:exhibitionId/delete", checkAuth, deleteExhibition); // patch, weil Soft Delete, denn mit delete würden wir den Datensatz komplett löschen, hier ändern wir aber nur den "Status" von isDeleted zu true
 
 export default router;

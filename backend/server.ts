@@ -49,7 +49,7 @@ async function startServer() {
   console.log("Database connection has been established successfully.");
 
   app.listen(PORT, () => {
-    console.log(`Server hört auf Port ${PORT}.`);
+    console.log(`Server is listening on port ${PORT}.`);
   });
 }
 

@@ -6,9 +6,6 @@ class Exhibition extends Model {
   declare coverImageId: string | null;
   declare startDate: Date;
   declare endDate: Date;
-  declare openingEvent: string | null;
-  declare specialEvent: string | null;
-  declare closingEvent: string | null;
   declare createdBy: string;
   declare lastEditedBy: string | null;
   declare isArchived: boolean;
@@ -43,21 +40,7 @@ Exhibition.init(
       allowNull: false,
       field: "end_date",
     },
-    openingEvent: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      field: "opening_event",
-    },
-    specialEvent: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      field: "special_event",
-    },
-    closingEvent: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      field: "closing_event",
-    },
+
     createdBy: {
       type: DataTypes.UUID,
       allowNull: false,
