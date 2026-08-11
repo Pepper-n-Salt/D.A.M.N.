@@ -54,19 +54,6 @@ const run = async () => {
       console.log(`Super-User ${userData.email} angelegt.`);
     }
 
-    // const allUsers = await User.findAll({
-    //   attributes: [
-    //     "id",
-    //     "firstName",
-    //     "lastName",
-    //     "email",
-    //     "role",
-    //     "organisationId",
-    //   ],
-    // });
-
-    // console.table(allUsers);
-
     console.log("Seed fertig.");
   } catch (error) {
     console.error("Seed-Fehler", error);
