@@ -34,13 +34,6 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
       where: { isDeleted: false },
     });
 
-    // da findAll() ein Array zurückgibt, über die Länge des Arrays prüfen
-    if (exhibitions.length === 0) {
-      return res
-        .status(404)
-        .json({ msg: "Es wurde keine einzige Ausstellung gefunden." });
-    }
-
     return res.status(200).json(exhibitions);
   } catch (e) {
     return res.status(500).json({ msg: "Server-Fehler" });
@@ -70,8 +63,8 @@ export const createExhibition = async (req: Request, res: Response) => {
         coverImageId,
         startDate,
         endDate,
-        createdBy: req.user?.userId, // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
-        lastEditedBy: null, // Info kommt vom BE
+        createdBy: req.user!.id,
+        lastEditedBy: req.user!.id,
         isArchived: false, // Info kommt vom BE
         isDeleted: false, // Info kommt vom BE
       },
