@@ -38,7 +38,7 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
     if (exhibitions.length === 0) {
       return res
         .status(404)
-        .json({ msg: "Die einzelne Ausstellung wurde nicht gefunden." });
+        .json({ msg: "Es wurde keine einzige Ausstellung gefunden." });
     }
 
     return res.status(200).json(exhibitions);
@@ -70,7 +70,7 @@ export const createExhibition = async (req: Request, res: Response) => {
         coverImageId,
         startDate,
         endDate,
-        createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
+        createdBy: req.user?.userId, // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
         lastEditedBy: null, // Info kommt vom BE
         isArchived: false, // Info kommt vom BE
         isDeleted: false, // Info kommt vom BE
@@ -173,7 +173,7 @@ export const updateExhibition = async (
     }
 
     // die Daten in der ExhibitionTranslation aktualisieren
-    await translation?.update(
+    await translation.update(
       { title, subtitle, location, description },
       { transaction: t }
     );
@@ -181,8 +181,8 @@ export const updateExhibition = async (
     // wenn alles erfolgreich war, Transaction durchführen
     await t.commit();
 
-    // aktualisierten Datensatz zurückgeben
-    return res.status(200).json(exhibition);
+    // aktualisierte Datensätze zurückgeben
+    return res.status(200).json({ exhibition, translation });
   } catch (e) {
     await t.rollback();
 
