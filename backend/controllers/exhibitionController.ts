@@ -12,8 +12,13 @@ export const showOneExhibition = async (
     // Exhibition ID aus der URL holen
     const { exhibitionId } = req.params;
 
-    // Exhibition über ID in DB suchen
-    const exhibition = await Exhibition.findByPk(exhibitionId);
+    // nicht gelöschte Exhibition über ID in DB suchen
+    const exhibition = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: false,
+      },
+    });
 
     // Fehlermeldung, wenn Exhibition nicht gefunden wurde
     if (!exhibition) {
@@ -23,6 +28,8 @@ export const showOneExhibition = async (
     // Exhibition zurückgeben, wenn efolgreich
     return res.status(200).json(exhibition);
   } catch (e) {
+    console.error(e);
+
     return res.status(500).json({ msg: "Server-Fehler" });
   }
 };
@@ -36,6 +43,8 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
 
     return res.status(200).json(exhibitions);
   } catch (e) {
+    console.error(e);
+
     return res.status(500).json({ msg: "Server-Fehler" });
   }
 }; // den brauchen wir für das select- oder suchfeld in artwork
@@ -103,7 +112,7 @@ export const createExhibition = async (req: Request, res: Response) => {
   }
 };
 
-// noch testen!
+// noch testen?
 export const updateExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
@@ -146,6 +155,7 @@ export const updateExhibition = async (
         coverImageId,
         startDate,
         endDate,
+        lastEditedBy: req.user!.id,
       },
       { transaction: t }
     );
@@ -207,11 +217,13 @@ export const archiveExhibition = async (
     }
 
     // Status isArchived zu archiviert aktualisieren
-    await exhibition.update({ isArchived: true });
+    await exhibition.update({ isArchived: true, lastEditedBy: req.user!.id });
 
     // aktualisierten Datensatz zurückgeben
     return res.status(200).json(exhibition);
   } catch (e) {
+    console.error(e);
+
     return res.status(500).json({
       msg: "Die Exhibition konnte nicht archiviert werden.",
     });
@@ -237,17 +249,16 @@ export const deleteExhibition = async (
         .json({ msg: "Die Exhibition konnte nicht gefunden werden." });
     }
 
-    // die jeweilige Exhibition löschen
-    // await exhibition.destroy(); // doch nicht, das wäre ein Hard Delete, erledigen wir aber irgendwann mit CronJob
-
     // Status isDeleted zu true ändern
-    await exhibition.update({ isDeleted: true });
+    await exhibition.update({ isDeleted: true, lastEditedBy: req.user!.id });
 
     // aktualisierten Datensatz zurückgeben
     return res.status(200).json(exhibition);
   } catch (e) {
+    console.error(e);
+
     return res.status(500).json({
-      msg: "Die Exhibition konnte nicht mit dem Status gelöscht versehen werden.",
+      msg: "Die Exhibition konnte nicht als gelöscht markiert werden.",
     });
   }
 };
