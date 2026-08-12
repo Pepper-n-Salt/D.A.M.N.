@@ -1,17 +1,25 @@
 {
-  "newExhibition": {
-    "title": "Add New Exhibition",
-    "paragraph": "Fill in the details below to create a new exhibition entry.",
+  "title": "Add New Exhibition",
+  "paragraph": "Fill in the details below to create a new exhibition entry.",
 
-    "form": {
-      "title": "Title",
-      "subtitle": "Subtitle",
-      "startDate": "Start Date",
-      "endDate": "End Date",
-      "location": "Location",
-      "description": "Description",
-      "events": "Events",
-      "submit": "Save Exhibition"
+  "form": {
+    "language": "In which language would you like to create the exhibition?",
+    "title": "Title",
+    "subtitle": "Subtitle",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "location": "Location",
+    "description": "Description",
+    "events": "Events",
+    "image": "Image",
+    "languages": {
+      "german": "German",
+      "english": "English"
     }
+  },
+  "actions": {
+    "save": "Save Exhibition",
+    "translateToEnglish": "Translate to English",
+    "translateToGerman": "Translate to German"
   }
 }

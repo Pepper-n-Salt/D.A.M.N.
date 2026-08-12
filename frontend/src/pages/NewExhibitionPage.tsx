@@ -13,15 +13,15 @@ export default function NewExhibitionPage() {
   return (
     <section className="space-y-10 py-8">
       <div className="border-b border-neutral-200 pt-12 space-y-8">
-        <H1>{t("newExhibition.title")}</H1>
-        <P>{t("newExhibition.paragraph")}</P>
+        <H1>{t("title")}</H1>
+        <P>{t("paragraph")}</P>
         <br />
       </div>
       <form
         className="mx-auto flex w-full max-w-3xl flex-col gap-8 rounded-none border border-black p-8"
         onSubmit={handleSubmit}
       >
-        <div className="flex flex-col gap-2 mb-10">
+        <div className="flex flex-col gap-2 mb-10 border-b border-black ">
           <label
             htmlFor="language"
             className="text-sm uppercase tracking-[0.2em]"
@@ -45,7 +45,7 @@ export default function NewExhibitionPage() {
               htmlFor="title"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.title")}
+              {t("form.title")}
             </label>
             <input
               type="text"
@@ -59,7 +59,7 @@ export default function NewExhibitionPage() {
               htmlFor="subtitle"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.subtitle")}
+              {t("form.subtitle")}
             </label>
             <input
               type="text"
@@ -73,7 +73,7 @@ export default function NewExhibitionPage() {
               htmlFor="startDate"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.startDate")}
+              {t("form.startDate")}
             </label>
             <input
               type="date"
@@ -87,7 +87,7 @@ export default function NewExhibitionPage() {
               htmlFor="endDate"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.endDate")}
+              {t("form.endDate")}
             </label>
             <input
               type="date"
@@ -101,7 +101,7 @@ export default function NewExhibitionPage() {
               htmlFor="location"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newExhibition.form.location")}
+              {t("form.location")}
             </label>
             <input
               type="text"
@@ -117,7 +117,7 @@ export default function NewExhibitionPage() {
             htmlFor="description"
             className="text-sm uppercase tracking-[0.2em]"
           >
-            {t("newExhibition.form.description")}
+            {t("form.description")}
           </label>
           <textarea
             id="description"
@@ -132,7 +132,7 @@ export default function NewExhibitionPage() {
             htmlFor="events"
             className="text-sm uppercase tracking-[0.2em]"
           >
-            {t("newExhibition.form.events")}
+            {t("form.events")}
           </label>
           <textarea
             id="events"

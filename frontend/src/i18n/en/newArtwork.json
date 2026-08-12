@@ -15,7 +15,7 @@
     "button": "Import"
   },
   "form": {
-    "language": "Form Language",
+    "language": "In which language would you like to add the artwork?",
     "languages": {
       "german": "German",
       "english": "English"

@@ -15,7 +15,7 @@
     "button": "Importieren"
   },
   "form": {
-    "language": "Formularsprache",
+    "language": "In welcher Sprache möchten Sie das Kunstwerk hinzufügen?",
     "languages": {
       "german": "Deutsch",
       "english": "Englisch"
