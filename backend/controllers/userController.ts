@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
+
 import type { Request, Response } from "express";
+
 import User from "../models/User.js";
 import Organisation from "../models/Organisation.js";
 import Media from "../models/Media.js";
-import type { AuthenticatedRequest } from "../middleware/checkAuth.ts";
 
 const safeUserFields = [
   "id",
@@ -28,9 +29,11 @@ const sanitizeUser = (user: User) => {
 
 export const showAllUsers = async (req: Request, res: Response) => {
   try {
-    const authReq = req as AuthenticatedRequest;
-    const organisationId = authReq.user?.organisationId;
-    const role = authReq.user?.role;
+    if (!req.user) {
+      return res.status(401).json({ msg: "Nicht autorisiert." });
+    }
+    const organisationId = req.user.organisationId;
+    const role = req.user.role;
 
     if (!organisationId && role !== "super") {
       return res.status(401).json({ msg: "Nicht autorisiert." });
@@ -52,9 +55,8 @@ export const showAllUsers = async (req: Request, res: Response) => {
 
 export const showUser = async (req: Request, res: Response) => {
   try {
-    const authReq = req as AuthenticatedRequest;
-    const organisationId = authReq.user?.organisationId;
-    const role = authReq.user?.role;
+    const organisationId = req.user?.organisationId;
+    const role = req.user?.role;
     const { userId } = req.params as { userId: string };
 
     if (!organisationId && role !== "super") {
@@ -76,9 +78,8 @@ export const showUser = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const authReq = req as AuthenticatedRequest;
-    const organisationId = authReq.user?.organisationId;
-    const role = authReq.user?.role;
+    const organisationId = req.user?.organisationId;
+    const role = req.user?.role;
     const {
       email,
       password,
@@ -155,10 +156,9 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    const authReq = req as AuthenticatedRequest;
-    const organisationId = authReq.user?.organisationId;
-    const role = authReq.user?.role;
-    const currentUserId = authReq.user?.userId;
+    const organisationId = req.user?.organisationId;
+    const role = req.user?.role;
+    const currentUserId = req.user?.id;
     const { userId } = req.params as { userId: string };
 
     if (!currentUserId) {
@@ -255,9 +255,8 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const authReq = req as AuthenticatedRequest;
-    const organisationId = authReq.user?.organisationId;
-    const role = authReq.user?.role;
+    const organisationId = req.user?.organisationId;
+    const role = req.user?.role;
     const { userId } = req.params as { userId: string };
 
     if (role !== "admin" && role !== "super") {
