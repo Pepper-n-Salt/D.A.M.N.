@@ -30,42 +30,59 @@ const run = async () => {
       );
     }
 
-    const exhibitionId = "550e8400-e29b-41d4-a716-446655440000";
-
-    const [exhibition, created] = await Exhibition.findOrCreate({
-      where: {
-        id: exhibitionId,
-      },
-      defaults: {
-        id: exhibitionId,
-        coverImageId: media.id,
+    const exhibitions = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440001",
         startDate: "2026-08-01",
         endDate: "2026-09-30",
-        createdBy: user.id,
-        lastEditedBy: null,
-        isArchived: false,
-        isDeleted: false,
-        primaryColor: "#000000",
-        secondaryColor: "#ffffff",
-        backgroundColor: "#ffffff",
-        textColor: "#000000",
-        headlineFont: null,
-        textFont: null,
-        roundness: "none",
       },
-    });
+      {
+        id: "550e8400-e29b-41d4-a716-446655440002",
+        startDate: "2026-10-01",
+        endDate: "2026-11-30",
+      },
+      {
+        id: "550e8400-e29b-41d4-a716-446655440003",
+        startDate: "2026-12-01",
+        endDate: "2027-01-31",
+      },
+    ];
 
-    if (created) {
-      console.log(`Exhibition "${exhibition.id}" angelegt.`);
-    } else {
-      console.log(
-        `Exhibition "${exhibition.id}" existiert bereits, überspringe.`
-      );
+    for (const exhibitionData of exhibitions) {
+      const [exhibition, created] = await Exhibition.findOrCreate({
+        where: {
+          id: exhibitionData.id,
+        },
+        defaults: {
+          id: exhibitionData.id,
+          coverImageId: media.id,
+          startDate: exhibitionData.startDate,
+          endDate: exhibitionData.endDate,
+          createdBy: user.id,
+          lastEditedBy: null,
+          isArchived: false,
+          isDeleted: false,
+          primaryColor: "#000000",
+          secondaryColor: "#ffffff",
+          backgroundColor: "#ffffff",
+          textColor: "#000000",
+          headlineFont: null,
+          textFont: null,
+          roundness: "none",
+        },
+      });
+
+      if (created) {
+        console.log(`Exhibition "${exhibition.id}" angelegt.`);
+      } else {
+        console.log(
+          `Exhibition "${exhibition.id}" existiert bereits, überspringe.`
+        );
+      }
     }
-
     console.log("Exhibition-Seed fertig.");
-  } catch (error) {
-    console.error("Exhibition-Seed-Fehler", error);
+  } catch (e) {
+    console.error("Exhibition-Seed-Fehler", e);
     process.exitCode = 1;
   } finally {
     await db.close();
