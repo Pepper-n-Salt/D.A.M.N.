@@ -6,6 +6,7 @@ class ArtworkTranslation extends Model {
   declare languageCode: string;
   declare title: string;
   declare subtitle: string | null;
+  declare country: string | null;
   declare origin: string | null;
   declare material: string | null;
   declare description: string | null;
@@ -31,6 +32,10 @@ ArtworkTranslation.init(
     },
     subtitle: {
       type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    country: {
+      type: DataTypes.STRING(100),
       allowNull: true,
     },
     origin: {

@@ -44,6 +44,7 @@ export const createArtwork = async (req: Request, res: Response) => {
     // im FE ist noch "country" mit drin und auch "artist" als select. "country" nicht mit in models drin. Nochmal abgleichen!
     const {
       year,
+      country,
       dimensions,
       imageId,
       languageCode,
@@ -74,6 +75,7 @@ export const createArtwork = async (req: Request, res: Response) => {
         languageCode,
         title,
         subtitle,
+        country,
         origin,
         material,
         description,
@@ -95,11 +97,107 @@ export const createArtwork = async (req: Request, res: Response) => {
   }
 };
 
-export const updateArtwork = async (req: Request, res: Response) => {
+// Artwork und die dazugehörige Übersetzung aktualisieren
+export const updateArtwork = async (
+  req: Request<{ artworkId: string }>,
+  res: Response
+) => {
+  const t = await db.transaction();
+
   try {
-  } catch (e) {}
+    const { artworkId } = req.params;
+
+    // muss die ArtistID an dieser Stelle noch mit rein?
+    const {
+      year,
+      dimensions,
+      imageId,
+      languageCode,
+      title,
+      subtitle,
+      country,
+      origin,
+      material,
+      description,
+    } = req.body;
+
+    // Nicht gelöschtes Artwork suchen
+    const artwork = await Artwork.findOne({
+      where: {
+        id: artworkId,
+        isDeleted: false,
+      },
+      transaction: t,
+    });
+
+    if (!artwork) {
+      await t.rollback();
+
+      return res.status(404).json({
+        msg: "Das Artwork wurde nicht gefunden.",
+      });
+    }
+
+    // languageCode ist Bestandteil des zusammengesetzten Primary Keys
+    const artworkTranslation = await ArtworkTranslation.findOne({
+      where: {
+        artworkId,
+        languageCode,
+      },
+      transaction: t,
+    });
+
+    if (!artworkTranslation) {
+      await t.rollback();
+
+      return res.status(404).json({
+        msg: "Die ArtworkTranslation wurde nicht gefunden.",
+      });
+    }
+
+    // Artwork aktualisieren // HIER WEITERMACHEN!
+    await artwork.update(
+      {
+        year,
+        dimensions,
+        imageId,
+        lastEditedBy: req.user!.id,
+      },
+      { transaction: t }
+    );
+
+    // Übersetzung aktualisieren
+    // muss hier noch aiGenerated oder isScreen mit rein?
+    await artworkTranslation.update(
+      {
+        title,
+        subtitle,
+        country,
+        origin,
+        material,
+        description,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    return res.status(200).json({
+      artwork,
+      artworkTranslation,
+    });
+  } catch (e) {
+    await t.rollback();
+
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Das Artwork konnte nicht aktualisiert werden.",
+    });
+  }
 };
 
+// Artwork per Soft Delete als gelöscht markieren
 export const deleteArtwork = async (req: Request, res: Response) => {
   try {
     const { artworkId } = req.params;
