@@ -22,7 +22,7 @@ export const updateArtworkSchema = z.object({
   country: z.string().max(100).nullable().optional(),
   dimensions: z.string().max(255).nullable().optional(),
   imageId: z.uuid().optional(),
-  languageCode: z.string().min(2).max(7), // ist es sinnvoll hier drin oder später über url parameter validieren?
+  // languageCode: z.string().min(2).max(7), // ist es sinnvoll hier drin oder später über url parameter validieren?
   title: z.string().min(1).max(255).optional(),
   subtitle: z.string().max(255).nullable().optional(),
   origin: z.string().max(255).nullable().optional(),
