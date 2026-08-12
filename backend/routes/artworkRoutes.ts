@@ -10,14 +10,16 @@ import {
 
 const router = express.Router();
 
-router.get("/", () => {}, showAllArtworks);
+// überall noch die middleware checkAuth einsetzen, wenn fertig
 
-router.get("/:artworkId", () => {}, showOneArtwork);
+router.get("/", showAllArtworks);
 
-router.post("/", () => {}, createArtwork);
+router.get("/:artworkId", showOneArtwork);
 
-router.patch("/:artworkId", () => {}, updateArtwork);
+router.post("/", createArtwork);
 
-router.delete("/:artworkId", () => {}, deleteArtwork);
+router.patch("/:artworkId", updateArtwork);
+
+router.patch("/:artworkId", deleteArtwork);
 
 export default router;

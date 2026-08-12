@@ -1,5 +1,5 @@
 import express from "express";
-// an dieser Stelle noch die middleware importieren
+import { checkAuth } from "../middleware/checkAuth.js";
 import {
   showOneExhibition,
   showAllExhibitions,
@@ -7,8 +7,7 @@ import {
   updateExhibition,
   archiveExhibition,
   deleteExhibition,
-} from "../controllers/exhibitionController";
-import { checkAuth } from "../middleware/checkAuth";
+} from "../controllers/exhibitionController.js";
 
 const router = express.Router();
 
