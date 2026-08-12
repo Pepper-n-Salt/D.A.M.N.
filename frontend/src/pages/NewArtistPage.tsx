@@ -15,8 +15,8 @@ export default function NewArtistPage() {
   return (
     <section className="space-y-10 py-8">
       <div className="border-b border-neutral-200 pt-12 space-y-8">
-        <H1>{t("newArtist.title")}</H1>
-        <P>{t("newArtist.paragraph")}</P>
+        <H1>{t("title")}</H1>
+        <P>{t("paragraph")}</P>
         <br />
       </div>
 
@@ -24,7 +24,7 @@ export default function NewArtistPage() {
         className="mx-auto flex w-full max-w-3xl flex-col gap-8 rounded-none border border-black p-8"
         onSubmit={handleSubmit}
       >
-        <div className="flex flex-col gap-2 mb-10">
+        <div className="flex flex-col gap-2 mb-10 border-b border-black ">
           <label
             htmlFor="language"
             className="text-sm uppercase tracking-[0.2em]"
@@ -48,7 +48,7 @@ export default function NewArtistPage() {
               htmlFor="firstname"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newArtist.form.firstname")}
+              {t("form.firstname")}
             </label>
             <input
               type="text"
@@ -63,7 +63,7 @@ export default function NewArtistPage() {
               htmlFor="lastname"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newArtist.form.lastname")}
+              {t("form.lastname")}
             </label>
             <input
               type="text"
@@ -78,7 +78,7 @@ export default function NewArtistPage() {
               htmlFor="dateOfBirth"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newArtist.form.dateOfBirth")}
+              {t("form.dateOfBirth")}
             </label>
             <input
               type="date"
@@ -93,7 +93,7 @@ export default function NewArtistPage() {
               htmlFor="dateOfDeath"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newArtist.form.dateOfDeath")}
+              {t("form.dateOfDeath")}
             </label>
             <input
               type="date"
@@ -108,7 +108,7 @@ export default function NewArtistPage() {
               htmlFor="country"
               className="text-sm uppercase tracking-[0.2em]"
             >
-              {t("newArtist.form.country")}
+              {t("form.country")}
             </label>
             <input
               type="text"
@@ -124,7 +124,7 @@ export default function NewArtistPage() {
             htmlFor="description"
             className="text-sm uppercase tracking-[0.2em]"
           >
-            {t("newArtist.form.description")}
+            {t("form.description")}
           </label>
 
           <textarea

@@ -1,4 +1,6 @@
 import { Mistral } from "@mistralai/mistralai";
+import type { Transaction } from "sequelize";
+import ExhibitionTranslation from "../models/ExhibitionTranslation.js";
 
 export type ExhibitionLanguage = "de" | "en";
 
@@ -46,7 +48,7 @@ Deine Aufgaben:
 3. Verändere dabei nicht den Inhalt oder die Fakten.
 4. Übersetze anschließend die korrigierte Version in die jeweils andere Sprache.
 5. Die Übersetzung soll professionell und natürlich für eine
-   internationale Kunst- und Galerieplattform klingen.
+internationale Kunst- und Galerieplattform klingen.
 
 WICHTIGE REGELN:
 
@@ -113,6 +115,53 @@ export async function processExhibitionTranslation(
   validateAIResult(result);
 
   return result;
+}
+
+/**
+ * Speichert die von Mistral korrigierte Ausgangssprache
+ * und die Übersetzung in die andere Sprache.
+ */
+export async function saveExhibitionTranslations(
+  exhibitionId: string,
+  aiResult: ExhibitionTranslationAIResult,
+  transaction: Transaction
+) {
+  const correctedTranslation = await ExhibitionTranslation.upsert(
+    {
+      exhibitionId,
+      languageCode: aiResult.sourceLanguage,
+      title: aiResult.corrected.title,
+      subtitle: aiResult.corrected.subtitle,
+      location: aiResult.corrected.location,
+      description: aiResult.corrected.description,
+      aiGenerated: true,
+      isScreen: false,
+    },
+    {
+      transaction,
+    }
+  );
+
+  const translatedTranslation = await ExhibitionTranslation.upsert(
+    {
+      exhibitionId,
+      languageCode: aiResult.targetLanguage,
+      title: aiResult.translation.title,
+      subtitle: aiResult.translation.subtitle,
+      location: aiResult.translation.location,
+      description: aiResult.translation.description,
+      aiGenerated: true,
+      isScreen: false,
+    },
+    {
+      transaction,
+    }
+  );
+
+  return {
+    corrected: correctedTranslation,
+    translation: translatedTranslation,
+  };
 }
 
 function validateAIResult(

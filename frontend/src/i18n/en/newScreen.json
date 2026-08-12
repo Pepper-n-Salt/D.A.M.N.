@@ -2,24 +2,27 @@
   "newScreen": {
     "title": "Create Screen",
     "paragraph": "Configure a digital presentation for your exhibitions, artworks and presented artists.",
-
     "selectType": "Select Screen Type",
+    "error": "An error occurred while loading the content. Please try again. If the error persists, please contact support.",
 
     "staticScreens": {
       "title": "Static Screens",
 
       "exhibition": {
         "title": "Exhibition",
+        "show": "Show exhibitions",
         "description": "Display current exhibitions and related information."
       },
 
       "artwork": {
         "title": "Artwork",
+        "show": "Show artworks",
         "description": "Present individual artworks with metadata."
       },
 
       "artist": {
         "title": "Artist",
+        "show": "Show artists",
         "description": "Show artist information and selected works."
       }
     },

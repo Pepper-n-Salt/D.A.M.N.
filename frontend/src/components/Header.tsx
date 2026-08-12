@@ -55,14 +55,14 @@ export default function Header() {
             <>
               {" "}
               <NavLink
-                to="/landingpage/artists"
+                to="/landingpage/exhibitions"
                 className={({ isActive }) =>
                   isActive
                     ? "text-black font-semibold border-b border-black"
                     : "text-black"
                 }
               >
-                {t("navigation.artists")}
+                {t("navigation.exhibitions")}
               </NavLink>
               <NavLink
                 to="/landingpage/artworks"
@@ -73,16 +73,16 @@ export default function Header() {
                 }
               >
                 {t("navigation.artworks")}
-              </NavLink>
+              </NavLink>{" "}
               <NavLink
-                to="/landingpage/exhibitions"
+                to="/landingpage/artists"
                 className={({ isActive }) =>
                   isActive
                     ? "text-black font-semibold border-b border-black"
                     : "text-black"
                 }
               >
-                {t("navigation.exhibitions")}
+                {t("navigation.artists")}
               </NavLink>
               <NavLink
                 to="/landingpage/screens"

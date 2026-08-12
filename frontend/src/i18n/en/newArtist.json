@@ -1,25 +1,23 @@
 {
-  "newArtist": {
-    "title": "Add a New Artist",
-    "paragraph": "Create a new artist entry for the platform.",
-    "form": {
-      "language": "Form Language",
-      "languages": {
-        "german": "German",
-        "english": "English"
-      },
-      "firstname": "First Name",
-      "lastname": "Last Name",
-      "dateOfBirth": "Date of Birth",
-      "dateOfDeath": "Date of Death",
-      "country": "Country",
-      "description": "Description",
-      "image": "Upload Image"
+  "title": "Add a New Artist",
+  "paragraph": "Create a new artist entry for the platform.",
+  "form": {
+    "language": "In which language would you like to add the artist?",
+    "languages": {
+      "german": "German",
+      "english": "English"
     },
-    "actions": {
-      "save": "Save Artist",
-      "translateToEnglish": "Translate into English",
-      "translateToGerman": "Translate into German"
-    }
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "dateOfBirth": "Date of Birth",
+    "dateOfDeath": "Date of Death",
+    "country": "Country",
+    "description": "Description",
+    "image": "Upload Image"
+  },
+  "actions": {
+    "save": "Save Artist",
+    "translateToEnglish": "Translate into English",
+    "translateToGerman": "Translate into German"
   }
 }
