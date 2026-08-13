@@ -4,15 +4,14 @@ import {
   createArtistTranslation,
   updateArtistTranslation,
 } from "../controllers/artistTranslationController.js";
+import { check } from "zod";
 
 const router = express.Router();
 
-router.post("/:artistId/translations", checkAuth, createArtistTranslation);
+router.use(checkAuth);
 
-router.patch(
-  "/:artistId/translations/:languageCode",
-  checkAuth,
-  updateArtistTranslation
-);
+router.post("/:artistId/translations", createArtistTranslation);
+
+router.patch("/:artistId/translations/:languageCode", updateArtistTranslation);
 
 export default router;
