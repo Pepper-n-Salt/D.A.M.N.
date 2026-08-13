@@ -4,10 +4,23 @@ import db from "../lib/db";
 
 // Alle nicht gelöschten Exhibitions abrufen
 // getestet: klappt!
-export const showAllExhibitions = async (req: Request, res: Response) => {
+export const showAllExhibitions = async (
+  req: Request<{ languageCode: string }>,
+  res: Response
+) => {
   try {
+    const { languageCode } = req.params;
+
     const exhibitions = await Exhibition.findAll({
       where: { isDeleted: false },
+      include: [
+        {
+          model: ExhibitionTranslation,
+          where: {
+            languageCode,
+          },
+        },
+      ],
     });
 
     return res.status(200).json(exhibitions);

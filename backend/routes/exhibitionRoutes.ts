@@ -54,7 +54,7 @@ router.patch(
   checkAuth,
   validateParams(exhibitionIdSchema),
   deleteExhibition
-); // patch, weil Soft Delete, denn mit delete würden wir den Datensatz komplett löschen, hier ändern wir aber nur den "Status" von isDeleted zu true
+);
 
 router.patch(
   "/:exhibitionId/:languageCode",
