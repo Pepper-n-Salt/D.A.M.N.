@@ -55,7 +55,7 @@ export const showAllArtists = async (
 };
 
 // Einzelnen nicht gelöschten Artist abrufen
-// getestet: noch nicht
+// getestet: klappt!
 export const showOneArtist = async (
   req: Request<{ artistId: string; languageCode: string }>,
   res: Response
@@ -115,6 +115,7 @@ export const showOneArtist = async (
 };
 
 // Neuen Artist als kompletten Datensatz, also inklusive der ersten "Translation", anlegen
+// getestet: klappt!
 export const createArtist = async (req: Request, res: Response) => {
   const t = await db.transaction();
   try {
@@ -184,6 +185,7 @@ export const createArtist = async (req: Request, res: Response) => {
 };
 
 // Artist und die dazugehörige Übersetzung aktualisieren
+// getestet: klappt!
 export const updateArtist = async (
   req: Request<{ artistId: string; languageCode: string }>,
   res: Response
@@ -281,6 +283,7 @@ export const updateArtist = async (
 };
 
 // Artist per Soft Delete als gelöscht markieren
+// getestet: klappt!
 export const deleteArtist = async (
   req: Request<{ artistId: string }>,
   res: Response
