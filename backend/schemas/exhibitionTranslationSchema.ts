@@ -1,16 +1,5 @@
 import { z } from "zod";
 
-// Params für: POST /:exhibitionId/translations
-export const exhibitionIdSchema = z.object({
-  exhibitionId: z.uuid(),
-});
-
-// Params für: PATCH /:exhibitionId/translations/:languageCode
-export const exhibitionIdLanguageCodeSchema = z.object({
-  exhibitionId: z.uuid(),
-  languageCode: z.string().min(2).max(7),
-});
-
 // Body für das Anlegen einer neuen Translation
 export const createExhibitionTranslationSchema = z.object({
   languageCode: z.string().min(2).max(7),
