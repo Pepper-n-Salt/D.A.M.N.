@@ -111,9 +111,92 @@ export const createArtist = async (req: Request, res: Response) => {
 };
 
 // Artist und die dazugehörige Übersetzung aktualisieren
-export const updateArtist = async (req: Request, res: Response) => {
+export const updateArtist = async (
+  req: Request<{ artistId: string; languageCode: string }>,
+  res: Response
+) => {
+  const t = await db.transaction();
   try {
-  } catch (e) {}
+    const { artistId, languageCode } = req.params;
+
+    const {
+      firstName,
+      lastName,
+      dateOfBirth,
+      dateOfDeath,
+      country,
+      description,
+      imageId,
+    } = req.body;
+
+    const artist = await Artist.findOne({
+      where: {
+        id: artistId,
+        isDeleted: false,
+      },
+      transaction: t,
+    });
+
+    if (!artist) {
+      await t.rollback();
+
+      return res.status(404).json({
+        msg: "Der Artist wurde nicht gefunden.",
+      });
+    }
+
+    // languageCode ist Bestandteil des zusammengesetzten Primary Keys
+    const artistTranslation = await ArtistTranslation.findOne({
+      where: {
+        artistId,
+        languageCode,
+      },
+      transaction: t,
+    });
+
+    if (!artistTranslation) {
+      await t.rollback();
+
+      return res.status(404).json({
+        msg: "Die ArtistTranslation wurde nicht gefunden.",
+      });
+    }
+
+    await artist.update(
+      {
+        imageId,
+        dateOfBirth,
+        dateOfDeath,
+        lastEditedBy: req.user!.id,
+      },
+      { transaction: t }
+    );
+
+    await artistTranslation.update(
+      {
+        firstName,
+        lastName,
+        country,
+        description,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    return res.status(200).json({
+      artist,
+      artistTranslation,
+    });
+  } catch (e) {
+    await t.rollback();
+
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Der Artist konnte nicht aktualisiert werden.",
+    });
+  }
 };
 
 // Artist per Soft Delete als gelöscht markieren
