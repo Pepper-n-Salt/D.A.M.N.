@@ -24,6 +24,7 @@ export const validateParams = <T extends Record<string, string>>(
   schema: ZodType<T>
 ) => {
   return (req: Request, res: Response, next: NextFunction) => {
+    console.log("PARAMS IN VALIDATOR:", req.params);
     const result = schema.safeParse(req.params);
 
     if (!result.success) {

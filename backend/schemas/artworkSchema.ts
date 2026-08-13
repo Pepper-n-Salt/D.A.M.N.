@@ -4,6 +4,11 @@ export const artworkIdSchema = z.object({
   artworkId: z.uuid(),
 });
 
+export const artworkLanguageParamsSchema = z.object({
+  artworkId: z.uuid(),
+  languageCode: z.string().min(2).max(7),
+});
+
 export const createArtworkSchema = z.object({
   year: z.number().int().min(1),
   country: z.string().max(100).nullable(),
@@ -22,7 +27,6 @@ export const updateArtworkSchema = z.object({
   country: z.string().max(100).nullable().optional(),
   dimensions: z.string().max(255).nullable().optional(),
   imageId: z.uuid().optional(),
-  // languageCode: z.string().min(2).max(7), // ist es sinnvoll hier drin oder später über url parameter validieren?
   title: z.string().min(1).max(255).optional(),
   subtitle: z.string().max(255).nullable().optional(),
   origin: z.string().max(255).nullable().optional(),

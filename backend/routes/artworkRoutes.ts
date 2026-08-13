@@ -10,6 +10,7 @@ import {
 import { validateBody, validateParams } from "../middleware/validate.js";
 import {
   artworkIdSchema,
+  artworkLanguageParamsSchema,
   createArtworkSchema,
   updateArtworkSchema,
 } from "../schemas/artworkSchema.js";
@@ -31,15 +32,15 @@ router.patch(
   "/:artworkId",
   checkAuth,
   validateParams(artworkIdSchema),
-  validateBody(updateArtworkSchema),
-  updateArtwork
+  deleteArtwork
 );
 
 router.patch(
-  "/:artworkId",
+  "/:artworkId/:languageCode",
   checkAuth,
-  validateParams(artworkIdSchema),
-  deleteArtwork
+  validateParams(artworkLanguageParamsSchema),
+  validateBody(updateArtworkSchema),
+  updateArtwork
 );
 
 export default router;
