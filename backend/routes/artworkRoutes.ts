@@ -10,19 +10,25 @@ import {
 import { validateBody, validateParams } from "../middleware/validate.js";
 import {
   artworkIdSchema,
-  artworkLanguageParamsSchema,
+  artworkLanguageSchema,
+  artworkIdLanguageParamsSchema,
   createArtworkSchema,
   updateArtworkSchema,
 } from "../schemas/artworkSchema.js";
 
 const router = express.Router();
 
-router.get("/", checkAuth, showAllArtworks);
+router.get(
+  "/:languageCode",
+  checkAuth,
+  validateParams(artworkLanguageSchema),
+  showAllArtworks
+);
 
 router.get(
   "/:artworkId",
   checkAuth,
-  validateParams(artworkIdSchema),
+  validateParams(artworkIdLanguageParamsSchema),
   showOneArtwork
 );
 
@@ -38,7 +44,7 @@ router.patch(
 router.patch(
   "/:artworkId/:languageCode",
   checkAuth,
-  validateParams(artworkLanguageParamsSchema),
+  validateParams(artworkIdLanguageParamsSchema),
   validateBody(updateArtworkSchema),
   updateArtwork
 );
