@@ -268,7 +268,7 @@ export const updateExhibition = async (
     await t.commit();
 
     return res.status(200).json({
-      eid: exhibition.id,
+      id: exhibition.id,
       coverImageId: exhibition.coverImageId,
       startDate: exhibition.startDate,
       endDate: exhibition.endDate,
