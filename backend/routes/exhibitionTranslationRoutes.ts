@@ -7,15 +7,12 @@ import {
 
 const router = express.Router();
 
-router.post(
-  "/:exhibitionId/translations",
-  checkAuth,
-  createExhibitionTranslation
-);
+router.use(checkAuth);
+
+router.post("/:exhibitionId/translations", createExhibitionTranslation);
 
 router.patch(
   "/:exhibitionId/translations/:languageCode",
-  checkAuth,
   updateExhibitionTranslation
 );
 
