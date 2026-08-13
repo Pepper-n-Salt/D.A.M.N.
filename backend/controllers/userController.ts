@@ -27,6 +27,7 @@ const sanitizeUser = (user: User) => {
   );
 };
 
+// getestet: klappt!
 export const showAllUsers = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
@@ -53,6 +54,7 @@ export const showAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+// getestet: klappt!
 export const showUser = async (
   req: Request<{ userId: string }>,
   res: Response
@@ -79,6 +81,7 @@ export const showUser = async (
   }
 };
 
+// getestet: klappt
 export const createUser = async (req: Request, res: Response) => {
   try {
     const organisationId = req.user?.organisationId;
@@ -164,6 +167,7 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
+// getestet: klappt!
 export const updateUser = async (
   req: Request<{ userId: string }>,
   res: Response
@@ -280,6 +284,7 @@ export const updateUser = async (
   }
 };
 
+// getestet: klappt
 export const deleteUser = async (
   req: Request<{ userId: string }>,
   res: Response
