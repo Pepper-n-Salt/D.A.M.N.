@@ -18,6 +18,7 @@ import deNewArtist from "./de/newArtist.json";
 import deNewExhibition from "./de/newExhibition.json";
 import deNewScreen from "./de/newScreen.json";
 import deDisplay from "./de/display.json";
+import deValidation from "./de/validation.json";
 
 import enCommon from "./en/common.json";
 import enHome from "./en/home.json";
@@ -37,6 +38,7 @@ import enNewArtist from "./en/newArtist.json";
 import enNewExhibition from "./en/newExhibition.json";
 import enNewScreen from "./en/newScreen.json";
 import enDisplay from "./en/display.json";
+import enValidation from "./en/validation.json";
 
 export const resources = {
   de: {
@@ -58,6 +60,7 @@ export const resources = {
     newExhibition: deNewExhibition,
     newScreen: deNewScreen,
     display: deDisplay,
+    validation: deValidation,
   },
   en: {
     common: enCommon,
@@ -78,6 +81,7 @@ export const resources = {
     newExhibition: enNewExhibition,
     newScreen: enNewScreen,
     display: enDisplay,
+    validation: enValidation,
   },
 } as const;
 

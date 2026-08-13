@@ -1,12 +1,30 @@
 import { useTranslation } from "react-i18next";
 
-type Language = "german" | "english";
+import { useExhibitionValidation } from "../validation/exhibitionValidation";
+
+export type Language = "german" | "english";
+
+export type ExhibitionFormData = {
+  title: string;
+  subtitle: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  description: string;
+  events: string;
+  image: File | null;
+};
 
 type ExhibitionFormProps = {
   language: Language;
   onLanguageChange: (language: Language) => void;
+
+  formData: ExhibitionFormData;
+  setFormData: React.Dispatch<React.SetStateAction<ExhibitionFormData>>;
+
   onSave: () => void;
   onTranslate?: () => void;
+
   exhibitionSaved: boolean;
   showTranslateButton?: boolean;
   languageDisabled?: boolean;
@@ -15,6 +33,8 @@ type ExhibitionFormProps = {
 export default function ExhibitionForm({
   language,
   onLanguageChange,
+  formData,
+  setFormData,
   onSave,
   onTranslate,
   exhibitionSaved,
@@ -23,8 +43,39 @@ export default function ExhibitionForm({
 }: ExhibitionFormProps) {
   const { t } = useTranslation("newExhibition");
 
+  const { validateExhibitionForm } = useExhibitionValidation();
+
+  /*
+   * Die Validierungsfehler werden bei jedem Render neu berechnet.
+   *
+   * Dadurch wird automatisch die aktuell aktive Sprache aus
+   * dem validation-Namespace verwendet.
+   *
+   * Wenn also im Header von EN auf DE gewechselt wird,
+   * rendert die Komponente neu und die Fehlermeldungen werden
+   * ebenfalls auf Deutsch angezeigt.
+   */
+  const errors = validateExhibitionForm(formData);
+
+  const updateField = <K extends keyof ExhibitionFormData>(
+    field: K,
+    value: ExhibitionFormData[K]
+  ) => {
+    setFormData((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const validationErrors = validateExhibitionForm(formData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
     onSave();
   };
 
@@ -32,7 +83,9 @@ export default function ExhibitionForm({
     <form
       className="mx-auto flex w-full max-w-3xl flex-col gap-8 rounded-none border border-black p-8"
       onSubmit={handleSubmit}
+      noValidate
     >
+      {/* LANGUAGE */}
       <div className="mb-10 flex flex-col gap-2 border-b border-black">
         <label
           htmlFor={`language-${language}`}
@@ -49,11 +102,14 @@ export default function ExhibitionForm({
           className="border-b border-black bg-transparent py-3 outline-none"
         >
           <option value="german">{t("form.languages.german")}</option>
+
           <option value="english">{t("form.languages.english")}</option>
         </select>
       </div>
 
+      {/* TITLE / SUBTITLE / DATES / LOCATION */}
       <div className="grid gap-12 md:grid-cols-2">
+        {/* TITLE */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`title-${language}`}
@@ -66,10 +122,25 @@ export default function ExhibitionForm({
             type="text"
             id={`title-${language}`}
             name={`title-${language}`}
-            className="border-b border-black bg-transparent py-3 outline-none"
+            value={formData.title}
+            onChange={(e) => updateField("title", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.title ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.title}
+            aria-describedby={
+              errors.title ? `title-error-${language}` : undefined
+            }
           />
+
+          {errors.title && (
+            <p id={`title-error-${language}`} className="text-sm text-red-600">
+              {errors.title}
+            </p>
+          )}
         </div>
 
+        {/* SUBTITLE */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`subtitle-${language}`}
@@ -82,10 +153,13 @@ export default function ExhibitionForm({
             type="text"
             id={`subtitle-${language}`}
             name={`subtitle-${language}`}
+            value={formData.subtitle}
+            onChange={(e) => updateField("subtitle", e.target.value)}
             className="border-b border-black bg-transparent py-3 outline-none"
           />
         </div>
 
+        {/* START DATE */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`startDate-${language}`}
@@ -98,10 +172,28 @@ export default function ExhibitionForm({
             type="date"
             id={`startDate-${language}`}
             name={`startDate-${language}`}
-            className="border-b border-black bg-transparent py-3 outline-none"
+            value={formData.startDate}
+            onChange={(e) => updateField("startDate", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.startDate ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.startDate}
+            aria-describedby={
+              errors.startDate ? `startDate-error-${language}` : undefined
+            }
           />
+
+          {errors.startDate && (
+            <p
+              id={`startDate-error-${language}`}
+              className="text-sm text-red-600"
+            >
+              {errors.startDate}
+            </p>
+          )}
         </div>
 
+        {/* END DATE */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`endDate-${language}`}
@@ -114,10 +206,28 @@ export default function ExhibitionForm({
             type="date"
             id={`endDate-${language}`}
             name={`endDate-${language}`}
-            className="border-b border-black bg-transparent py-3 outline-none"
+            value={formData.endDate}
+            onChange={(e) => updateField("endDate", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.endDate ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.endDate}
+            aria-describedby={
+              errors.endDate ? `endDate-error-${language}` : undefined
+            }
           />
+
+          {errors.endDate && (
+            <p
+              id={`endDate-error-${language}`}
+              className="text-sm text-red-600"
+            >
+              {errors.endDate}
+            </p>
+          )}
         </div>
 
+        {/* LOCATION */}
         <div className="flex flex-col gap-2 md:col-span-2">
           <label
             htmlFor={`location-${language}`}
@@ -130,11 +240,29 @@ export default function ExhibitionForm({
             type="text"
             id={`location-${language}`}
             name={`location-${language}`}
-            className="border-b border-black bg-transparent py-3 outline-none"
+            value={formData.location}
+            onChange={(e) => updateField("location", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.location ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.location}
+            aria-describedby={
+              errors.location ? `location-error-${language}` : undefined
+            }
           />
+
+          {errors.location && (
+            <p
+              id={`location-error-${language}`}
+              className="text-sm text-red-600"
+            >
+              {errors.location}
+            </p>
+          )}
         </div>
       </div>
 
+      {/* DESCRIPTION */}
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`description-${language}`}
@@ -147,10 +275,28 @@ export default function ExhibitionForm({
           id={`description-${language}`}
           name={`description-${language}`}
           rows={6}
-          className="resize-none border-b border-black bg-transparent py-3 outline-none"
+          value={formData.description}
+          onChange={(e) => updateField("description", e.target.value)}
+          className={`resize-none border-b bg-transparent py-3 outline-none ${
+            errors.description ? "border-red-600" : "border-black"
+          }`}
+          aria-invalid={!!errors.description}
+          aria-describedby={
+            errors.description ? `description-error-${language}` : undefined
+          }
         />
+
+        {errors.description && (
+          <p
+            id={`description-error-${language}`}
+            className="text-sm text-red-600"
+          >
+            {errors.description}
+          </p>
+        )}
       </div>
 
+      {/* EVENTS */}
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`events-${language}`}
@@ -163,10 +309,25 @@ export default function ExhibitionForm({
           id={`events-${language}`}
           name={`events-${language}`}
           rows={4}
-          className="resize-none border-b border-black bg-transparent py-3 outline-none"
+          value={formData.events}
+          onChange={(e) => updateField("events", e.target.value)}
+          className={`resize-none border-b bg-transparent py-3 outline-none ${
+            errors.events ? "border-red-600" : "border-black"
+          }`}
+          aria-invalid={!!errors.events}
+          aria-describedby={
+            errors.events ? `events-error-${language}` : undefined
+          }
         />
+
+        {errors.events && (
+          <p id={`events-error-${language}`} className="text-sm text-red-600">
+            {errors.events}
+          </p>
+        )}
       </div>
 
+      {/* IMAGE */}
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`image-${language}`}
@@ -180,10 +341,24 @@ export default function ExhibitionForm({
           id={`image-${language}`}
           name={`image-${language}`}
           accept="image/*"
-          className="cursor-pointer border border-black bg-transparent p-3"
+          onChange={(e) => updateField("image", e.target.files?.[0] ?? null)}
+          className={`cursor-pointer border bg-transparent p-3 ${
+            errors.image ? "border-red-600" : "border-black"
+          }`}
+          aria-invalid={!!errors.image}
+          aria-describedby={
+            errors.image ? `image-error-${language}` : undefined
+          }
         />
+
+        {errors.image && (
+          <p id={`image-error-${language}`} className="text-sm text-red-600">
+            {errors.image}
+          </p>
+        )}
       </div>
 
+      {/* ACTIONS */}
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"

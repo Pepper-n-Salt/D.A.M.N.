@@ -1,31 +1,52 @@
 {
-  "validation": {
-    "title": {
-      "required": "Title is required."
-    },
-    "year": {
-      "required": "Year is required.",
-      "numbersOnly": "Year must contain numbers only.",
-      "wholeNumber": "Year must be a whole number.",
-      "invalid": "Please enter a valid year."
-    },
-    "country": {
-      "required": "Country is required."
-    },
-    "origin": {
-      "required": "Origin is required."
-    },
-    "material": {
-      "required": "Material is required."
-    },
-    "dimensions": {
-      "required": "Dimensions are required."
-    },
-    "description": {
-      "required": "Description is required."
-    },
-    "artists": {
-      "required": "At least one artist is required."
-    }
+  "title": {
+    "required": "Title is required."
+  },
+  "year": {
+    "required": "Year is required.",
+    "numbersOnly": "Year must contain numbers only.",
+    "wholeNumber": "Year must be a whole number.",
+    "invalid": "Please enter a valid year."
+  },
+  "country": {
+    "required": "Country is required."
+  },
+  "origin": {
+    "required": "Origin is required."
+  },
+  "material": {
+    "required": "Material is required."
+  },
+  "dimensions": {
+    "required": "Dimensions are required."
+  },
+  "description": {
+    "required": "Description is required."
+  },
+  "artists": {
+    "required": "At least one artist is required."
+  },
+
+  "firstName": {
+    "required": "First name is required."
+  },
+  "lastName": {
+    "required": "Last name is required."
+  },
+
+  "dateOfBirth": {
+    "future": "Date of birth cannot be in the future."
+  },
+  "dateOfDeath": {
+    "future": "Date of death cannot be in the future.",
+    "beforeBirth": "Date of death cannot be before date of birth."
+  },
+
+  "startDate": {
+    "required": "Start date is required."
+  },
+  "endDate": {
+    "required": "End date is required.",
+    "beforeStart": "End date cannot be before start date."
   }
 }
