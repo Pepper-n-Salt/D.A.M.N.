@@ -47,17 +47,20 @@ export const showAllUsers = async (req: Request, res: Response) => {
     });
 
     return res.json({ users });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
 
-export const showUser = async (req: Request, res: Response) => {
+export const showUser = async (
+  req: Request<{ userId: string }>,
+  res: Response
+) => {
   try {
     const organisationId = req.user?.organisationId;
     const role = req.user?.role;
-    const { userId } = req.params as { userId: string };
+    const { userId } = req.params;
 
     if (!organisationId && role !== "super") {
       return res.status(401).json({ msg: "Nicht autorisiert." });
@@ -70,8 +73,8 @@ export const showUser = async (req: Request, res: Response) => {
     }
 
     return res.json({ user });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
@@ -93,11 +96,12 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(403).json({ msg: "Admin-Rechte erforderlich." });
     }
 
-    if (!email || !password || !firstName || !lastName) {
-      return res
-        .status(400)
-        .json({ msg: "Alle Felder müssen ausgefüllt sein." });
-    }
+    // übernimmt jetzt zod
+    // if (!email || !password || !firstName || !lastName) {
+    //   return res
+    //     .status(400)
+    //     .json({ msg: "Alle Felder müssen ausgefüllt sein." });
+    // }
 
     const existingUser = await User.findOne({
       where: { email: email.toLowerCase() },
@@ -110,11 +114,16 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Rolle bestimmen
+    // super darf admin oder user erstellen.
+    // admin darf nur user erstellen.
     const roleToCreate =
       role === "super" && userRole === "admin" ? "admin" : "user";
 
     let createdOrganisationId = organisationId;
 
+    // Superadmin darf einen User für eine neue Organisation anlegen
     if (role === "super" && requestedOrganisationName?.trim()) {
       const organisationName = requestedOrganisationName.trim();
       // create a tiny Media row so logo_id can be non-null (DB may enforce NOT NULL)
@@ -134,6 +143,7 @@ export const createUser = async (req: Request, res: Response) => {
           logoId,
         },
       });
+
       createdOrganisationId = organisation.id;
     }
 
@@ -148,18 +158,21 @@ export const createUser = async (req: Request, res: Response) => {
     });
 
     return res.status(201).json({ user: sanitizeUser(newUser) });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (
+  req: Request<{ userId: string }>,
+  res: Response
+) => {
   try {
     const organisationId = req.user?.organisationId;
     const role = req.user?.role;
     const currentUserId = req.user?.id;
-    const { userId } = req.params as { userId: string };
+    const { userId } = req.params;
 
     if (!currentUserId) {
       return res.status(401).json({ msg: "Nicht autorisiert." });
@@ -192,7 +205,21 @@ export const updateUser = async (req: Request, res: Response) => {
     } = req.body;
 
     if (email) {
-      user.email = email.toLowerCase();
+      const normalizedEmail = email.toLowerCase();
+
+      const existingUser = await User.findOne({
+        where: {
+          email: normalizedEmail,
+        },
+      });
+
+      if (existingUser && existingUser.id !== user.id) {
+        return res.status(400).json({
+          msg: "Diese E-Mail ist bereits vergeben.",
+        });
+      }
+
+      user.email = normalizedEmail;
     }
 
     if (password) {
@@ -247,17 +274,20 @@ export const updateUser = async (req: Request, res: Response) => {
     await user.save();
 
     return res.json({ user: sanitizeUser(user) });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
 
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (
+  req: Request<{ userId: string }>,
+  res: Response
+) => {
   try {
     const organisationId = req.user?.organisationId;
     const role = req.user?.role;
-    const { userId } = req.params as { userId: string };
+    const { userId } = req.params;
 
     if (role !== "admin" && role !== "super") {
       return res.status(403).json({ msg: "Admin-Rechte erforderlich." });
@@ -272,8 +302,8 @@ export const deleteUser = async (req: Request, res: Response) => {
     await user.destroy();
 
     return res.status(200).json({ msg: "Benutzer:in gelöscht." });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
