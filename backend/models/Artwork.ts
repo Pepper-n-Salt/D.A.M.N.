@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../lib/db.js";
+import ArtworkTranslation from "./ArtworkTranslation.js";
 
 class Artwork extends Model {
   declare id: string;
@@ -9,6 +10,8 @@ class Artwork extends Model {
   declare createdBy: string;
   declare lastEditedBy: string | null;
   declare isDeleted: boolean;
+
+  declare ArtworkTranslations?: ArtworkTranslation[];
 }
 
 Artwork.init(

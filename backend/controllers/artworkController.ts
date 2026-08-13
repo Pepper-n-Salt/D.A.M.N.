@@ -4,9 +4,48 @@ import db from "../lib/db";
 
 // Alle Artworks abrufen
 // getestet: klappt!
-export const showAllArtworks = async (req: Request, res: Response) => {
+export const showAllArtworks = async (
+  req: Request<{ languageCode: string }>,
+  res: Response
+) => {
   try {
-    const artworks = await Artwork.findAll({ where: { isDeleted: false } });
+    const { languageCode } = req.params;
+
+    const artworks = await Artwork.findAll({
+      where: { isDeleted: false },
+      include: [
+        {
+          model: ArtworkTranslation,
+          where: {
+            languageCode,
+          },
+        },
+      ],
+    });
+
+    const result = artworks.map((artwork) => {
+      const translation = artwork.ArtworkTranslations?.[0];
+
+      return {
+        id: artwork.id,
+        year: artwork.year,
+        dimensions: artwork.dimensions,
+        imageId: artwork.imageId,
+        createdBy: artwork.createdBy,
+        lastEditedBy: artwork.lastEditedBy,
+        isDeleted: artwork.isDeleted,
+
+        languageCode: translation?.languageCode,
+        title: translation?.title,
+        subtitle: translation?.subtitle,
+        country: translation?.country,
+        origin: translation?.origin,
+        material: translation?.material,
+        description: translation?.description,
+        // aiGenerated: translation?.aiGenerated,
+        isScreen: translation?.isScreen,
+      };
+    });
 
     return res.status(200).json(artworks);
   } catch (e) {
@@ -19,17 +58,37 @@ export const showAllArtworks = async (req: Request, res: Response) => {
 // Einzelnes Artwork abrufen
 // getestet: klappt!
 export const showOneArtwork = async (
-  req: Request<{ artworkId: string }>,
+  req: Request<{ artworkId: string; languageCode: string }>,
   res: Response
 ) => {
   try {
-    const { artworkId } = req.params;
+    const { artworkId, languageCode } = req.params;
 
-    const singleArtwork = await Artwork.findByPk(artworkId);
+    const singleArtwork = await Artwork.findOne({
+      where: {
+        id: artworkId,
+        isDeleted: false,
+      },
+      include: [
+        {
+          model: ArtworkTranslation,
+          where: { languageCode },
+        },
+      ],
+    });
 
     if (!singleArtwork) {
       return res.status(404).json({ msg: "Artwork wurde nicht gefunden." });
     }
+
+    const translation = singleArtwork.ArtworkTranslations?.[0];
+
+    if (!translation) {
+      return res.status(404).json({
+        msg: "Die Übersetzung des Artworks wurde nicht gefunden.",
+      });
+    }
+
     return res.status(200).json(singleArtwork);
   } catch (e) {
     console.error(e);

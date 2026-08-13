@@ -36,11 +36,11 @@ export const showAllArtists = async (
         lastEditedBy: artist.lastEditedBy,
         isDeleted: artist.isDeleted,
 
-        languageCode: translation!.languageCode,
-        firstName: translation!.firstName,
-        lastName: translation!.lastName,
-        description: translation!.description,
-        country: translation!.country,
+        languageCode: translation?.languageCode,
+        firstName: translation?.firstName,
+        lastName: translation?.lastName,
+        description: translation?.description,
+        country: translation?.country,
       }; // Frage ans FE: Sollte ich hier lieber weniger Felder zurückgeben?
     });
 
@@ -102,9 +102,11 @@ export const showOneArtist = async (
       languageCode: translation.languageCode,
       firstName: translation.firstName,
       lastName: translation.lastName,
-      description: translation.description,
       country: translation.country,
-    }); // Frage ans FE: Sollte ich hier lieber weniger Felder zurückgeben?
+      description: translation.description,
+      // aiGenerated: translation.aiGenerated,
+      isScreen: translation.isScreen,
+    });
   } catch (e) {
     console.error(e);
 
