@@ -41,7 +41,7 @@ export const showAllArtists = async (
         lastName: translation!.lastName,
         description: translation!.description,
         country: translation!.country,
-      };
+      }; // Frage ans FE: Sollte ich hier lieber weniger Felder zurückgeben?
     });
 
     return res.status(200).json(result);
@@ -104,7 +104,7 @@ export const showOneArtist = async (
       lastName: translation.lastName,
       description: translation.description,
       country: translation.country,
-    });
+    }); // Frage ans FE: Sollte ich hier lieber weniger Felder zurückgeben?
   } catch (e) {
     console.error(e);
 
@@ -159,8 +159,18 @@ export const createArtist = async (req: Request, res: Response) => {
     await t.commit();
 
     return res.status(201).json({
-      artist,
-      artistTranslation,
+      id: artist.id,
+      imageId: artist.imageId,
+      dateOfBirth: artist.dateOfBirth,
+      dateOfDeath: artist.dateOfDeath,
+      createdBy: artist.createdBy,
+      lastEditedBy: artist.lastEditedBy,
+
+      languageCode: artistTranslation.languageCode,
+      firstName: artistTranslation.firstName,
+      lastName: artistTranslation.lastName,
+      country: artistTranslation.country,
+      description: artistTranslation.description,
     });
   } catch (e) {
     await t.rollback();
@@ -248,8 +258,16 @@ export const updateArtist = async (
     await t.commit();
 
     return res.status(200).json({
-      artist,
-      artistTranslation,
+      id: artist.id,
+      imageId: artist.imageId,
+      dateOfBirth: artist.dateOfBirth,
+      dateOfDeath: artist.dateOfDeath,
+      lastEditedBy: artist.lastEditedBy,
+
+      firstName: artistTranslation.firstName,
+      lastName: artistTranslation.lastName,
+      country: artistTranslation.country,
+      description: artistTranslation.description,
     });
   } catch (e) {
     await t.rollback();
