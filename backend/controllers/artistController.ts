@@ -4,19 +4,47 @@ import db from "../lib/db";
 
 // Alle Artists abrufen
 // Wird z. B. für das Select-/Suchfeld im Artwork-Formular verwendet
-// getestet: noch nicht
-export const showAllArtists = async (req: Request, res: Response) => {
+// getestet: klappt!
+export const showAllArtists = async (
+  req: Request<{ languageCode: string }>,
+  res: Response
+) => {
   try {
+    const { languageCode } = req.params;
+
     const artists = await Artist.findAll({
       where: { isDeleted: false },
       include: [
         {
           model: ArtistTranslation,
+          where: {
+            languageCode,
+          },
         },
       ],
     });
 
-    return res.status(200).json(artists);
+    const result = artists.map((artist) => {
+      const translation = artist.ArtistTranslations?.[0];
+
+      return {
+        id: artist.id,
+        imageId: artist.imageId,
+        dateOfBirth: artist.dateOfBirth,
+        dateOfDeath: artist.dateOfDeath,
+        createdBy: artist.createdBy,
+        lastEditedBy: artist.lastEditedBy,
+        isDeleted: artist.isDeleted,
+
+        languageCode: translation!.languageCode,
+        firstName: translation!.firstName,
+        lastName: translation!.lastName,
+        description: translation!.description,
+        country: translation!.country,
+      };
+    });
+
+    return res.status(200).json(result);
   } catch (e) {
     console.error(e);
 
