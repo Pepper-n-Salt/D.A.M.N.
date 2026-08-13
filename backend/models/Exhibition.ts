@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../lib/db.js";
+import ExhibitionTranslation from "./ExhibitionTranslation.js";
 
 class Exhibition extends Model {
   declare id: string;
@@ -17,6 +18,8 @@ class Exhibition extends Model {
   declare headlineFont: string | null;
   declare textFont: string | null;
   declare roundness: "none" | "small" | "medium" | "large";
+
+  declare ExhibitionTranslations?: Exhibition[];
 }
 
 Exhibition.init(

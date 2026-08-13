@@ -23,6 +23,10 @@ export const showAllExhibitions = async (
       ],
     });
 
+    const result = exhibitions.map((exh) => {
+      const translation = exh.ExhibitionTranslations?.[0];
+    });
+
     return res.status(200).json(exhibitions);
   } catch (e) {
     console.error(e);
