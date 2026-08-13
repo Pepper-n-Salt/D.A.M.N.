@@ -4,7 +4,11 @@ export const exhibitionIdSchema = z.object({
   exhibitionId: z.uuid(),
 });
 
-export const exhibitionLanguageParamsSchema = z.object({
+export const exhibitionLanguageSchema = z.object({
+  languageCode: z.string().min(2).max(7),
+});
+
+export const exhibitionIdLanguageParamsSchema = z.object({
   exhibitionId: z.uuid(),
   languageCode: z.string().min(2).max(7),
 });
