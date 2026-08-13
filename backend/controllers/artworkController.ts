@@ -3,6 +3,7 @@ import { Artwork, ArtworkTranslation } from "../models";
 import db from "../lib/db";
 
 // Alle Artworks abrufen
+// getestet: klappt!
 export const showAllArtworks = async (req: Request, res: Response) => {
   try {
     const artworks = await Artwork.findAll({ where: { isDeleted: false } });
@@ -16,6 +17,7 @@ export const showAllArtworks = async (req: Request, res: Response) => {
 };
 
 // Einzelnes Artwork abrufen
+// getestet: klappt!
 export const showOneArtwork = async (
   req: Request<{ artworkId: string }>,
   res: Response
@@ -23,7 +25,7 @@ export const showOneArtwork = async (
   try {
     const { artworkId } = req.params;
 
-    const singleArtwork = Artwork.findByPk(artworkId);
+    const singleArtwork = await Artwork.findByPk(artworkId);
 
     if (!singleArtwork) {
       return res.status(404).json({ msg: "Artwork wurde nicht gefunden." });
@@ -37,11 +39,12 @@ export const showOneArtwork = async (
 };
 
 // Neues Artwork inklusive der ersten Übersetzung anlegen
+// getestet: klappt!
+// Es muss eine schon in der DB vorhandene imageId verwendet werden
 export const createArtwork = async (req: Request, res: Response) => {
   const t = await db.transaction();
 
   try {
-    // im FE ist noch "country" mit drin und auch "artist" als select. "country" nicht mit in models drin. Nochmal abgleichen!
     const {
       year,
       country,
@@ -68,7 +71,6 @@ export const createArtwork = async (req: Request, res: Response) => {
       { transaction: t }
     );
 
-    // noch füllen
     const artworkTranslation = await ArtworkTranslation.create(
       {
         artworkId: artwork.id,
@@ -79,7 +81,7 @@ export const createArtwork = async (req: Request, res: Response) => {
         origin,
         material,
         description,
-        aiGenerated: false, // oder sollte hier true rein?
+        aiGenerated: false,
         isScreen: false,
       },
       { transaction: t }
@@ -98,21 +100,20 @@ export const createArtwork = async (req: Request, res: Response) => {
 };
 
 // Artwork und die dazugehörige Übersetzung aktualisieren
+// getestet: klappt jetzt endlich!
 export const updateArtwork = async (
-  req: Request<{ artworkId: string }>,
+  req: Request<{ artworkId: string; languageCode: string }>,
   res: Response
 ) => {
   const t = await db.transaction();
 
   try {
-    const { artworkId } = req.params;
+    const { artworkId, languageCode } = req.params;
 
-    // muss die ArtistID an dieser Stelle noch mit rein?
     const {
       year,
       dimensions,
       imageId,
-      languageCode,
       title,
       subtitle,
       country,
@@ -155,7 +156,7 @@ export const updateArtwork = async (
       });
     }
 
-    // Artwork aktualisieren // HIER WEITERMACHEN!
+    // Artwork aktualisieren
     await artwork.update(
       {
         year,
@@ -167,7 +168,6 @@ export const updateArtwork = async (
     );
 
     // Übersetzung aktualisieren
-    // muss hier noch aiGenerated oder isScreen mit rein?
     await artworkTranslation.update(
       {
         title,
@@ -198,9 +198,12 @@ export const updateArtwork = async (
 };
 
 // Artwork per Soft Delete als gelöscht markieren
+// getestet: klappt jetzt auch
 export const deleteArtwork = async (req: Request, res: Response) => {
   try {
     const { artworkId } = req.params;
+
+    console.log("DELETE PARAMS:", req.params);
 
     const artwork = await Artwork.findOne({
       where: { id: artworkId, isDeleted: false },

@@ -1,5 +1,5 @@
 import express from "express";
-// an dieser Stelle noch die middleware importieren
+import { checkAuth } from "../middleware/checkAuth.js";
 import {
   showAllArtworks,
   showOneArtwork,
@@ -7,19 +7,40 @@ import {
   updateArtwork,
   deleteArtwork,
 } from "../controllers/artworkController";
+import { validateBody, validateParams } from "../middleware/validate.js";
+import {
+  artworkIdSchema,
+  artworkLanguageParamsSchema,
+  createArtworkSchema,
+  updateArtworkSchema,
+} from "../schemas/artworkSchema.js";
 
 const router = express.Router();
 
-// überall noch die middleware checkAuth einsetzen, wenn fertig
+router.get("/", checkAuth, showAllArtworks);
 
-router.get("/", showAllArtworks);
+router.get(
+  "/:artworkId",
+  checkAuth,
+  validateParams(artworkIdSchema),
+  showOneArtwork
+);
 
-router.get("/:artworkId", showOneArtwork);
+router.post("/", checkAuth, validateBody(createArtworkSchema), createArtwork);
 
-router.post("/", createArtwork);
+router.patch(
+  "/:artworkId",
+  checkAuth,
+  validateParams(artworkIdSchema),
+  deleteArtwork
+);
 
-router.patch("/:artworkId", updateArtwork);
-
-router.patch("/:artworkId", deleteArtwork);
+router.patch(
+  "/:artworkId/:languageCode",
+  checkAuth,
+  validateParams(artworkLanguageParamsSchema),
+  validateBody(updateArtworkSchema),
+  updateArtwork
+);
 
 export default router;
