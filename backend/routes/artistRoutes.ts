@@ -10,19 +10,25 @@ import {
 } from "../controllers/artistController.js";
 import {
   artistIdSchema,
+  artistLanguageSchema,
+  artistIdLanguageParamsSchema,
   createArtistSchema,
-  artistLanguageParamsSchema,
   updateArtistSchema,
 } from "../schemas/artistSchema.js";
 
 const router = express.Router();
 
-router.get("/", checkAuth, showAllArtists);
+router.get(
+  "/:languageCode",
+  checkAuth,
+  validateParams(artistLanguageSchema),
+  showAllArtists
+);
 
 router.get(
-  "/:artistId",
+  "/:artistId/:languageCode",
   checkAuth,
-  validateParams(artistIdSchema),
+  validateParams(artistIdLanguageParamsSchema),
   showOneArtist
 );
 
@@ -40,7 +46,7 @@ router.patch(
 router.patch(
   "/:artistId/:languageCode",
   checkAuth,
-  validateParams(artistLanguageParamsSchema),
+  validateParams(artistIdLanguageParamsSchema),
   validateBody(updateArtistSchema),
   updateArtist
 );

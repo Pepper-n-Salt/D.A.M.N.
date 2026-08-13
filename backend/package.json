@@ -16,7 +16,9 @@
     "db:seed:exhibition-translation": "bun run scripts/seedExhibitionTranslation.ts",
     "db:seed:artwork": "bun run scripts/seedArtwork.ts",
     "db:seed:artwork-translation": "bun run scripts/seedArtworkTranslation.ts",
-    "db:seed": "bun run db:seed:organisation && bun run db:seed:users && bun run db:seed:media && bun run db:seed:exhibition && bun run db:seed:exhibition-translation && bun run db:seed:artwork && bun run db:seed:artwork-translation",
+    "db:seed:artist": "bun run scripts/seedArtist.ts",
+    "db:seed:artist-translation": "bun run scripts/seedArtistTranslation.ts",
+    "db:seed": "bun run db:seed:organisation && bun run db:seed:users && bun run db:seed:media && bun run db:seed:exhibition && bun run db:seed:exhibition-translation && bun run db:seed:artwork && bun run db:seed:artwork-translation && bun run db:seed:artist && bun run db:seed:artist-translation",
     "db:setup": "bun run db:reset && bun run db:seed"
   },
   "devDependencies": {

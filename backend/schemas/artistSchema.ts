@@ -4,7 +4,11 @@ export const artistIdSchema = z.object({
   artistId: z.uuid(),
 });
 
-export const artistLanguageParamsSchema = z.object({
+export const artistLanguageSchema = z.object({
+  languageCode: z.string().min(2).max(7),
+});
+
+export const artistIdLanguageParamsSchema = z.object({
   artistId: z.uuid(),
   languageCode: z.string().min(2).max(7),
 });

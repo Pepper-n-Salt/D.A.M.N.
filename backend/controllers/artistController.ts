@@ -7,7 +7,14 @@ import db from "../lib/db";
 // getestet: noch nicht
 export const showAllArtists = async (req: Request, res: Response) => {
   try {
-    const artists = await Artist.findAll({ where: { isDeleted: false } });
+    const artists = await Artist.findAll({
+      where: { isDeleted: false },
+      include: [
+        {
+          model: ArtistTranslation,
+        },
+      ],
+    });
 
     return res.status(200).json(artists);
   } catch (e) {
@@ -33,6 +40,11 @@ export const showOneArtist = async (
         id: artistId,
         isDeleted: false,
       },
+      include: [
+        {
+          model: ArtistTranslation,
+        },
+      ],
     });
 
     if (!artist) {

@@ -8,6 +8,7 @@ const run = async () => {
     console.log("DB verbunden.");
 
     const translations = [
+      // Exhibition 1 - Deutsch
       {
         exhibitionId: "550e8400-e29b-41d4-a716-446655440001",
         languageCode: "de",
@@ -19,7 +20,27 @@ const run = async () => {
         openingEvent: "Eröffnung am 1. August 2026",
         specialEvent: "Nacht der Museen",
         closingEvent: "Finissage am 30. September 2026",
+        aiGenerated: false,
+        isScreen: false,
       },
+
+      // Exhibition 1 - Englisch
+      {
+        exhibitionId: "550e8400-e29b-41d4-a716-446655440001",
+        languageCode: "en",
+        title: "Light and Space",
+        subtitle: "An Exhibition About the Effect of Light",
+        location: "Museum of the Future, Leipzig",
+        description:
+          "This exhibition explores the interplay between light, space, and architecture.",
+        openingEvent: "Opening on August 1, 2026",
+        specialEvent: "Night of Museums",
+        closingEvent: "Finissage on September 30, 2026",
+        aiGenerated: false,
+        isScreen: false,
+      },
+
+      // Exhibition 2 - Deutsch
       {
         exhibitionId: "550e8400-e29b-41d4-a716-446655440002",
         languageCode: "de",
@@ -31,7 +52,27 @@ const run = async () => {
         openingEvent: "Eröffnung am 1. Oktober 2026",
         specialEvent: "Künstler:innengespräch am 15. Oktober 2026",
         closingEvent: "Finissage am 30. November 2026",
+        aiGenerated: false,
+        isScreen: false,
       },
+
+      // Exhibition 2 - Englisch
+      {
+        exhibitionId: "550e8400-e29b-41d4-a716-446655440002",
+        languageCode: "en",
+        title: "Form and Movement",
+        subtitle: "Art Between Stasis and Dynamics",
+        location: "Gallery at the Park, Leipzig",
+        description:
+          "The exhibition presents works exploring movement, the body, and spatial perception.",
+        openingEvent: "Opening on October 1, 2026",
+        specialEvent: "Artist Talk on October 15, 2026",
+        closingEvent: "Finissage on November 30, 2026",
+        aiGenerated: false,
+        isScreen: false,
+      },
+
+      // Exhibition 3 - Deutsch
       {
         exhibitionId: "550e8400-e29b-41d4-a716-446655440003",
         languageCode: "de",
@@ -43,11 +84,29 @@ const run = async () => {
         openingEvent: "Eröffnung am 1. Dezember 2026",
         specialEvent: "Podiumsdiskussion am 12. Dezember 2026",
         closingEvent: "Finissage am 31. Januar 2027",
+        aiGenerated: false,
+        isScreen: false,
+      },
+
+      // Exhibition 3 - Englisch
+      {
+        exhibitionId: "550e8400-e29b-41d4-a716-446655440003",
+        languageCode: "en",
+        title: "Between Worlds",
+        subtitle: "Contemporary Perspectives on Identity and Society",
+        location: "Leipzig Art Hall",
+        description:
+          "This exhibition brings together contemporary positions exploring identity, belonging, and social change.",
+        openingEvent: "Opening on December 1, 2026",
+        specialEvent: "Panel Discussion on December 12, 2026",
+        closingEvent: "Finissage on January 31, 2027",
+        aiGenerated: false,
+        isScreen: false,
       },
     ];
 
     for (const translationData of translations) {
-      // Prüfen, ob die zugehörige Exhibition existiert.
+      // Prüfen, ob die zugehörige Exhibition existiert
       const exhibition = await Exhibition.findByPk(
         translationData.exhibitionId
       );
@@ -63,19 +122,7 @@ const run = async () => {
           exhibitionId: translationData.exhibitionId,
           languageCode: translationData.languageCode,
         },
-        defaults: {
-          exhibitionId: translationData.exhibitionId,
-          languageCode: translationData.languageCode,
-          title: translationData.title,
-          subtitle: translationData.subtitle,
-          location: translationData.location,
-          description: translationData.description,
-          openingEvent: translationData.openingEvent,
-          specialEvent: translationData.specialEvent,
-          closingEvent: translationData.closingEvent,
-          aiGenerated: false,
-          isScreen: false,
-        },
+        defaults: translationData,
       });
 
       if (created) {
