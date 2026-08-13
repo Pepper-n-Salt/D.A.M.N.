@@ -11,6 +11,7 @@ import {
 import { validateBody, validateParams } from "../middleware/validate.js";
 import {
   exhibitionIdSchema,
+  exhibitionLanguageParamsSchema,
   createExhibitionSchema,
   updateExhibitionSchema,
 } from "../schemas/exhibitionSchema.js";
@@ -36,15 +37,6 @@ router.post(
 );
 
 router.patch(
-  "/:exhibitionId",
-  checkAuth,
-  validateParams(exhibitionIdSchema),
-  validateBody(updateExhibitionSchema),
-  updateExhibition
-);
-// patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wenn kompletter Datensatz geändert wird
-
-router.patch(
   "/:exhibitionId/archive",
   checkAuth,
   validateParams(exhibitionIdSchema),
@@ -57,5 +49,13 @@ router.patch(
   validateParams(exhibitionIdSchema),
   deleteExhibition
 ); // patch, weil Soft Delete, denn mit delete würden wir den Datensatz komplett löschen, hier ändern wir aber nur den "Status" von isDeleted zu true
+
+router.patch(
+  "/:exhibitionId/:languageCode",
+  checkAuth,
+  validateParams(exhibitionLanguageParamsSchema),
+  validateBody(updateExhibitionSchema),
+  updateExhibition
+);
 
 export default router;

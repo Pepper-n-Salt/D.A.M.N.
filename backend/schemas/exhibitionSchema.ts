@@ -4,6 +4,11 @@ export const exhibitionIdSchema = z.object({
   exhibitionId: z.uuid(),
 });
 
+export const exhibitionLanguageParamsSchema = z.object({
+  exhibitionId: z.uuid(),
+  languageCode: z.string().min(2).max(7),
+});
+
 export const createExhibitionSchema = z.object({
   coverImageId: z.uuid().nullable(),
   startDate: z.iso.date(),
@@ -19,7 +24,6 @@ export const updateExhibitionSchema = z.object({
   coverImageId: z.uuid().nullable().optional(),
   startDate: z.iso.date().optional(),
   endDate: z.iso.date().optional(),
-  // languageCode: z.string().min(2).max(7),
   title: z.string().min(1).max(255).optional(),
   subtitle: z.string().max(255).nullable().optional(),
   location: z.string().max(255).nullable().optional(),

@@ -115,21 +115,20 @@ export const createExhibition = async (req: Request, res: Response) => {
 // Exhibition und die dazugehörige Übersetzung aktualisieren
 // getestet: klappt!
 export const updateExhibition = async (
-  req: Request<{ exhibitionId: string }>,
+  req: Request<{ exhibitionId: string; languageCode: string }>,
   res: Response
 ) => {
   const t = await db.transaction();
 
   try {
     // Exhibition ID wieder aus der URL holen
-    const { exhibitionId } = req.params;
+    const { exhibitionId, languageCode } = req.params;
 
     // Formularfelder aus dem FE holen // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
     const {
       coverImageId,
       startDate,
       endDate,
-      languageCode,
       title,
       subtitle,
       location,
