@@ -1,23 +1,23 @@
 import express from "express";
-// an dieser Stelle noch die middleware importieren
+import { checkAuth } from "../middleware/checkAuth.js";
 import {
   showOneArtist,
   showAllArtists,
   createArtist,
   updateArtist,
   deleteArtist,
-} from "../controllers/artistController";
+} from "../controllers/artistController.js";
 
 const router = express.Router();
 
-router.get("/", () => {}, showAllArtists);
+router.get("/", checkAuth, showAllArtists);
 
-router.get("/:artistId", () => {}, showOneArtist);
+router.get("/:artistId", checkAuth, showOneArtist);
 
-router.post("/", () => {}, createArtist);
+router.post("/", checkAuth, createArtist);
 
-router.patch("/:artistId", () => {}, updateArtist);
+router.patch("/:artistId", checkAuth, deleteArtist);
 
-router.delete("/:artistId", () => {}, deleteArtist);
+router.patch("/:artistId/:languageCode", checkAuth, updateArtist);
 
 export default router;
