@@ -18,34 +18,28 @@ import {
 
 const router = express.Router();
 
+router.use(checkAuth);
+
 router.get(
   "/:languageCode",
-  checkAuth,
   validateParams(artistLanguageSchema),
   showAllArtists
 );
 
 router.get(
   "/:artistId/:languageCode",
-  checkAuth,
   validateParams(artistIdLanguageParamsSchema),
   showOneArtist
 );
 
-router.post("/", checkAuth, validateBody(createArtistSchema), createArtist);
+router.post("/", validateBody(createArtistSchema), createArtist);
 
 // Soft Delete
-router.patch(
-  "/:artistId",
-  checkAuth,
-  validateParams(artistIdSchema),
-  deleteArtist
-);
+router.patch("/:artistId", validateParams(artistIdSchema), deleteArtist);
 
 // Artist inkl. Translation aktualisieren
 router.patch(
   "/:artistId/:languageCode",
-  checkAuth,
   validateParams(artistIdLanguageParamsSchema),
   validateBody(updateArtistSchema),
   updateArtist
