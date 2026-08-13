@@ -29,11 +29,11 @@ export const showAllArtists = async (req: Request, res: Response) => {
 // Einzelnen nicht gelöschten Artist abrufen
 // getestet: noch nicht
 export const showOneArtist = async (
-  req: Request<{ artistId: string }>,
+  req: Request<{ artistId: string; languageCode: string }>,
   res: Response
 ) => {
   try {
-    const { artistId } = req.params;
+    const { artistId, languageCode } = req.params;
 
     const artist = await Artist.findOne({
       where: {
@@ -43,6 +43,7 @@ export const showOneArtist = async (
       include: [
         {
           model: ArtistTranslation,
+          where: { languageCode },
         },
       ],
     });
@@ -53,7 +54,29 @@ export const showOneArtist = async (
       });
     }
 
-    return res.status(200).json(artist);
+    const translation = artist.ArtistTranslations?.[0];
+
+    if (!translation) {
+      return res.status(404).json({
+        msg: "Die Übersetzung des Artists wurde nicht gefunden.",
+      });
+    }
+
+    return res.status(200).json({
+      id: artist.id,
+      imageId: artist.imageId,
+      dateOfBirth: artist.dateOfBirth,
+      dateOfDeath: artist.dateOfDeath,
+      createdBy: artist.createdBy,
+      lastEditedBy: artist.lastEditedBy,
+      isDeleted: artist.isDeleted,
+
+      languageCode: translation.languageCode,
+      firstName: translation.firstName,
+      lastName: translation.lastName,
+      description: translation.description,
+      country: translation.country,
+    });
   } catch (e) {
     console.error(e);
 
