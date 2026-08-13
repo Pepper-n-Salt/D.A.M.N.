@@ -4,54 +4,54 @@ import type { ArtworkFormData } from "../components/ArtworkForm";
 export type ArtworkFormErrors = Partial<Record<keyof ArtworkFormData, string>>;
 
 export function useArtworkValidation() {
-  const { t } = useTranslation("validate");
+  const { t } = useTranslation("validation");
 
   function validateArtworkForm(formData: ArtworkFormData): ArtworkFormErrors {
     const errors: ArtworkFormErrors = {};
 
     // Title
     if (!formData.title.trim()) {
-      errors.title = t("validation.title.required");
+      errors.title = t("title.required");
     }
 
     // Year
     if (!formData.year.trim()) {
-      errors.year = t("validation.year.required");
+      errors.year = t("year.required");
     } else if (!/^\d+$/.test(formData.year.trim())) {
-      errors.year = t("validation.year.numbersOnly");
+      errors.year = t("year.numbersOnly");
     } else {
       const year = Number(formData.year);
 
       if (!Number.isInteger(year)) {
-        errors.year = t("validation.year.wholeNumber");
+        errors.year = t("year.wholeNumber");
       } else if (year < 0 || year > new Date().getFullYear()) {
-        errors.year = t("validation.year.invalid");
+        errors.year = t("year.invalid");
       }
     }
 
     // Country
     if (!formData.country.trim()) {
-      errors.country = t("validation.country.required");
+      errors.country = t("country.required");
     }
 
     // Origin
     if (!formData.origin.trim()) {
-      errors.origin = t("validation.origin.required");
+      errors.origin = t("origin.required");
     }
 
     // Material
     if (!formData.material.trim()) {
-      errors.material = t("validation.material.required");
+      errors.material = t("material.required");
     }
 
     // Dimensions
     if (!formData.dimensions.trim()) {
-      errors.dimensions = t("validation.dimensions.required");
+      errors.dimensions = t("dimensions.required");
     }
 
     // Description
     if (!formData.description.trim()) {
-      errors.description = t("validation.description.required");
+      errors.description = t("description.required");
     }
 
     /*
