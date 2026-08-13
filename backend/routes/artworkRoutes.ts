@@ -26,7 +26,7 @@ router.get(
 );
 
 router.get(
-  "/:artworkId",
+  "/:artworkId/:languageCode",
   checkAuth,
   validateParams(artworkIdLanguageParamsSchema),
   showOneArtwork

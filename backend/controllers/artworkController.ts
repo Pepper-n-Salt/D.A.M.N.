@@ -166,7 +166,26 @@ export const createArtwork = async (req: Request, res: Response) => {
 
     await t.commit();
 
-    return res.status(201).json({ artwork, artworkTranslation });
+    // return res.status(201).json({ artwork, artworkTranslation });
+    return res.status(201).json({
+      id: artwork.id,
+      year: artwork.year,
+      dimensions: artwork.dimensions,
+      imageId: artwork.imageId,
+      createdBy: artwork.createdBy,
+      lastEditedBy: artwork.lastEditedBy,
+      isDeleted: artwork.isDeleted,
+
+      languageCode: artworkTranslation.languageCode,
+      title: artworkTranslation.title,
+      subtitle: artworkTranslation.subtitle,
+      country: artworkTranslation.country,
+      origin: artworkTranslation.origin,
+      material: artworkTranslation.material,
+      description: artworkTranslation.description,
+      // aiGenereated: artworkTranslation.aiGenerated,
+      isScreen: artworkTranslation.isScreen,
+    });
   } catch (e) {
     await t.rollback();
 
@@ -260,8 +279,22 @@ export const updateArtwork = async (
     await t.commit();
 
     return res.status(200).json({
-      artwork,
-      artworkTranslation,
+      id: artwork.id,
+      year: artwork.year,
+      dimensions: artwork.dimensions,
+      imageId: artwork.imageId,
+      createdBy: artwork.createdBy,
+      lastEditedBy: artwork.lastEditedBy,
+      isDeleted: artwork.isDeleted,
+
+      title: artworkTranslation.title,
+      subtitle: artworkTranslation.subtitle,
+      country: artworkTranslation.country,
+      origin: artworkTranslation.origin,
+      material: artworkTranslation.material,
+      description: artworkTranslation.description,
+      // aiGenereated: artworkTranslation.aiGenerated,
+      isScreen: artworkTranslation.isScreen,
     });
   } catch (e) {
     await t.rollback();
