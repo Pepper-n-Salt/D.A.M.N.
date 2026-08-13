@@ -20,6 +20,7 @@ const cookieOptions = {
   path: "/",
 };
 
+// Registrierung
 // getestet: klappt
 export const register = async (req: Request, res: Response) => {
   try {
@@ -76,6 +77,7 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
+// Login
 // getestet: klappt!
 export const login = async (req: Request, res: Response) => {
   try {
@@ -124,6 +126,7 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+// Logout
 // getestet: klappt!
 export const logout = (req: Request, res: Response) => {
   res.clearCookie("token", cookieOptions);
