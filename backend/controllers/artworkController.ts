@@ -308,7 +308,7 @@ export const updateArtwork = async (
 };
 
 // Artwork per Soft Delete als gelöscht markieren
-// getestet: klappt jetzt auch
+// getestet: klappt!
 export const deleteArtwork = async (req: Request, res: Response) => {
   try {
     const { artworkId } = req.params;
