@@ -133,6 +133,7 @@ export const logout = (req: Request, res: Response) => {
   return res.status(200).json({ msg: "Logout erfolgreich." });
 };
 
+// Profile, um die:den aktuell eingeloggte:n User:in abzufragen
 // getestet: klappt!
 export const getMe = async (req: Request, res: Response) => {
   try {
