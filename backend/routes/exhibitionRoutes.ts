@@ -19,46 +19,36 @@ import {
 
 const router = express.Router();
 
-// in alle routes noch die middleware checkAuth reinschreiben!
+router.use(checkAuth);
 
 router.get(
   "/:languageCode",
-  checkAuth,
   validateParams(exhibitionLanguageSchema),
   showAllExhibitions
 );
 
 router.get(
   "/:exhibitionId/:languageCode",
-  checkAuth,
   validateParams(exhibitionIdLanguageParamsSchema),
   showOneExhibition
 );
 
-router.post(
-  "/",
-  checkAuth,
-  validateBody(createExhibitionSchema),
-  createExhibition
-);
+router.post("/", validateBody(createExhibitionSchema), createExhibition);
 
 router.patch(
   "/:exhibitionId/archive",
-  checkAuth,
   validateParams(exhibitionIdSchema),
   archiveExhibition
 );
 
 router.patch(
   "/:exhibitionId/delete",
-  checkAuth,
   validateParams(exhibitionIdSchema),
   deleteExhibition
 );
 
 router.patch(
   "/:exhibitionId/:languageCode",
-  checkAuth,
   validateParams(exhibitionIdLanguageParamsSchema),
   validateBody(updateExhibitionSchema),
   updateExhibition
