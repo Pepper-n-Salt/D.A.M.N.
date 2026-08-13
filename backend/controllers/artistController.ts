@@ -41,7 +41,9 @@ export const showAllArtists = async (
         lastName: translation?.lastName,
         description: translation?.description,
         country: translation?.country,
-      }; // Frage ans FE: Sollte ich hier lieber weniger Felder zurückgeben?
+        // aiGenerated: translation?.aiGenerated,
+        isScreen: translation?.isScreen,
+      };
     });
 
     return res.status(200).json(result);

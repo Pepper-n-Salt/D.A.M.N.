@@ -89,7 +89,25 @@ export const showOneArtwork = async (
       });
     }
 
-    return res.status(200).json(singleArtwork);
+    return res.status(200).json({
+      id: singleArtwork.id,
+      year: singleArtwork.year,
+      dimensions: singleArtwork.dimensions,
+      imageId: singleArtwork.imageId,
+      createdBy: singleArtwork.createdBy,
+      lastEditedBy: singleArtwork.lastEditedBy,
+      isDeleted: singleArtwork.isDeleted,
+
+      languageCode: translation.languageCode,
+      title: translation.title,
+      subtitle: translation.subtitle,
+      country: translation.country,
+      origin: translation.origin,
+      material: translation.material,
+      description: translation.description,
+      // aiGenerated: translation.aiGenerated,
+      isScreen: translation.isScreen,
+    });
   } catch (e) {
     console.error(e);
 
