@@ -21,9 +21,34 @@ export const showAllArtists = async (req: Request, res: Response) => {
 
 // Einzelnen nicht gelöschten Artist abrufen
 // getestet: noch nicht
-export const showOneArtist = async (req: Request, res: Response) => {
+export const showOneArtist = async (
+  req: Request<{ artistId: string }>,
+  res: Response
+) => {
   try {
-  } catch (e) {}
+    const { artistId } = req.params;
+
+    const artist = await Artist.findOne({
+      where: {
+        id: artistId,
+        isDeleted: false,
+      },
+    });
+
+    if (!artist) {
+      return res.status(404).json({
+        msg: "Der Artist wurde nicht gefunden.",
+      });
+    }
+
+    return res.status(200).json(artist);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
+  }
 };
 
 // Neuen Artist als kompletten Datensatz, also inklusive der ersten "Translation", anlegen
