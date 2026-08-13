@@ -70,8 +70,8 @@ export const register = async (req: Request, res: Response) => {
         role: user.role,
       },
     });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
@@ -118,8 +118,8 @@ export const login = async (req: Request, res: Response) => {
         role: user.role,
       },
     });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
@@ -153,8 +153,8 @@ export const getMe = async (req: Request, res: Response) => {
       organisationId: user.organisationId,
       role: user.role,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
