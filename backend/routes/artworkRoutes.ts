@@ -18,32 +18,26 @@ import {
 
 const router = express.Router();
 
+router.use(checkAuth);
+
 router.get(
   "/:languageCode",
-  checkAuth,
   validateParams(artworkLanguageSchema),
   showAllArtworks
 );
 
 router.get(
   "/:artworkId/:languageCode",
-  checkAuth,
   validateParams(artworkIdLanguageParamsSchema),
   showOneArtwork
 );
 
-router.post("/", checkAuth, validateBody(createArtworkSchema), createArtwork);
+router.post("/", validateBody(createArtworkSchema), createArtwork);
 
-router.patch(
-  "/:artworkId",
-  checkAuth,
-  validateParams(artworkIdSchema),
-  deleteArtwork
-);
+router.patch("/:artworkId", validateParams(artworkIdSchema), deleteArtwork);
 
 router.patch(
   "/:artworkId/:languageCode",
-  checkAuth,
   validateParams(artworkIdLanguageParamsSchema),
   validateBody(updateArtworkSchema),
   updateArtwork
