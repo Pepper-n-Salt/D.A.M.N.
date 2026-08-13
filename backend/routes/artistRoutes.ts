@@ -16,8 +16,10 @@ router.get("/:artistId", checkAuth, showOneArtist); // hier noch validateParams(
 
 router.post("/", checkAuth, createArtist); // validateBody(createArtistSchema)
 
+// Soft Delete
 router.patch("/:artistId", checkAuth, deleteArtist); // validateParams(artistIdSchema)
 
+// Artist inkl. Translation aktualisieren
 router.patch("/:artistId/:languageCode", checkAuth, updateArtist); // validateParams(artistLanguageParamsSchema)
 
 export default router;
