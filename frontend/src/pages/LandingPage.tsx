@@ -12,8 +12,19 @@ export default function LandingPage() {
   return (
     <section className="space-y-20">
       <H1>{t("hero.title")}</H1>
-      <P>{t("hero.paragraph")}</P>
+      <div className="flex flex-row flex-wrap gap-12">
+        <div className="flex-1 min-w-[250px]">
+          <P>{t("intro.paragraph1")}</P>
+        </div>
 
+        <div className="flex-1 min-w-[250px]">
+          <P>{t("intro.paragraph2")}</P>
+        </div>
+
+        <div className="flex-1 min-w-[250px]">
+          <P>{t("intro.paragraph3")}</P>
+        </div>
+      </div>
       <section className="border-t border-neutral-200 pt-12 space-y-12">
         <div className="mb-8">
           <H2>{t("landing.currentCollection")}</H2>

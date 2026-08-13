@@ -16,13 +16,13 @@
 
       "artwork": {
         "title": "Kunstwerk",
-        "show": "Kunstwerke anzeigen.",
+        "show": "Kunstwerke anzeigen",
         "description": "Präsentiert einzelne Kunstwerke mit Metadaten."
       },
 
       "artist": {
         "title": "Künstler:in",
-        "show": "Künstler:innen anzeigen.",
+        "show": "Künstler:innen anzeigen",
         "description": "Zeigt Informationen über Künstler:innen und ausgewählte Werke."
       }
     },
