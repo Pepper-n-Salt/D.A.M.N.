@@ -1,5 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
+import { useArtworkValidation } from "../validation/artworkValidation";
 
 export type Language = "de" | "en";
 
@@ -15,7 +16,7 @@ export type ArtworkFormData = {
   description: string;
 };
 
-type Artist = {
+export type Artist = {
   id: string;
   imageId: string | null;
   dateOfBirth: string | null;
@@ -63,9 +64,19 @@ export default function ArtworkForm({
   showTranslateButton = true,
 }: ArtworkFormProps) {
   const { t } = useTranslation("newArtwork");
+  const { validateArtworkForm } = useArtworkValidation();
+
+  const errors = validateArtworkForm(formData);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const validationErrors = validateArtworkForm(formData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
     onSave();
   };
 
@@ -73,7 +84,9 @@ export default function ArtworkForm({
     <form
       className="mx-auto flex w-full max-w-3xl flex-col gap-8 rounded-none border border-black p-8"
       onSubmit={handleSubmit}
+      noValidate
     >
+      {/* LANGUAGE */}
       <div className="mb-10 flex flex-col gap-2 border-b border-black">
         <label
           htmlFor={`language-${language}`}
@@ -94,7 +107,9 @@ export default function ArtworkForm({
         </select>
       </div>
 
+      {/* MAIN FORM FIELDS */}
       <div className="grid gap-8 md:grid-cols-2">
+        {/* TITLE */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`title-${language}`}
@@ -116,8 +131,13 @@ export default function ArtworkForm({
             }
             className="border-b border-black bg-transparent py-3 outline-none"
           />
+
+          {errors.title && (
+            <p className="text-sm text-red-600">{errors.title}</p>
+          )}
         </div>
 
+        {/* SUBTITLE */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`subtitle-${language}`}
@@ -141,6 +161,7 @@ export default function ArtworkForm({
           />
         </div>
 
+        {/* ARTISTS */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`artists-${language}`}
@@ -184,7 +205,7 @@ export default function ArtworkForm({
                 return (
                   <div
                     key={artistId}
-                    className="flex items-center gap-2 border border-black px-3 py-2 text-sm tracking-widest leading-loose uppercase"
+                    className="flex items-center gap-2 border border-black px-3 py-2 text-sm uppercase leading-loose tracking-widest"
                   >
                     {artist ? getArtistName(artist) : artistId}
 
@@ -207,8 +228,13 @@ export default function ArtworkForm({
               })}
             </div>
           )}
+
+          {errors.artists && (
+            <p className="text-sm text-red-600">{errors.artists}</p>
+          )}
         </div>
 
+        {/* YEAR */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`year-${language}`}
@@ -218,7 +244,8 @@ export default function ArtworkForm({
           </label>
 
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             id={`year-${language}`}
             name={`year-${language}`}
             value={formData.year}
@@ -230,8 +257,11 @@ export default function ArtworkForm({
             }
             className="border-b border-black bg-transparent py-3 outline-none"
           />
+
+          {errors.year && <p className="text-sm text-red-600">{errors.year}</p>}
         </div>
 
+        {/* COUNTRY */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`country-${language}`}
@@ -253,8 +283,13 @@ export default function ArtworkForm({
             }
             className="border-b border-black bg-transparent py-3 outline-none"
           />
+
+          {errors.country && (
+            <p className="text-sm text-red-600">{errors.country}</p>
+          )}
         </div>
 
+        {/* ORIGIN */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`origin-${language}`}
@@ -276,8 +311,13 @@ export default function ArtworkForm({
             }
             className="border-b border-black bg-transparent py-3 outline-none"
           />
+
+          {errors.origin && (
+            <p className="text-sm text-red-600">{errors.origin}</p>
+          )}
         </div>
 
+        {/* MATERIAL */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`material-${language}`}
@@ -299,8 +339,13 @@ export default function ArtworkForm({
             }
             className="border-b border-black bg-transparent py-3 outline-none"
           />
+
+          {errors.material && (
+            <p className="text-sm text-red-600">{errors.material}</p>
+          )}
         </div>
 
+        {/* DIMENSIONS */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`dimensions-${language}`}
@@ -322,9 +367,14 @@ export default function ArtworkForm({
             }
             className="border-b border-black bg-transparent py-3 outline-none"
           />
+
+          {errors.dimensions && (
+            <p className="text-sm text-red-600">{errors.dimensions}</p>
+          )}
         </div>
       </div>
 
+      {/* DESCRIPTION */}
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`description-${language}`}
@@ -346,8 +396,13 @@ export default function ArtworkForm({
           }
           className="resize-none border-b border-black bg-transparent py-3 outline-none"
         />
+
+        {errors.description && (
+          <p className="text-sm text-red-600">{errors.description}</p>
+        )}
       </div>
 
+      {/* IMAGE */}
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`image-${language}`}
@@ -363,8 +418,20 @@ export default function ArtworkForm({
           accept="image/*"
           className="cursor-pointer border border-black bg-transparent p-3"
         />
+
+        {/* {errors.image && <p className="text-sm text-red-600">{errors.image}</p>} */}
+
+        {/*
+          IMAGE VALIDATION
+
+          Currently optional while testing the frontend.
+
+          Later, when the database/image functionality is implemented,
+          an image MUST be required.
+        */}
       </div>
 
+      {/* ACTIONS */}
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"
