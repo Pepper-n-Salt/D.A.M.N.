@@ -53,8 +53,61 @@ export const showOneArtist = async (
 
 // Neuen Artist als kompletten Datensatz, also inklusive der ersten "Translation", anlegen
 export const createArtist = async (req: Request, res: Response) => {
+  const t = await db.transaction();
   try {
-  } catch (e) {}
+    const {
+      languageCode,
+      firstName,
+      lastName,
+      dateOfBirth,
+      dateOfDeath,
+      country,
+      description,
+      imageId,
+    } = req.body;
+
+    const artist = await Artist.create(
+      {
+        id: crypto.randomUUID(),
+        imageId,
+        dateOfBirth,
+        dateOfDeath,
+        createdBy: req.user!.id,
+        lastEditedBy: req.user!.id,
+        isDeleted: false,
+      },
+      { transaction: t }
+    );
+
+    const artistTranslation = await ArtistTranslation.create(
+      {
+        artistId: artist.id,
+        languageCode,
+        firstName,
+        lastName,
+        country,
+        description,
+        aiGenerated: false,
+        isScreen: false,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    return res.status(201).json({
+      artist,
+      artistTranslation,
+    });
+  } catch (e) {
+    await t.rollback();
+
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Der Artist konnte nicht angelegt werden.",
+    });
+  }
 };
 
 // Artist und die dazugehörige Übersetzung aktualisieren
