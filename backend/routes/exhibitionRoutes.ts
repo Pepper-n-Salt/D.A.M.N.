@@ -11,7 +11,8 @@ import {
 import { validateBody, validateParams } from "../middleware/validate.js";
 import {
   exhibitionIdSchema,
-  exhibitionLanguageParamsSchema,
+  exhibitionLanguageSchema,
+  exhibitionIdLanguageParamsSchema,
   createExhibitionSchema,
   updateExhibitionSchema,
 } from "../schemas/exhibitionSchema.js";
@@ -20,12 +21,17 @@ const router = express.Router();
 
 // in alle routes noch die middleware checkAuth reinschreiben!
 
-router.get("/", checkAuth, showAllExhibitions);
+router.get(
+  "/:languageCode",
+  checkAuth,
+  validateParams(exhibitionLanguageSchema),
+  showAllExhibitions
+);
 
 router.get(
-  "/:exhibitionId",
+  "/:exhibitionId/:languageCode",
   checkAuth,
-  validateParams(exhibitionIdSchema),
+  validateParams(exhibitionIdLanguageParamsSchema),
   showOneExhibition
 );
 
@@ -48,12 +54,12 @@ router.patch(
   checkAuth,
   validateParams(exhibitionIdSchema),
   deleteExhibition
-); // patch, weil Soft Delete, denn mit delete würden wir den Datensatz komplett löschen, hier ändern wir aber nur den "Status" von isDeleted zu true
+);
 
 router.patch(
   "/:exhibitionId/:languageCode",
   checkAuth,
-  validateParams(exhibitionLanguageParamsSchema),
+  validateParams(exhibitionIdLanguageParamsSchema),
   validateBody(updateExhibitionSchema),
   updateExhibition
 );

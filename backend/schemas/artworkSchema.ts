@@ -4,7 +4,11 @@ export const artworkIdSchema = z.object({
   artworkId: z.uuid(),
 });
 
-export const artworkLanguageParamsSchema = z.object({
+export const artworkLanguageSchema = z.object({
+  languageCode: z.string().min(2).max(7),
+});
+
+export const artworkIdLanguageParamsSchema = z.object({
   artworkId: z.uuid(),
   languageCode: z.string().min(2).max(7),
 });

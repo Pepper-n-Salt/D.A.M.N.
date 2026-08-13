@@ -4,13 +4,50 @@ import db from "../lib/db";
 
 // Alle nicht gelöschten Exhibitions abrufen
 // getestet: klappt!
-export const showAllExhibitions = async (req: Request, res: Response) => {
+export const showAllExhibitions = async (
+  req: Request<{ languageCode: string }>,
+  res: Response
+) => {
   try {
+    const { languageCode } = req.params;
+
     const exhibitions = await Exhibition.findAll({
       where: { isDeleted: false },
+      include: [
+        {
+          model: ExhibitionTranslation,
+          where: {
+            languageCode,
+          },
+        },
+      ],
     });
 
-    return res.status(200).json(exhibitions);
+    const result = exhibitions.map((exh) => {
+      const translation = exh.ExhibitionTranslations?.[0];
+
+      return {
+        id: exh.id,
+        coverImageId: exh.coverImageId,
+        startDate: exh.startDate,
+        endDate: exh.endDate,
+        createdBy: exh.createdBy,
+        lastEditedBy: exh.lastEditedBy,
+        isArchived: exh.isArchived,
+        isDeleted: exh.isDeleted,
+        backgroundColor: exh.backgroundColor,
+
+        languageCode: translation?.languageCode,
+        title: translation?.title,
+        subtitle: translation?.subtitle,
+        location: translation?.location,
+        description: translation?.description,
+        // aiGenerated: translation?.aiGenerated,
+        isScreen: translation?.isScreen,
+      };
+    });
+
+    return res.status(200).json(result);
   } catch (e) {
     console.error(e);
 
@@ -21,12 +58,12 @@ export const showAllExhibitions = async (req: Request, res: Response) => {
 // Einzelne, nicht gelöschte Exhibition abrufen
 // getestet: klappt!
 export const showOneExhibition = async (
-  req: Request<{ exhibitionId: string }>, // für TS: Parameter req mit einem generischen Request-Typ typisiert, dessen Type Argument ein Object Type Literal ist
+  req: Request<{ exhibitionId: string; languageCode: string }>, // für TS: Parameter req mit einem generischen Request-Typ typisiert, dessen Type Argument ein Object Type Literal ist
   res: Response
 ) => {
   try {
-    // Exhibition ID aus der URL holen
-    const { exhibitionId } = req.params;
+    // Exhibition ID und LanguageCode aus der URL holen
+    const { exhibitionId, languageCode } = req.params;
 
     // nicht gelöschte Exhibition über ID in DB suchen
     const exhibition = await Exhibition.findOne({
@@ -34,14 +71,46 @@ export const showOneExhibition = async (
         id: exhibitionId,
         isDeleted: false,
       },
+      include: [
+        {
+          model: ExhibitionTranslation,
+          where: { languageCode },
+        },
+      ],
     });
 
     if (!exhibition) {
       return res.status(404).json({ msg: "Exhibition nicht gefunden." });
     }
 
-    // Exhibition zurückgeben, wenn efolgreich
-    return res.status(200).json(exhibition);
+    const translation = exhibition.ExhibitionTranslations?.[0];
+
+    if (!translation) {
+      return res
+        .status(404)
+        .json({ msg: "Die Übersetzung der Exhibition wurde nicht gefunden." });
+    }
+
+    // Exhibition- und Translation-Felder zurückgeben, wenn erfolgreich
+    return res.status(200).json({
+      id: exhibition.id,
+      coverImageId: exhibition.coverImageId,
+      startDate: exhibition.startDate,
+      endDate: exhibition.endDate,
+      createdBy: exhibition.createdBy,
+      lastEditedBy: exhibition.lastEditedBy,
+      isArchived: exhibition.isArchived,
+      isDeleted: exhibition.isDeleted,
+      backgroundColor: exhibition.backgroundColor,
+
+      languageCode: translation?.languageCode,
+      title: translation?.title,
+      subtitle: translation?.subtitle,
+      location: translation?.location,
+      description: translation?.description,
+      // aiGenerated: translation?.aiGenerated,
+      isScreen: translation?.isScreen,
+    });
   } catch (e) {
     console.error(e);
 
@@ -98,8 +167,23 @@ export const createExhibition = async (req: Request, res: Response) => {
     await t.commit();
 
     return res.status(201).json({
-      exhibition,
-      translation,
+      id: exhibition.id,
+      coverImageId: exhibition.coverImageId,
+      startDate: exhibition.startDate,
+      endDate: exhibition.endDate,
+      createdBy: exhibition.createdBy,
+      lastEditedBy: exhibition.lastEditedBy,
+      isArchived: exhibition.isArchived,
+      isDeleted: exhibition.isDeleted,
+      backgroundColor: exhibition.backgroundColor,
+
+      languageCode: translation.languageCode,
+      title: translation.title,
+      subtitle: translation.subtitle,
+      location: translation.location,
+      description: translation.description,
+      // aiGenerated: translation.aiGenerated,
+      isScreen: translation.isScreen,
     });
   } catch (e) {
     await t.rollback();
@@ -183,7 +267,25 @@ export const updateExhibition = async (
 
     await t.commit();
 
-    return res.status(200).json({ exhibition, translation });
+    return res.status(200).json({
+      id: exhibition.id,
+      coverImageId: exhibition.coverImageId,
+      startDate: exhibition.startDate,
+      endDate: exhibition.endDate,
+      createdBy: exhibition.createdBy,
+      lastEditedBy: exhibition.lastEditedBy,
+      isArchived: exhibition.isArchived,
+      isDeleted: exhibition.isDeleted,
+      backgroundColor: exhibition.backgroundColor,
+
+      languageCode: translation.languageCode,
+      title: translation.title,
+      subtitle: translation.subtitle,
+      location: translation.location,
+      description: translation.description,
+      // aiGenerated: translation.aiGenerated,
+      isScreen: translation.isScreen,
+    });
   } catch (e) {
     await t.rollback();
 
