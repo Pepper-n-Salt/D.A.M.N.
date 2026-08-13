@@ -7,11 +7,12 @@ import {
 
 const router = express.Router();
 
-router.post("/:artworkId/translations", checkAuth, createArtworkTranslation);
+router.use(checkAuth);
+
+router.post("/:artworkId/translations", createArtworkTranslation);
 
 router.patch(
   "/:artworkId/translations/:languageCode",
-  checkAuth,
   updateArtworkTranslation
 );
 
