@@ -19,7 +19,7 @@ class Exhibition extends Model {
   declare textFont: string | null;
   declare roundness: "none" | "small" | "medium" | "large";
 
-  declare ExhibitionTranslations?: Exhibition[];
+  declare ExhibitionTranslations?: ExhibitionTranslation[];
 }
 
 Exhibition.init(

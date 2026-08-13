@@ -47,7 +47,7 @@ export const showAllArtworks = async (
       };
     });
 
-    return res.status(200).json(artworks);
+    return res.status(200).json(result);
   } catch (e) {
     console.error(e);
 
