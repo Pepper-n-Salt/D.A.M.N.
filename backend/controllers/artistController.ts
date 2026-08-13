@@ -200,7 +200,37 @@ export const updateArtist = async (
 };
 
 // Artist per Soft Delete als gelöscht markieren
-export const deleteArtist = async (req: Request, res: Response) => {
+export const deleteArtist = async (
+  req: Request<{ artistId: string }>,
+  res: Response
+) => {
   try {
-  } catch (e) {}
+    const { artistId } = req.params;
+
+    const artist = await Artist.findOne({
+      where: {
+        id: artistId,
+        isDeleted: false,
+      },
+    });
+
+    if (!artist) {
+      return res.status(404).json({
+        msg: "Der Artist konnte nicht gefunden werden.",
+      });
+    }
+
+    await artist.update({
+      isDeleted: true,
+      lastEditedBy: req.user!.id,
+    });
+
+    return res.status(200).json(artist);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Der Artist konnte nicht als gelöscht markiert werden.",
+    });
+  }
 };

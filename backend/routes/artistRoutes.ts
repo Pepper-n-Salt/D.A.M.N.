@@ -12,12 +12,12 @@ const router = express.Router();
 
 router.get("/", checkAuth, showAllArtists);
 
-router.get("/:artistId", checkAuth, showOneArtist);
+router.get("/:artistId", checkAuth, showOneArtist); // hier noch validateParams(artistIdSchema) rein
 
-router.post("/", checkAuth, createArtist);
+router.post("/", checkAuth, createArtist); // validateBody(createArtistSchema)
 
-router.patch("/:artistId", checkAuth, deleteArtist);
+router.patch("/:artistId", checkAuth, deleteArtist); // validateParams(artistIdSchema)
 
-router.patch("/:artistId/:languageCode", checkAuth, updateArtist);
+router.patch("/:artistId/:languageCode", checkAuth, updateArtist); // validateParams(artistLanguageParamsSchema)
 
 export default router;
