@@ -3,9 +3,9 @@ import db from "../lib/db.js";
 
 class Media extends Model {
   declare id: string;
-  // declare fileName: string;
   declare mimeType: string;
   declare fileUrl: string;
+  declare publicId: string; // brauchen wir, um das bild später aus cloudinary löschen oder ersetzen zu können
 }
 
 Media.init(
@@ -14,11 +14,6 @@ Media.init(
       type: DataTypes.UUID,
       primaryKey: true,
     },
-    // fileName: {
-    //   type: DataTypes.STRING(255),
-    //   allowNull: true,
-    //   field: "file_name",
-    // },
     mimeType: {
       type: DataTypes.STRING(255),
       allowNull: false,
@@ -28,6 +23,11 @@ Media.init(
       type: DataTypes.TEXT,
       allowNull: false,
       field: "file_url",
+    },
+    publicId: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      field: "public_id",
     },
   },
   {
