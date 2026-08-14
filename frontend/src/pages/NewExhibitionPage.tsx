@@ -124,16 +124,15 @@ export default function NewExhibitionPage() {
        */
 
       setTranslationFormData({
-        title: result.translation.title,
-        subtitle: result.translation.subtitle ?? "",
+        title: result.title,
+        subtitle: result.subtitle ?? "",
+        location: result.location ?? "",
+        description: result.description ?? "",
         startDate: formData.startDate,
         endDate: formData.endDate,
-        location: result.translation.location ?? "",
-        description: result.translation.description ?? "",
         events: "",
         image: null,
       });
-
       setTranslationLanguage(newLanguage);
       setTranslationSaved(false);
     } catch (error) {

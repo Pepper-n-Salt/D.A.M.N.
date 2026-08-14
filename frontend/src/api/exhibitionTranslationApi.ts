@@ -5,23 +5,16 @@ const API_URL = "http://localhost:3000/api";
 type Language = "german" | "english";
 
 export type TranslationPreviewResponse = {
-  sourceLanguage: "de" | "en";
+  exhibitionId: string;
+  languageCode: "de" | "en";
 
-  corrected: {
-    title: string;
-    subtitle: string | null;
-    location: string | null;
-    description: string | null;
-  };
+  title: string;
+  subtitle: string | null;
+  location: string | null;
+  description: string | null;
 
-  translation: {
-    title: string;
-    subtitle: string | null;
-    location: string | null;
-    description: string | null;
-  };
-
-  targetLanguage: "de" | "en";
+  alreadyExists: boolean;
+  aiGenerated: boolean;
 };
 
 const languageToCode = (language: Language) => {
