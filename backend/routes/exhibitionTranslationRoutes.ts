@@ -4,6 +4,7 @@ import { validateParams, validateBody } from "../middleware/validate.js";
 import {
   createExhibitionTranslation,
   updateExhibitionTranslation,
+  previewExhibitionTranslation,
 } from "../controllers/exhibitionTranslationController.js";
 import {
   exhibitionIdSchema,
@@ -12,11 +13,30 @@ import {
 import {
   createExhibitionTranslationSchema,
   updateExhibitionTranslationSchema,
+  previewExhibitionTranslationSchema,
 } from "../schemas/exhibitionTranslationSchema.js";
 
 const router = express.Router();
 
 router.use(checkAuth);
+
+/*
+  NEU:
+
+  Translate-Preview.
+
+  Dieser Endpoint übersetzt die Exhibition,
+  speichert aber noch nichts.
+
+  Das Ergebnis wird vom Frontend verwendet,
+  um das zweite Formular vorauszufüllen.
+*/
+router.post(
+  "/:exhibitionId/translations/preview",
+  validateParams(exhibitionIdSchema),
+  validateBody(previewExhibitionTranslationSchema),
+  previewExhibitionTranslation
+);
 
 router.post(
   "/:exhibitionId/translations",
