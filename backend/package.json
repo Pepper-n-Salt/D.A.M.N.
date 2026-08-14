@@ -40,6 +40,7 @@
   "dependencies": {
     "@mistralai/mistralai": "^2.5.0",
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.10.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "express": "^5.2.1",
