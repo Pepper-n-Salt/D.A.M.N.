@@ -3,7 +3,7 @@ import db from "../lib/db.js";
 
 class Media extends Model {
   declare id: string;
-  declare fileName: string;
+  // declare fileName: string;
   declare mimeType: string;
   declare fileUrl: string;
 }
@@ -14,11 +14,11 @@ Media.init(
       type: DataTypes.UUID,
       primaryKey: true,
     },
-    fileName: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      field: "file_name",
-    },
+    // fileName: {
+    //   type: DataTypes.STRING(255),
+    //   allowNull: true,
+    //   field: "file_name",
+    // },
     mimeType: {
       type: DataTypes.STRING(255),
       allowNull: false,
