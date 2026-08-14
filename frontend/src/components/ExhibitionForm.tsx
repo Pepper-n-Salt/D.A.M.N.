@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-
 import { useExhibitionValidation } from "../validation/exhibitionValidation";
+import { API_URL } from "../api/config.js";
 
 export type Language = "german" | "english";
 
@@ -29,6 +29,8 @@ type ExhibitionFormProps = {
   showTranslateButton?: boolean;
   languageDisabled?: boolean;
 };
+
+const BASE_URL = API_URL;
 
 export default function ExhibitionForm({
   language,
@@ -67,7 +69,25 @@ export default function ExhibitionForm({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const uploadImage = async (file: File) => {
+    const formData = new FormData();
+
+    formData.append("image", file);
+
+    const response = await fetch(`${API_URL}/media/uploadImage`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Bild konnte nicht hochgeladen werden.");
+    }
+
+    return response.json();
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const validationErrors = validateExhibitionForm(formData);
@@ -76,7 +96,24 @@ export default function ExhibitionForm({
       return;
     }
 
-    onSave();
+    try {
+      let imageId = null;
+
+      // Bild hochladen
+      if (formData.image) {
+        const uploadedImage = await uploadImage(formData.image);
+
+        console.log("Bild erfolgreich hochgeladen:", uploadedImage);
+
+        imageId = uploadedImage.id;
+      }
+
+      console.log(imageId);
+
+      onSave();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

@@ -14,16 +14,17 @@ const run = async () => {
       },
       defaults: {
         id: mediaId,
-        fileName: "exhibition-cover.jpg",
         mimeType: "image/jpeg",
-        fileUrl: "https://example.com/images/exhibition-cover.jpg",
+        fileUrl:
+          "https://res.cloudinary.com/dein-cloud-name/image/upload/v1234567890/upload-demo/exhibition-cover.jpg",
+        publicId: "exhibition-cover",
       },
     });
 
     if (created) {
-      console.log(`Media "${media.fileName}" angelegt.`);
+      console.log(`Media "${media.id}" angelegt.`);
     } else {
-      console.log(`Media "${media.fileName}" existiert bereits, überspringe.`);
+      console.log(`Media "${media.id}" existiert bereits, überspringe.`);
     }
 
     console.log("Media-Seed fertig.");
