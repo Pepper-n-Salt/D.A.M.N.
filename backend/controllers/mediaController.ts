@@ -11,7 +11,7 @@ export const uploadMedia = async (req: Request, res: Response) => {
     }
 
     // eindeutige ID für Cloudinary createn
-    const publicId = `media_${crypto.randomUUID}`;
+    const publicId = `media_${crypto.randomUUID()}`;
 
     // bild zu cloudinary hochladen // das hier sind festlegungen von cloudinary, also: wo soll es bei cloudinary ankommen und welche dateiformate sind überhaupt erlaubt
     const uploadedImage = await new Promise<any>((resolve, reject) => {

@@ -74,7 +74,7 @@ export default function ExhibitionForm({
 
     formData.append("image", file);
 
-    const response = await fetch(`${API_URL}/media/uploadImage`, {
+    const response = await fetch(`${BASE_URL}/api/media/uploadImage`, {
       method: "POST",
       credentials: "include",
       body: formData,
