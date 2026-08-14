@@ -16,3 +16,20 @@ export const updateExhibitionTranslationSchema = z.object({
   location: z.string().max(255).nullable().optional(),
   description: z.string().nullable().optional(),
 });
+/*
+  NEU:
+
+  Dieser Body wird beim Klick auf "Translate" verwendet.
+
+  Das Frontend muss lediglich sagen:
+
+  {
+    "targetLanguage": "en"
+  }
+
+  Das Backend holt sich die Ausgangsdaten selbst aus der DB.
+*/
+
+export const previewExhibitionTranslationSchema = z.object({
+  targetLanguage: z.enum(["de", "en"]),
+});

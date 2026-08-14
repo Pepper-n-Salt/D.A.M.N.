@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { Exhibition, ExhibitionTranslation } from "../models";
 import db from "../lib/db";
+import { processExhibitionTranslation } from "../services/exhibitionMistralService.js";
 
 // Alle nicht gelöschten Exhibitions abrufen
 // getestet: klappt!
@@ -120,9 +121,84 @@ export const showOneExhibition = async (
 
 // Neue Exhibition inklusive der ersten Übersetzung erstellen
 // getestet: klappt!
-export const createExhibition = async (req: Request, res: Response) => {
-  const t = await db.transaction();
+// export const createExhibition = async (req: Request, res: Response) => {
+//   const t = await db.transaction();
 
+//   try {
+//     const {
+//       coverImageId,
+//       startDate,
+//       endDate,
+//       languageCode,
+//       title,
+//       subtitle,
+//       location,
+//       description,
+//     } = req.body;
+
+//     // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
+//     const exhibition = await Exhibition.create(
+//       {
+//         id: crypto.randomUUID(),
+//         coverImageId,
+//         startDate,
+//         endDate,
+//         createdBy: req.user!.id,
+//         lastEditedBy: req.user!.id,
+//         isArchived: false, // Info kommt vom BE
+//         isDeleted: false, // Info kommt vom BE
+//       },
+//       { transaction: t }
+//     );
+
+//     const translation = await ExhibitionTranslation.create(
+//       {
+//         exhibitionId: exhibition.id, // Info kommt vom BE
+//         languageCode,
+//         title,
+//         subtitle,
+//         location,
+//         description,
+//         aiGenerated: false, // Info kommt vom BE
+//         isScreen: false, // Info kommt vom BE
+//       },
+//       { transaction: t }
+//     );
+
+//     await t.commit();
+
+//     return res.status(201).json({
+//       id: exhibition.id,
+//       coverImageId: exhibition.coverImageId,
+//       startDate: exhibition.startDate,
+//       endDate: exhibition.endDate,
+//       createdBy: exhibition.createdBy,
+//       lastEditedBy: exhibition.lastEditedBy,
+//       isArchived: exhibition.isArchived,
+//       isDeleted: exhibition.isDeleted,
+//       backgroundColor: exhibition.backgroundColor,
+
+//       languageCode: translation.languageCode,
+//       title: translation.title,
+//       subtitle: translation.subtitle,
+//       location: translation.location,
+//       description: translation.description,
+//       // aiGenerated: translation.aiGenerated,
+//       isScreen: translation.isScreen,
+//     });
+//   } catch (e) {
+//     await t.rollback();
+
+//     console.error(e);
+
+//     return res.status(500).json({
+//       msg: "Server-Fehler.",
+//     });
+//   }
+// };
+
+// Neue Exhibition inklusive der ersten Übersetzung erstellen
+export const createExhibition = async (req: Request, res: Response) => {
   try {
     const {
       coverImageId,
@@ -135,63 +211,133 @@ export const createExhibition = async (req: Request, res: Response) => {
       description,
     } = req.body;
 
-    // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
-    const exhibition = await Exhibition.create(
-      {
-        id: crypto.randomUUID(),
-        coverImageId,
-        startDate,
-        endDate,
-        createdBy: req.user!.id,
-        lastEditedBy: req.user!.id,
-        isArchived: false, // Info kommt vom BE
-        isDeleted: false, // Info kommt vom BE
-      },
-      { transaction: t }
-    );
+    /*
+      ----------------------------------------------------------------------
+      1. Mistral prüft den Inhalt VOR dem DB-Save
+      ----------------------------------------------------------------------
 
-    const translation = await ExhibitionTranslation.create(
-      {
-        exhibitionId: exhibition.id, // Info kommt vom BE
-        languageCode,
-        title,
-        subtitle,
-        location,
-        description,
-        aiGenerated: false, // Info kommt vom BE
-        isScreen: false, // Info kommt vom BE
-      },
-      { transaction: t }
-    );
+      Der User hat den Datensatz eingegeben.
 
-    await t.commit();
+      Zod hat bereits die technischen Anforderungen geprüft.
 
-    return res.status(201).json({
-      id: exhibition.id,
-      coverImageId: exhibition.coverImageId,
-      startDate: exhibition.startDate,
-      endDate: exhibition.endDate,
-      createdBy: exhibition.createdBy,
-      lastEditedBy: exhibition.lastEditedBy,
-      isArchived: exhibition.isArchived,
-      isDeleted: exhibition.isDeleted,
-      backgroundColor: exhibition.backgroundColor,
+      Jetzt prüft Mistral:
+      - Sprache
+      - Rechtschreibung
+      - Grammatik
+      - offensichtliche sprachliche Probleme
 
-      languageCode: translation.languageCode,
-      title: translation.title,
-      subtitle: translation.subtitle,
-      location: translation.location,
-      description: translation.description,
-      // aiGenerated: translation.aiGenerated,
-      isScreen: translation.isScreen,
+      Mistral schreibt hier noch NICHT in die DB.
+    */
+
+    const aiResult = await processExhibitionTranslation({
+      title,
+      subtitle,
+      location,
+      description,
     });
-  } catch (e) {
-    await t.rollback();
 
+    /*
+      ----------------------------------------------------------------------
+      2. Prüfen, ob Mistral die erwartete Ausgangssprache erkannt hat
+      ----------------------------------------------------------------------
+
+      Dein aktuelles System unterstützt nur DE und EN.
+    */
+
+    if (aiResult.sourceLanguage !== languageCode) {
+      return res.status(422).json({
+        msg: "Die erkannte Sprache stimmt nicht mit der angegebenen Sprache überein.",
+
+        aiValidation: {
+          sourceLanguage: aiResult.sourceLanguage,
+          expectedLanguage: languageCode,
+        },
+      });
+    }
+
+    /*
+      ----------------------------------------------------------------------
+      3. DB-Transaktion erst NACH erfolgreicher Mistral-Prüfung
+      ----------------------------------------------------------------------
+    */
+
+    const t = await db.transaction();
+
+    try {
+      const exhibition = await Exhibition.create(
+        {
+          id: crypto.randomUUID(),
+          coverImageId,
+          startDate,
+          endDate,
+          createdBy: req.user!.id,
+          lastEditedBy: req.user!.id,
+          isArchived: false,
+          isDeleted: false,
+        },
+        { transaction: t }
+      );
+
+      const translation = await ExhibitionTranslation.create(
+        {
+          exhibitionId: exhibition.id,
+          languageCode,
+
+          /*
+              Hier verwenden wir die korrigierte Version
+              von Mistral.
+
+              Dadurch wird nicht die möglicherweise fehlerhafte
+              ursprüngliche Eingabe gespeichert.
+            */
+          title: aiResult.corrected.title,
+          subtitle: aiResult.corrected.subtitle,
+          location: aiResult.corrected.location,
+          description: aiResult.corrected.description,
+
+          /*
+              Die Ausgangssprache wurde zwar von Mistral geprüft,
+              aber nicht von Mistral als Übersetzung erzeugt.
+
+              Deshalb bleibt aiGenerated false.
+            */
+          aiGenerated: false,
+
+          isScreen: false,
+        },
+        { transaction: t }
+      );
+
+      await t.commit();
+
+      return res.status(201).json({
+        id: exhibition.id,
+        coverImageId: exhibition.coverImageId,
+        startDate: exhibition.startDate,
+        endDate: exhibition.endDate,
+        createdBy: exhibition.createdBy,
+        lastEditedBy: exhibition.lastEditedBy,
+        isArchived: exhibition.isArchived,
+        isDeleted: exhibition.isDeleted,
+        backgroundColor: exhibition.backgroundColor,
+
+        languageCode: translation.languageCode,
+        title: translation.title,
+        subtitle: translation.subtitle,
+        location: translation.location,
+        description: translation.description,
+        isScreen: translation.isScreen,
+      });
+    } catch (e) {
+      await t.rollback();
+
+      throw e;
+    }
+  } catch (e) {
     console.error(e);
 
     return res.status(500).json({
-      msg: "Server-Fehler.",
+      msg: "Die Exhibition konnte nicht gespeichert werden.",
     });
   }
 };
