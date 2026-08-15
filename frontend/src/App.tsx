@@ -75,7 +75,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
+              <Route
+                path="/landingpage/exhibitions/:id"
+                element={
+                  <ProtectedRoute>
+                    <NewExhibitionPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/landingpage/exhibitions/new"
                 element={

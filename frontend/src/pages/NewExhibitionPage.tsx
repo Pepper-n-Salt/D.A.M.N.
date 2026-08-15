@@ -1,17 +1,25 @@
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import H1 from "../components/ui/typography/H1";
 import P from "../components/ui/typography/P";
+
 import ExhibitionForm, {
   type ExhibitionFormData,
   type Language,
 } from "../components/ExhibitionForm";
 
-import { createExhibition } from "../api/exhibitionApi";
+import {
+  createExhibition,
+  getExhibition,
+  updateExhibition,
+} from "../api/exhibitionApi";
+
 import {
   previewExhibitionTranslation,
   createExhibitionTranslation,
+  updateExhibitionTranslation,
 } from "../api/exhibitionTranslationApi";
 
 const createEmptyFormData = (): ExhibitionFormData => ({
@@ -27,6 +35,13 @@ const createEmptyFormData = (): ExhibitionFormData => ({
 
 export default function NewExhibitionPage() {
   const { t } = useTranslation("newExhibition");
+
+  const { id } = useParams<{ id: string }>();
+
+  /*
+   * Wenn eine ID vorhanden ist, befinden wir uns im Bearbeitungsmodus.
+   */
+  const isEditMode = !!id;
 
   const [language, setLanguage] = useState<Language>("german");
 
@@ -53,7 +68,158 @@ export default function NewExhibitionPage() {
 
   /*
    * ------------------------------------------------------------------------
-   * Exhibition speichern
+   * Bestehende Exhibition laden
+   * ------------------------------------------------------------------------
+   */
+
+  useEffect(() => {
+    if (!id) return;
+
+    const loadExhibition = async () => {
+      try {
+        setError(null);
+
+        let germanResult = null;
+        let englishResult = null;
+
+        /*
+         * Deutsche Translation laden.
+         */
+
+        try {
+          germanResult = await getExhibition(id, "german");
+        } catch {
+          console.log("Keine deutsche Translation gefunden.");
+        }
+
+        /*
+         * Englische Translation laden.
+         */
+
+        try {
+          englishResult = await getExhibition(id, "english");
+        } catch {
+          console.log("Keine englische Translation gefunden.");
+        }
+
+        /*
+         * Wenn gar keine Translation existiert,
+         * ist etwas mit der Exhibition nicht in Ordnung.
+         */
+
+        if (!germanResult && !englishResult) {
+          throw new Error(
+            "Die Exhibition oder ihre Übersetzungen konnten nicht geladen werden."
+          );
+        }
+
+        setExhibitionId(id);
+
+        /*
+         * ------------------------------------------------------------------
+         * Nur Deutsch vorhanden
+         * ------------------------------------------------------------------
+         */
+
+        if (germanResult && !englishResult) {
+          setLanguage("german");
+
+          setFormData({
+            title: germanResult.title,
+            subtitle: germanResult.subtitle ?? "",
+            startDate: germanResult.startDate,
+            endDate: germanResult.endDate,
+            location: germanResult.location ?? "",
+            description: germanResult.description ?? "",
+            events: "",
+            image: null,
+          });
+
+          setTranslationLanguage(null);
+          setTranslationSaved(false);
+        }
+
+        /*
+         * ------------------------------------------------------------------
+         * Nur Englisch vorhanden
+         * ------------------------------------------------------------------
+         */
+
+        if (!germanResult && englishResult) {
+          setLanguage("english");
+
+          setFormData({
+            title: englishResult.title,
+            subtitle: englishResult.subtitle ?? "",
+            startDate: englishResult.startDate,
+            endDate: englishResult.endDate,
+            location: englishResult.location ?? "",
+            description: englishResult.description ?? "",
+            events: "",
+            image: null,
+          });
+
+          setTranslationLanguage(null);
+          setTranslationSaved(false);
+        }
+
+        /*
+         * ------------------------------------------------------------------
+         * Deutsch + Englisch vorhanden
+         * ------------------------------------------------------------------
+         *
+         * Deutsch wird links angezeigt.
+         * Englisch wird rechts angezeigt.
+         */
+
+        if (germanResult && englishResult) {
+          setLanguage("german");
+
+          setFormData({
+            title: germanResult.title,
+            subtitle: germanResult.subtitle ?? "",
+            startDate: germanResult.startDate,
+            endDate: germanResult.endDate,
+            location: germanResult.location ?? "",
+            description: germanResult.description ?? "",
+            events: "",
+            image: null,
+          });
+
+          setTranslationLanguage("english");
+
+          setTranslationFormData({
+            title: englishResult.title,
+            subtitle: englishResult.subtitle ?? "",
+            startDate: englishResult.startDate,
+            endDate: englishResult.endDate,
+            location: englishResult.location ?? "",
+            description: englishResult.description ?? "",
+            events: "",
+            image: null,
+          });
+
+          setTranslationSaved(true);
+        }
+
+        setExhibitionSaved(true);
+      } catch (error) {
+        console.error(error);
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Die Exhibition konnte nicht geladen werden."
+        );
+      }
+    };
+
+    loadExhibition();
+  }, [id]);
+
+  /*
+   * ------------------------------------------------------------------------
+   * Exhibition speichern / aktualisieren
    * ------------------------------------------------------------------------
    */
 
@@ -64,16 +230,41 @@ export default function NewExhibitionPage() {
     setIsSaving(true);
 
     try {
-      const result = await createExhibition(formData, language);
+      /*
+       * NEUE Exhibition
+       *
+       * /new
+       * -> POST
+       */
+
+      if (!isEditMode) {
+        const result = await createExhibition(formData, language);
+
+        setExhibitionId(result.id);
+        setExhibitionSaved(true);
+
+        console.log("Exhibition gespeichert:", result);
+
+        return;
+      }
 
       /*
-       * Dein Backend gibt die ID unter "id" zurück.
+       * BESTEHENDE Exhibition
+       *
+       * /:id
+       * -> PATCH
        */
-      setExhibitionId(result.id);
 
+      if (!id) {
+        throw new Error("Keine Exhibition-ID vorhanden.");
+      }
+
+      const result = await updateExhibition(id, language, formData);
+
+      setExhibitionId(result.id);
       setExhibitionSaved(true);
 
-      console.log("Exhibition gespeichert:", result);
+      console.log("Exhibition aktualisiert:", result);
     } catch (error) {
       console.error(error);
 
@@ -117,12 +308,6 @@ export default function NewExhibitionPage() {
         newLanguage
       );
 
-      /*
-       * Jetzt verwenden wir tatsächlich die Übersetzung
-       * von Mistral und kopieren nicht mehr einfach
-       * das Originalformular.
-       */
-
       setTranslationFormData({
         title: result.title,
         subtitle: result.subtitle ?? "",
@@ -133,6 +318,7 @@ export default function NewExhibitionPage() {
         events: "",
         image: null,
       });
+
       setTranslationLanguage(newLanguage);
       setTranslationSaved(false);
     } catch (error) {
@@ -150,7 +336,7 @@ export default function NewExhibitionPage() {
 
   /*
    * ------------------------------------------------------------------------
-   * Übersetzung endgültig speichern
+   * Übersetzung speichern / aktualisieren
    * ------------------------------------------------------------------------
    */
 
@@ -161,19 +347,47 @@ export default function NewExhibitionPage() {
       return;
     }
 
+    if (isSaving) return;
+
     setError(null);
     setIsSaving(true);
 
     try {
-      await createExhibitionTranslation(
+      /*
+       * Bei einer neuen Translation:
+       *
+       * POST /exhibitiontranslation/:id/translations
+       */
+
+      if (!translationSaved) {
+        await createExhibitionTranslation(
+          exhibitionId,
+          translationFormData,
+          translationLanguage
+        );
+
+        setTranslationSaved(true);
+
+        console.log("Übersetzung gespeichert.");
+
+        return;
+      }
+
+      /*
+       * Bei einer bereits existierenden Translation:
+       *
+       * PATCH /exhibitiontranslation/:id/translations/:languageCode
+       */
+
+      await updateExhibitionTranslation(
         exhibitionId,
-        translationFormData,
-        translationLanguage
+        translationLanguage,
+        translationFormData
       );
 
       setTranslationSaved(true);
 
-      console.log("Übersetzung gespeichert.");
+      console.log("Übersetzung aktualisiert.");
     } catch (error) {
       console.error(error);
 
