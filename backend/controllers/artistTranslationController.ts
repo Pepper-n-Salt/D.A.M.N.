@@ -83,7 +83,82 @@ export const createArtistTranslation = async (
   }
 };
 
-export const updateArtistTranslation = async (req: Request, res: Response) => {
+export const updateArtistTranslation = async (
+  req: Request<{
+    artistId: string;
+    languageCode: string;
+  }>,
+  res: Response
+) => {
+  const t = await db.transaction();
+
   try {
-  } catch (e) {}
+    const { artistId, languageCode } = req.params;
+
+    const { firstName, lastName, description, country } = req.body;
+
+    // überprüfen, dass die:der Artist existiert und nicht gelöscht wurde
+    const artist = await Artist.findOne({
+      where: {
+        id: artistId,
+        isDeleted: false,
+      },
+      transaction: t,
+    });
+
+    if (!artist) {
+      await t.rollback();
+
+      return res.status(404).json({
+        msg: "Der Artist wurde nicht gefunden.",
+      });
+    }
+
+    // Translation über artistId + languageCode suchen
+    const translation = await ArtistTranslation.findOne({
+      where: {
+        artistId,
+        languageCode,
+      },
+      transaction: t,
+    });
+
+    if (!translation) {
+      await t.rollback();
+
+      return res.status(404).json({
+        msg: "Die ArtistTranslation wurde nicht gefunden.",
+      });
+    }
+
+    await translation.update(
+      {
+        firstName,
+        lastName,
+        description,
+        country,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    return res.status(200).json({
+      artistId: translation.artistId,
+      languageCode: translation.languageCode,
+      firstName: translation.firstName,
+      lastName: translation.lastName,
+      description: translation.description,
+      country: translation.country,
+      isScreen: translation.isScreen,
+    });
+  } catch (e) {
+    await t.rollback();
+
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Die ArtistTranslation konnte nicht aktualisiert werden.",
+    });
+  }
 };
