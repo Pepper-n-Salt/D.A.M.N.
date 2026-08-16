@@ -153,11 +153,13 @@ export const previewExhibitionTranslation = async (
 };
 
 // weitere Übersetzung für eine bestehende Exhibition anlegen
+// getestet: klappt
 export const createExhibitionTranslation = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
 ) => {
   const t = await db.transaction();
+
   try {
     const { exhibitionId } = req.params;
 
@@ -234,6 +236,8 @@ export const createExhibitionTranslation = async (
   }
 };
 
+// diese weitere Übersetzung für eine bereits bestehende Exhibition editieren
+// getestet: klappt auch!
 export const updateExhibitionTranslation = async (
   req: Request<{
     exhibitionId: string;
@@ -296,7 +300,7 @@ export const updateExhibitionTranslation = async (
 
     return res.status(200).json({
       exhibitionId: translation.exhibitionId,
-      languageCode: translation.languageCode,
+      // languageCode: translation.languageCode,
       title: translation.title,
       subtitle: translation.subtitle,
       location: translation.location,
