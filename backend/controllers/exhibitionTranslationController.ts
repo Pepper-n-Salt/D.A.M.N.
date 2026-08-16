@@ -153,6 +153,7 @@ export const previewExhibitionTranslation = async (
 };
 
 // weitere Übersetzung für eine bestehende Exhibition anlegen
+// getestet: klappt
 export const createExhibitionTranslation = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
@@ -234,6 +235,8 @@ export const createExhibitionTranslation = async (
   }
 };
 
+// diese weitere Übersetzung für eine bereits bestehende Exhibition editieren
+// getestet: klappt auch!
 export const updateExhibitionTranslation = async (
   req: Request<{
     exhibitionId: string;
