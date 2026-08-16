@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import db from "../lib/db.js";
 import { Artist, ArtistTranslation } from "../models";
 
+// weitere Übersetzung für eine:n bestehende:n Artist anlegen
+// getestet: klappt!
 export const createArtistTranslation = async (
   req: Request<{ artistId: string }>,
   res: Response
@@ -83,6 +85,8 @@ export const createArtistTranslation = async (
   }
 };
 
+// diese weitere Übersetzung für eine:n bereits bestehende:n Artist editieren
+// getestet: klappt auch!
 export const updateArtistTranslation = async (
   req: Request<{
     artistId: string;
