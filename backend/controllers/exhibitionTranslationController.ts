@@ -159,6 +159,7 @@ export const createExhibitionTranslation = async (
   res: Response
 ) => {
   const t = await db.transaction();
+
   try {
     const { exhibitionId } = req.params;
 
