@@ -1,7 +1,9 @@
 import type { Request, Response } from "express";
-import db from "../lib/db";
+import db from "../lib/db.js";
 import { Artwork, ArtworkTranslation } from "../models";
 
+// weitere Übersetzung für ein bestehendes Artwork anlegen
+// getestet: klappt!
 export const createArtworkTranslation = async (
   req: Request<{ artworkId: string }>,
   res: Response
@@ -97,6 +99,7 @@ export const createArtworkTranslation = async (
 };
 
 // diese weitere Übersetzung für ein bereits bestehendes Artwork editieren
+// getestet: klappt auch!
 export const updateArtworkTranslation = async (
   req: Request<{
     artworkId: string;
