@@ -86,6 +86,8 @@ export const createArtworkTranslation = async (
       isScreen: translation.isScreen,
     });
   } catch (e) {
+    await t.rollback();
+
     console.error(e);
 
     return res.status(500).json({
@@ -94,7 +96,87 @@ export const createArtworkTranslation = async (
   }
 };
 
-export const updateArtworkTranslation = async (req: Request, res: Response) => {
+// diese weitere Übersetzung für ein bereits bestehendes Artwork editieren
+export const updateArtworkTranslation = async (
+  req: Request<{
+    artworkId: string;
+    languageCode: string;
+  }>,
+  res: Response
+) => {
+  const t = await db.transaction();
+
   try {
-  } catch (e) {}
+    const { artworkId, languageCode } = req.params;
+
+    const { title, subtitle, country, origin, material, description } =
+      req.body;
+
+    // überprüfen, dass das Artwork existiert und nicht gelöscht wurde
+    const artwork = await Artwork.findOne({
+      where: {
+        id: artworkId,
+        isDeleted: false,
+      },
+      transaction: t,
+    });
+
+    if (!artwork) {
+      await t.rollback();
+
+      return res.status(404).json({ msg: "Das Artwork wurde nicht gefunden." });
+    }
+
+    // Translation über den kombinierten Primary Key suchen
+    const translation = await ArtworkTranslation.findOne({
+      where: {
+        artworkId,
+        languageCode,
+      },
+      transaction: t,
+    });
+
+    if (!translation) {
+      await t.rollback();
+
+      return res.status(404).json({
+        msg: "Die ArtworkTranslation wurde nicht gefunden.",
+      });
+    }
+
+    await translation.update(
+      {
+        title,
+        subtitle,
+        country,
+        origin,
+        material,
+        description,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    return res.status(200).json({
+      artworkId: translation.artworkId,
+      // languageCode: translation.languageCode,
+      title: translation.title,
+      subtitle: translation.subtitle,
+      country: translation.country,
+      origin: translation.origin,
+      material: translation.material,
+      description: translation.description,
+      // aiGenerated: translation.aiGenerated,
+      isScreen: translation.isScreen,
+    });
+  } catch (e) {
+    await t.rollback();
+
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Die Artwork Translation konnte nicht aktualisiert werden.",
+    });
+  }
 };

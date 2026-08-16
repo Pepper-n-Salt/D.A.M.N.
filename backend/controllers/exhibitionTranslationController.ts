@@ -300,7 +300,7 @@ export const updateExhibitionTranslation = async (
 
     return res.status(200).json({
       exhibitionId: translation.exhibitionId,
-      languageCode: translation.languageCode,
+      // languageCode: translation.languageCode,
       title: translation.title,
       subtitle: translation.subtitle,
       location: translation.location,
