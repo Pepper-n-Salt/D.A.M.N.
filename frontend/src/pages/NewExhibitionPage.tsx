@@ -158,6 +158,7 @@ export default function NewExhibitionPage() {
             image: null,
           });
 
+          setImageUrl(germanResult.fileUrl ?? null);
           setTranslationLanguage(null);
           setTranslationSaved(false);
         }
@@ -182,6 +183,7 @@ export default function NewExhibitionPage() {
             image: null,
           });
 
+          setImageUrl(englishResult.fileUrl ?? null);
           setTranslationLanguage(null);
           setTranslationSaved(false);
         }
@@ -208,6 +210,8 @@ export default function NewExhibitionPage() {
             events: "",
             image: null,
           });
+
+          setImageUrl(englishResult.fileUrl ?? null);
 
           setTranslationLanguage("english");
 
