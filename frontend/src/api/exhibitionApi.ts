@@ -5,6 +5,7 @@ const API_URL = `${import.meta.env.VITE_API_URL || ""}`;
 export type CreateExhibitionResponse = {
   id: string;
   coverImageId: string | null;
+  fileUrl: string | null;
   startDate: string;
   endDate: string;
   createdBy: string;

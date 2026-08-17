@@ -2,6 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import db from "../lib/db.js";
 import ExhibitionTranslation from "./ExhibitionTranslation.js";
 import User from "./User.js";
+import Media from "./Media.js";
 
 class Exhibition extends Model {
   declare id: string;
@@ -22,6 +23,7 @@ class Exhibition extends Model {
 
   declare ExhibitionTranslations?: ExhibitionTranslation[];
   declare creator?: User;
+  declare Medium?: Media;
 }
 
 Exhibition.init(
