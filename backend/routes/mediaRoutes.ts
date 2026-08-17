@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer"; // middleware für dateiupload in express
 import { checkAuth } from "../middleware/checkAuth.js";
-import { uploadMedia } from "../controllers/mediaController.js";
+import { deleteMedia, uploadMedia } from "../controllers/mediaController.js";
 
 const router = express.Router();
 
@@ -12,6 +12,10 @@ const upload = multer({
   },
 });
 
-router.post("/uploadImage", checkAuth, upload.single("image"), uploadMedia); // FE muss dann die Datei unter Namen "image" schicken
+router.use(checkAuth);
+
+router.post("/uploadImage", upload.single("image"), uploadMedia); // FE muss dann die Datei unter Namen "image" schicken
+
+router.delete("/:mediaId", deleteMedia);
 
 export default router;

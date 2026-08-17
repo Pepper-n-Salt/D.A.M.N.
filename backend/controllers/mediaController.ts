@@ -56,3 +56,40 @@ export const uploadMedia = async (req: Request, res: Response) => {
 };
 
 // Bilder löschen
+// muss noch getestet werden (stand: 17.08.)
+export const deleteMedia = async (
+  req: Request<{ mediaId: string }>,
+  res: Response
+) => {
+  try {
+    const { mediaId } = req.params;
+
+    if (!mediaId) {
+      return res
+        .status(400)
+        .json({ msg: "Es wurde keine Media-ID angegeben." });
+    }
+
+    const media = await Media.findByPk(mediaId);
+
+    if (!media) {
+      return res.status(404).json({ msg: "Das Bild urde nicht gefunden." });
+    }
+
+    // Bild bei Cloudinary löschen
+    await cloudinary.uploader.destroy(media.publicId);
+
+    // Bild aus unserer Datenbank löschen
+    await media.destroy();
+
+    return res.status(200).json({
+      msg: "Media erfolgreich gelöscht.",
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res
+      .status(500)
+      .json({ msg: "Das Bild konnte nicht gelöscht werden." });
+  }
+};
