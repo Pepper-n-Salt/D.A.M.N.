@@ -12,6 +12,7 @@
     "description": "Description",
     "events": "Events",
     "image": "Image",
+    "thumbnail": "Thumbnail",
     "languages": {
       "german": "German",
       "english": "English"
@@ -23,6 +24,8 @@
     "translateToGerman": "Translate to German"
   },
   "messages": {
+    "imageSelected": "Image selected.",
+    "savingImage": "Saving image ...",
     "noGermanTranslation": "No German translation found.",
     "noEnglishTranslation": "No English translation found.",
     "loadError": "The exhibition or its translations could not be loaded.",

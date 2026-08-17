@@ -11,6 +11,7 @@
     "description": "Beschreibung",
     "events": "Veranstaltungen",
     "image": "Bild",
+    "thumbnail": "Vorschaubild",
     "languages": {
       "german": "Deutsch",
       "english": "Englisch"
@@ -22,6 +23,8 @@
     "translateToGerman": "Ins Deutsche übersetzen"
   },
   "messages": {
+    "imageSelected": "Bild ausgewählt.",
+    "savingImage": "Bild wird gespeichert ...",
     "noGermanTranslation": "Keine deutsche Übersetzung gefunden.",
     "noEnglishTranslation": "Keine englische Übersetzung gefunden.",
     "loadError": "Die Ausstellung oder ihre Übersetzungen konnten nicht geladen werden.",

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useExhibitionValidation } from "../validation/exhibitionValidation";
 
@@ -54,6 +55,8 @@ export default function ExhibitionForm({
 
   const { validateExhibitionForm } = useExhibitionValidation();
 
+  const [isSavingImage, setIsSavingImage] = useState(false);
+
   /*
    * Die Validierungsfehler werden bei jedem Render neu berechnet.
    *
@@ -109,12 +112,17 @@ export default function ExhibitionForm({
 
       // Bild hochladen
       if (formData.image) {
-        const uploadedImage = await uploadImage(formData.image);
+        setIsSavingImage(true);
+        try {
+          const uploadedImage = await uploadImage(formData.image);
 
-        console.log("Bild erfolgreich hochgeladen:", uploadedImage);
+          console.log("Bild erfolgreich hochgeladen:", uploadedImage);
 
-        imageId = uploadedImage.id;
-        imageUrl = uploadedImage.fileUrl;
+          imageId = uploadedImage.id;
+          imageUrl = uploadedImage.fileUrl;
+        } finally {
+          setIsSavingImage(false);
+        }
       }
 
       console.log(imageId);
@@ -398,21 +406,32 @@ export default function ExhibitionForm({
             }
           />
 
-          {imageUrl && (
-            <div className="relative mt-4 w-32 border border-black">
-              <img
-                src={imageUrl}
-                alt="Vorschau"
-                className="h-32 w-32 object-cover"
-              />
-              <button
-                type="button"
-                onClick={onRemoveImage}
-                className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center cursor-pointer bg-black text-white hover:bg-gray-800"
-              >
-                ×
-              </button>
-            </div>
+          {isSavingImage && (
+            <p className="text-sm uppercase tracking-[0.2em]">
+              {t("messages.savingImage")}
+            </p>
+          )}
+
+          {imageUrl && !isSavingImage && (
+            <>
+              <div className="relative mt-4 w-32 border border-black">
+                <img
+                  src={imageUrl}
+                  alt={t("form.thumbnail")}
+                  className="h-32 w-32 object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={onRemoveImage}
+                  className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center cursor-pointer bg-black text-white hover:bg-gray-800"
+                >
+                  ×
+                </button>
+              </div>
+              <p className="mt-2 text-sm uppercase tracking-[0.2em]">
+                {t("messages.imageSelected")}
+              </p>
+            </>
           )}
 
           {errors.image && (
