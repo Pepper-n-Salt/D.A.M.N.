@@ -1,0 +1,41 @@
+{
+  "hero": {
+    "title": "Neues Kunstwerk hinzufügen",
+    "paragraph": "Fülle das untenstehende Formular aus, um einen neuen Kunstwerkseintrag für die Plattform zu erstellen."
+  },
+  "import": {
+    "open": "Kunstwerk importieren",
+    "close": "Import schließen",
+    "hint": "Suchen und importieren Sie Kunstwerkdaten aus der The Met Collection.",
+    "label": "Kunstwerk importieren",
+    "title": "Die Met Sammlung durchsuchen",
+    "placeholder": "Nach dem Titel des Kunstwerks suchen.",
+    "search": "Suchen",
+    "results": "Treffer gefunden.",
+    "button": "Importieren"
+  },
+  "form": {
+    "language": "In welcher Sprache möchten Sie das Kunstwerk hinzufügen?",
+    "languages": {
+      "german": "Deutsch",
+      "english": "Englisch"
+    },
+    "title": "Titel",
+    "subtitle": "Untertitel",
+    "artist": "Künstler:in",
+    "selectArtist": "Künstler:in auswählen",
+    "biography": "Biografie (optional)",
+    "year": "Entstehungsjahr",
+    "country": "Land",
+    "origin": "Herkunft",
+    "material": "Material",
+    "dimensions": "Maße",
+    "description": "Beschreibung",
+    "image": "Bild hochladen"
+  },
+  "actions": {
+    "save": "Kunstwerk speichern",
+    "translateToEnglish": "Ins Englische übersetzen",
+    "translateToGerman": "Ins Deutsche übersetzen"
+  }
+}

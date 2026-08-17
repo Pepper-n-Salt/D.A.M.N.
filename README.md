@@ -18,7 +18,6 @@ A modern content management system for museums and exhibitions.
 ## Tech Stack
 
 React
-Next.js
 Express
 PostgreSQL
 Tailwind CSS

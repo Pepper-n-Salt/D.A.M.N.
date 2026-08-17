@@ -1,0 +1,13 @@
+{
+  "hero": {
+    "title": "Login",
+    "subtitle": "Access the Digital Artwork Management Network!"
+  },
+  "form": {
+    "email": "Email",
+    "password": "Password",
+    "submit": "Login",
+    "loginFailed": "Login failed",
+    "networkError": "Network error"
+  }
+}

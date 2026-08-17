@@ -1,0 +1,23 @@
+{
+  "title": "Neue:n Künstler:in hinzufügen",
+  "paragraph": "Erstelle einen neuen Eintrag für eine:n Künstler:in auf der Plattform.",
+  "form": {
+    "language": "In welcher Sprache möchten Sie eine:n Künstler:in hinzufügen?",
+    "languages": {
+      "german": "Deutsch",
+      "english": "Englisch"
+    },
+    "firstname": "Vorname",
+    "lastname": "Nachname",
+    "dateOfBirth": "Geburtsdatum",
+    "dateOfDeath": "Sterbedatum",
+    "country": "Land",
+    "description": "Beschreibung",
+    "image": "Bild hochladen"
+  },
+  "actions": {
+    "save": "Künstler:in speichern",
+    "translateToEnglish": "Ins Englische übersetzen",
+    "translateToGerman": "Ins Deutsche übersetzen"
+  }
+}

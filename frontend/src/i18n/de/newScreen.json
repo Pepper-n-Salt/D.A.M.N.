@@ -1,0 +1,62 @@
+{
+  "newScreen": {
+    "title": "Display erstellen",
+    "paragraph": "Konfiguriere eine digitale Präsentation für deine Ausstellungen, Kunstwerke und die ausgestellten Künstler:innen.",
+    "selectType": "Bildschirmtyp auswählen",
+    "error": "Beim Laden der Inhalte ist ein Fehler aufgetreten. Bitte versuche es erneut. Sollte der Fehler weiterhin bestehen, wende dich bitte an den Support.",
+
+    "staticScreens": {
+      "title": "Statische Bildschirme",
+
+      "exhibition": {
+        "title": "Ausstellung",
+        "show": "Ausstellungen anzeigen",
+        "description": "Zeigt aktuelle Ausstellungen und zugehörige Informationen an."
+      },
+
+      "artwork": {
+        "title": "Kunstwerk",
+        "show": "Kunstwerke anzeigen",
+        "description": "Präsentiert einzelne Kunstwerke mit Metadaten."
+      },
+
+      "artist": {
+        "title": "Künstler:in",
+        "show": "Künstler:innen anzeigen",
+        "description": "Zeigt Informationen über Künstler:innen und ausgewählte Werke."
+      }
+    },
+
+    "dynamicScreens": {
+      "title": "Dynamische Bildschirme",
+
+      "interactiveArtwork": {
+        "title": "Interaktives Kunstwerk",
+        "description": "Erkunden Sie Kunstwerke durch Zoomen und Interaktion.",
+        "comingSoon": "Demnächst verfügbar"
+      },
+
+      "digitalExperience": {
+        "title": "Digitales Erlebnis",
+        "description": "Erstellen Sie immersive und animierte Präsentationen.",
+        "comingSoon": "Demnächst verfügbar"
+      }
+    },
+
+    "screenInformation": {
+      "title": "Bildschirminformationen",
+
+      "screenName": {
+        "label": "Bildschirmname",
+        "placeholder": "Hauptbildschirm der Galerie"
+      },
+
+      "location": {
+        "label": "Standort",
+        "placeholder": "Eingangshalle"
+      },
+
+      "submit": "Screen erstellen"
+    }
+  }
+}

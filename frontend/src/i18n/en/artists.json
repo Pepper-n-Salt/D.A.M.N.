@@ -1,0 +1,18 @@
+{
+  "hero": {
+    "title": "Artists",
+    "paragraph": "Discover the current artists and manage their entries in the platform."
+  },
+  "current": {
+    "title": "Current Artists"
+  },
+  "create": {
+    "title": "Add a new entry",
+    "button": "Add artist →"
+  },
+  "deleted": {
+    "title": "Deleted Artists",
+    "button": "Delete artist →",
+    "notfound": "No deleted artists found."
+  }
+}

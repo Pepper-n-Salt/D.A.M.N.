@@ -1,0 +1,28 @@
+{
+  "newUser": {
+    "title": "Mitglied hinzufügen",
+    "paragraph": "Erstelle ein neues Konto für eine weitere Person in deiner Organisation und lege die entsprechende Zugriffsstufe innerhalb von D.A.M.N. fest.",
+
+    "userInformation": "Benutzer:inneninformationen",
+
+    "form": {
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "repeatPassword": "Passwort wiederholen",
+      "role": "Rolle",
+      "organisation": "Organisation",
+      "organisationPlaceholder": "Organisationsnamen eingeben",
+      "submit": "Speichern",
+      "passwordMismatch": "Passwörter stimmen nicht überein.",
+      "error": "Beim Erstellen des Benutzers ist ein Fehler aufgetreten.",
+      "success": "Neuer Benutzer erfolgreich erstellt.",
+      "roleOptions": {
+        "admin": "Admin",
+        "user": "User"
+      }
+    },
+    "noPermission": "Sie haben keine Berechtigung, neue Benutzer anzulegen."
+  }
+}

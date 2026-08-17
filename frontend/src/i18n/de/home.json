@@ -1,0 +1,62 @@
+{
+  "hero": {
+    "title": "Ein System zum Sammeln, Kuratieren und Präsentieren digitaler Kunst."
+  },
+  "intro": {
+    "paragraph1": "D.A.M.N. (Digital Artwork Management Network) ist eine Plattform, die die Organisation und Präsentation digitaler Kunstwerke vereinfacht. Sie vereint Werkdaten, Sammlungen, Ausstellungen und Display-Management in einer zentralen Umgebung und schafft so einen strukturierten Workflow vom Archiv bis zur Präsentation.",
+    "paragraph2": "Ob von Künstler:innen, Galerien, Museen oder Kultureinrichtungen genutzt – D.A.M.N. unterstützt den gesamten kuratorischen Prozess. Kunstwerke können dokumentiert, mit Metadaten angereichert, zu Sammlungen zusammengefasst und für Ausstellungen vorbereitet werden, ohne auf verstreute Dateien oder voneinander getrennte Systeme angewiesen zu sein.",
+    "paragraph3": "Durch die Verknüpfung von Sammlungen mit Ausstellungen und digitalen Bildschirmen schafft D.A.M.N. eine nahtlose Verbindung zwischen Verwaltung und Präsentation. Die Plattform wurde entwickelt, um digitale Kunst einfacher zu kuratieren, zu pflegen und zu teilen, und bietet zugleich eine flexible Grundlage für zukünftige Projekte und Kooperationen."
+  },
+  "showcase": {
+    "placeholder": "Dashboard-Screenshot",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "workflow": "Workflow",
+    "steps": ["Kontakt", "Kunstwerk", "Ausstellung", "Bildschirm"]
+  },
+  "landing": {
+    "currentCollection": "Aktuelle Sammlung",
+    "preview": "Artwork-Vorschau",
+    "artworkTitle": "Unbenannt Nr. 24",
+    "artworkMeta": "Digitales Kunstwerk · 2026",
+    "previousArtwork": "Vorheriges Kunstwerk",
+    "nextArtwork": "Nächstes Kunstwerk",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "collection": "Sammlung",
+    "artworks": "Kunstwerke",
+    "exhibitions": "Ausstellungen",
+    "activeProjects": "aktive Projekte",
+    "screens": "Bildschirme",
+    "connectedDisplays": "verbundene Displays",
+    "recentActivity": "Aktuelle Aktivität",
+    "activityArtwork": "Neues Kunstwerk hinzugefügt",
+    "activityArtworkTitle": "Unbenannt Nr. 24",
+    "activityExhibition": "Ausstellung aktualisiert",
+    "activityExhibitionTitle": "Digitale Landschaften",
+    "currentExhibition": "Aktuelle Ausstellung",
+    "exhibitionTitle": "Digitale Landschaften",
+    "exhibitionDescription": "Eine synchronisierte Präsentation digitaler Kunstwerke über vernetzte Informationsbildschirme.",
+    "screensLabel": "Bildschirme",
+    "artworksLabel": "Kunstwerke",
+    "statusLabel": "Status",
+    "statusValue": "Aktiv"
+  },
+  "overview": {
+    "title": "Systemübersicht",
+    "items": [
+      {
+        "title": "Archivieren",
+        "description": "Digitale Kunstwerke mit strukturierten Informationen, Metadaten und Dokumentationen speichern, organisieren und verwalten."
+      },
+      {
+        "title": "Kuratieren",
+        "description": "Sammlungen erstellen, Ausstellungen planen und aussagekräftige Beziehungen zwischen Kunstwerken und ihren Kontexten schaffen."
+      },
+      {
+        "title": "Veröffentlichen",
+        "description": "Kuratierte Inhalte mit digitalen Bildschirmen verbinden und Kunstwerke in unterschiedlichen Ausstellungsumgebungen zugänglich machen."
+      }
+    ]
+  }
+}

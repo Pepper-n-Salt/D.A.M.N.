@@ -1,0 +1,57 @@
+{
+  "name": "backend",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "dev": "bun --watch server.ts",
+    "start": "bun run server.ts",
+    "db:reset": "bun run scripts/resetDatabase.ts",
+    "db:seed:organisation": "bun run scripts/seedOrganisation.ts",
+    "db:seed:users": "bun run scripts/seedSuperUsers.ts",
+    "db:seed:media": "bun run scripts/seedMedia.ts",
+    "db:seed:exhibition": "bun run scripts/seedExhibition.ts",
+    "db:seed:exhibition-translation": "bun run scripts/seedExhibitionTranslation.ts",
+    "db:seed:artwork": "bun run scripts/seedArtwork.ts",
+    "db:seed:artwork-translation": "bun run scripts/seedArtworkTranslation.ts",
+    "db:seed:artist": "bun run scripts/seedArtist.ts",
+    "db:seed:artist-translation": "bun run scripts/seedArtistTranslation.ts",
+    "db:seed": "bun run db:seed:organisation && bun run db:seed:users && bun run db:seed:media && bun run db:seed:exhibition && bun run db:seed:exhibition-translation && bun run db:seed:artwork && bun run db:seed:artwork-translation && bun run db:seed:artist && bun run db:seed:artist-translation",
+    "db:setup": "bun run db:reset && bun run db:seed"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/bun": "latest",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.2.0",
+    "@types/node": "^26.1.1",
+    "@types/nodemailer": "^8.0.1",
+    "@types/ws": "^8.18.1",
+    "prettier": "^3.9.6",
+    "sequelize-auto": "^0.8.8"
+  },
+  "peerDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@mistralai/mistralai": "^2.6.1",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.10.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.3",
+    "pg": "^8.22.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.8",
+    "ws": "^8.21.1",
+    "zod": "^4.4.3"
+  }
+}
