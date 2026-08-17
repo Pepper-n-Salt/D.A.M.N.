@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../lib/db.js";
 import ArtistTranslation from "./ArtistTranslation.js";
+import User from "./User.js";
 
 class Artist extends Model {
   declare id: string;
@@ -12,6 +13,7 @@ class Artist extends Model {
   declare isDeleted: boolean;
 
   declare ArtistTranslations?: ArtistTranslation[];
+  declare creator?: User;
 }
 
 Artist.init(

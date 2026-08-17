@@ -9,5 +9,10 @@
   "create": {
     "title": "Add a new entry",
     "button": "Add artist →"
+  },
+  "deleted": {
+    "title": "Deleted Artists",
+    "button": "Delete artist →",
+    "notfound": "No deleted artists found."
   }
 }

@@ -9,5 +9,10 @@
   "create": {
     "title": "Neuen Eintrag hinzufügen",
     "button": "Künstler:in hinzufügen →"
+  },
+  "deleted": {
+    "title": "Gelöschte Künstler:innen",
+    "button": "Künstler:in löschen →",
+    "notfound": "Keine gelöschten Künstler:innen gefunden."
   }
 }

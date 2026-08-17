@@ -27,6 +27,9 @@ type ArtistFormProps = {
   artistSaved: boolean;
   showTranslateButton?: boolean;
   languageDisabled?: boolean;
+
+  isSaving?: boolean;
+  isTranslating?: boolean;
 };
 
 export default function ArtistForm({
@@ -39,18 +42,12 @@ export default function ArtistForm({
   artistSaved,
   showTranslateButton = true,
   languageDisabled = false,
+  isSaving = false,
+  isTranslating = false,
 }: ArtistFormProps) {
   const { t } = useTranslation("newArtist");
   const { validateArtistForm } = useArtistValidation();
 
-  /*
-   * Die Fehler werden bei jedem Render neu berechnet.
-   *
-   * Das ist wichtig für die Mehrsprachigkeit:
-   * Wenn im Header die Sprache gewechselt wird, rendert
-   * die Komponente neu und useArtistValidation() verwendet
-   * automatisch die neue Sprache aus dem "validation"-Namespace.
-   */
   const errors = validateArtistForm(formData);
 
   const updateField = <K extends keyof ArtistFormData>(
@@ -82,6 +79,7 @@ export default function ArtistForm({
       noValidate
     >
       {/* LANGUAGE */}
+
       <div className="mb-10 flex flex-col gap-2 border-b border-black">
         <label
           htmlFor={`language-${language}`}
@@ -95,7 +93,7 @@ export default function ArtistForm({
           value={language}
           disabled={languageDisabled}
           onChange={(e) => onLanguageChange(e.target.value as Language)}
-          className="border-b border-black bg-transparent py-3 outline-none"
+          className="border-b border-black bg-transparent py-3 outline-none disabled:cursor-not-allowed disabled:opacity-50"
         >
           <option value="german">{t("form.languages.german")}</option>
 
@@ -104,8 +102,10 @@ export default function ArtistForm({
       </div>
 
       {/* FIRST NAME / LAST NAME */}
+
       <div className="grid gap-8 md:grid-cols-2">
         {/* FIRST NAME */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`firstname-${language}`}
@@ -124,22 +124,15 @@ export default function ArtistForm({
               errors.firstName ? "border-red-600" : "border-black"
             }`}
             aria-invalid={!!errors.firstName}
-            aria-describedby={
-              errors.firstName ? `firstname-error-${language}` : undefined
-            }
           />
 
           {errors.firstName && (
-            <p
-              id={`firstname-error-${language}`}
-              className="text-sm text-red-600"
-            >
-              {errors.firstName}
-            </p>
+            <p className="text-sm text-red-600">{errors.firstName}</p>
           )}
         </div>
 
         {/* LAST NAME */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`lastname-${language}`}
@@ -158,22 +151,15 @@ export default function ArtistForm({
               errors.lastName ? "border-red-600" : "border-black"
             }`}
             aria-invalid={!!errors.lastName}
-            aria-describedby={
-              errors.lastName ? `lastname-error-${language}` : undefined
-            }
           />
 
           {errors.lastName && (
-            <p
-              id={`lastname-error-${language}`}
-              className="text-sm text-red-600"
-            >
-              {errors.lastName}
-            </p>
+            <p className="text-sm text-red-600">{errors.lastName}</p>
           )}
         </div>
 
         {/* DATE OF BIRTH */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`dateOfBirth-${language}`}
@@ -192,22 +178,15 @@ export default function ArtistForm({
               errors.dateOfBirth ? "border-red-600" : "border-black"
             }`}
             aria-invalid={!!errors.dateOfBirth}
-            aria-describedby={
-              errors.dateOfBirth ? `dateOfBirth-error-${language}` : undefined
-            }
           />
 
           {errors.dateOfBirth && (
-            <p
-              id={`dateOfBirth-error-${language}`}
-              className="text-sm text-red-600"
-            >
-              {errors.dateOfBirth}
-            </p>
+            <p className="text-sm text-red-600">{errors.dateOfBirth}</p>
           )}
         </div>
 
         {/* DATE OF DEATH */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`dateOfDeath-${language}`}
@@ -226,22 +205,15 @@ export default function ArtistForm({
               errors.dateOfDeath ? "border-red-600" : "border-black"
             }`}
             aria-invalid={!!errors.dateOfDeath}
-            aria-describedby={
-              errors.dateOfDeath ? `dateOfDeath-error-${language}` : undefined
-            }
           />
 
           {errors.dateOfDeath && (
-            <p
-              id={`dateOfDeath-error-${language}`}
-              className="text-sm text-red-600"
-            >
-              {errors.dateOfDeath}
-            </p>
+            <p className="text-sm text-red-600">{errors.dateOfDeath}</p>
           )}
         </div>
 
         {/* COUNTRY */}
+
         <div className="flex flex-col gap-2 md:col-span-2">
           <label
             htmlFor={`country-${language}`}
@@ -260,23 +232,16 @@ export default function ArtistForm({
               errors.country ? "border-red-600" : "border-black"
             }`}
             aria-invalid={!!errors.country}
-            aria-describedby={
-              errors.country ? `country-error-${language}` : undefined
-            }
           />
 
           {errors.country && (
-            <p
-              id={`country-error-${language}`}
-              className="text-sm text-red-600"
-            >
-              {errors.country}
-            </p>
+            <p className="text-sm text-red-600">{errors.country}</p>
           )}
         </div>
       </div>
 
       {/* DESCRIPTION */}
+
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`description-${language}`}
@@ -296,6 +261,7 @@ export default function ArtistForm({
       </div>
 
       {/* IMAGE */}
+
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`image-${language}`}
@@ -315,28 +281,36 @@ export default function ArtistForm({
       </div>
 
       {/* ACTIONS */}
+
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"
-          className="border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white"
+          disabled={isSaving}
+          className={`border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
+            isSaving
+              ? "cursor-not-allowed opacity-50"
+              : "hover:bg-black hover:text-white"
+          }`}
         >
-          {t("actions.save")}
+          {isSaving ? "..." : t("actions.save")}
         </button>
 
         {showTranslateButton && (
           <button
             type="button"
-            disabled={!artistSaved}
+            disabled={!artistSaved || isTranslating}
             onClick={onTranslate}
             className={`border px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
-              artistSaved
+              artistSaved && !isTranslating
                 ? "border-black hover:bg-black hover:text-white"
                 : "cursor-not-allowed border-gray-300 text-gray-400"
             }`}
           >
-            {language === "german"
-              ? t("actions.translateToEnglish")
-              : t("actions.translateToGerman")}
+            {isTranslating
+              ? "..."
+              : language === "german"
+                ? t("actions.translateToEnglish")
+                : t("actions.translateToGerman")}
           </button>
         )}
       </div>
