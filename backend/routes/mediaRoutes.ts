@@ -25,6 +25,6 @@ router.post("/uploadImage", upload.single("image"), uploadMedia); // FE muss dan
 
 router.get("/:mediaId", validateParams(mediaIdSchema), getMedia);
 
-router.delete("/:mediaId", deleteMedia);
+router.delete("/:mediaId", validateParams(mediaIdSchema), deleteMedia);
 
 export default router;
