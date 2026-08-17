@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { useExhibitionValidation } from "../validation/exhibitionValidation";
-import { API_URL } from "../api/config.js";
 
 export type Language = "german" | "english";
 
@@ -30,7 +29,7 @@ type ExhibitionFormProps = {
   languageDisabled?: boolean;
 };
 
-const BASE_URL = API_URL;
+const API_URL = `${import.meta.env.VITE_API_URL || ""}`;
 
 export default function ExhibitionForm({
   language,
@@ -74,7 +73,7 @@ export default function ExhibitionForm({
 
     formData.append("image", file);
 
-    const response = await fetch(`${BASE_URL}/api/media/uploadImage`, {
+    const response = await fetch(`${API_URL}/media/uploadImage`, {
       method: "POST",
       credentials: "include",
       body: formData,
