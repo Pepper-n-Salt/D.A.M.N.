@@ -21,5 +21,20 @@
     "save": "Save Exhibition",
     "translateToEnglish": "Translate to English",
     "translateToGerman": "Translate to German"
+  },
+  "messages": {
+    "noGermanTranslation": "No German translation found.",
+    "noEnglishTranslation": "No English translation found.",
+    "loadError": "The exhibition or its translations could not be loaded.",
+    "loadErrorFallback": "The exhibition could not be loaded.",
+    "noExhibitionId": "No exhibition ID available.",
+    "saveError": "The exhibition could not be saved.",
+    "translateRequiresSave": "The exhibition must be saved before it can be translated.",
+    "translationError": "The translation could not be created.",
+    "translationRequiresSave": "The exhibition must be saved and translated first.",
+    "translationSaveError": "The translation could not be saved.",
+    "saving": "Saving ...",
+    "translating": "Creating translation ...",
+    "translationSaved": "Translation saved."
   }
 }
