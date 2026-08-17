@@ -12,6 +12,21 @@ export const uploadMedia = async (req: Request, res: Response) => {
       return res.status(400).json({ msg: "Kein Bild hochgeladen!" });
     }
 
+    // hier den MimeType validieren (statt zod, weil multer schon mit übernimmt)
+    const allowedMimeTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "image/svg+xml",
+    ];
+
+    if (!allowedMimeTypes.includes(req.file.mimetype)) {
+      return res.status(400).json({
+        msg: "Das hier ist ein ungültiges Bildformat.",
+      });
+    }
+
     // eindeutige ID für Cloudinary createn
     const publicId = `media_${crypto.randomUUID()}`;
 
