@@ -21,12 +21,16 @@ type ExhibitionFormProps = {
   formData: ExhibitionFormData;
   setFormData: React.Dispatch<React.SetStateAction<ExhibitionFormData>>;
 
-  onSave: (imageId: string | null) => void;
+  onSave: (imageId: string | null, imageUrl: string | null) => void;
+  imageUrl: string | null;
+  onRemoveImage: () => void;
+
   onTranslate?: () => void;
 
   exhibitionSaved: boolean;
   showTranslateButton?: boolean;
   languageDisabled?: boolean;
+
   showImage?: boolean;
 };
 
@@ -38,6 +42,8 @@ export default function ExhibitionForm({
   formData,
   setFormData,
   onSave,
+  imageUrl,
+  onRemoveImage,
   onTranslate,
   exhibitionSaved,
   showTranslateButton = true,
@@ -98,7 +104,8 @@ export default function ExhibitionForm({
     }
 
     try {
-      let imageId = null;
+      let imageId: string | null = null;
+      let imageUrl: string | null = null;
 
       // Bild hochladen
       if (formData.image) {
@@ -107,11 +114,12 @@ export default function ExhibitionForm({
         console.log("Bild erfolgreich hochgeladen:", uploadedImage);
 
         imageId = uploadedImage.id;
+        imageUrl = uploadedImage.fileUrl;
       }
 
       console.log(imageId);
 
-      onSave(imageId);
+      onSave(imageId, imageUrl);
     } catch (error) {
       console.error(error);
     }
@@ -389,6 +397,23 @@ export default function ExhibitionForm({
               errors.image ? `image-error-${language}` : undefined
             }
           />
+
+          {imageUrl && (
+            <div className="relative mt-4 w-32 border border-black">
+              <img
+                src={imageUrl}
+                alt="Vorschau"
+                className="h-32 w-32 object-cover"
+              />
+              <button
+                type="button"
+                onClick={onRemoveImage}
+                className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center cursor-pointer bg-black text-white hover:bg-gray-800"
+              >
+                ×
+              </button>
+            </div>
+          )}
 
           {errors.image && (
             <p id={`image-error-${language}`} className="text-sm text-red-600">

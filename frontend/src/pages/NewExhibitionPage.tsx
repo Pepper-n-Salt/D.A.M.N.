@@ -66,6 +66,8 @@ export default function NewExhibitionPage() {
 
   const [error, setError] = useState<string | null>(null);
 
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
   /*
    * ------------------------------------------------------------------------
    * Bestehende Exhibition laden
@@ -223,7 +225,11 @@ export default function NewExhibitionPage() {
    * ------------------------------------------------------------------------
    */
 
-  const handleSave = async (imageId: string | null) => {
+  const handleSave = async (
+    imageId: string | null,
+    newImageUrl: string | null
+  ) => {
+    setImageUrl(newImageUrl);
     if (isSaving) return;
 
     setError(null);
@@ -431,6 +437,8 @@ export default function NewExhibitionPage() {
             setFormData={setFormData}
             exhibitionSaved={exhibitionSaved}
             onSave={handleSave}
+            imageUrl={imageUrl}
+            onRemoveImage={() => setImageUrl(null)}
             onTranslate={handleTranslate}
             showTranslateButton={translationLanguage === null}
             languageDisabled={translationLanguage !== null}
@@ -438,13 +446,13 @@ export default function NewExhibitionPage() {
 
           {isSaving && !translationLanguage && (
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-              Speichern...
+              Speichern ...
             </p>
           )}
 
           {isTranslating && (
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-              Übersetzung wird erstellt...
+              Übersetzung wird erstellt ...
             </p>
           )}
         </div>
@@ -459,6 +467,8 @@ export default function NewExhibitionPage() {
               setFormData={setTranslationFormData}
               exhibitionSaved={translationSaved}
               onSave={handleSaveTranslation}
+              imageUrl={imageUrl}
+              onRemoveImage={() => setImageUrl(null)}
               showTranslateButton={false}
               languageDisabled={true}
               showImage={false}

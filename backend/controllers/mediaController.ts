@@ -66,6 +66,7 @@ export const uploadMedia = async (req: Request, res: Response) => {
     });
   } catch (e) {
     console.error(e);
+
     res.status(500).send("Das Bild konnte nicht hochgeladen werden.");
   }
 };
