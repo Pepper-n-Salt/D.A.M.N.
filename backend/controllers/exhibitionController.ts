@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Exhibition, ExhibitionTranslation } from "../models";
+import { Exhibition, ExhibitionTranslation, User } from "../models";
 import db from "../lib/db";
 import { processExhibitionTranslation } from "../services/exhibitionMistralService.js";
 
@@ -21,6 +21,11 @@ export const showAllExhibitions = async (
             languageCode,
           },
         },
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "firstName", "lastName"],
+        },
       ],
     });
 
@@ -33,6 +38,9 @@ export const showAllExhibitions = async (
         startDate: exh.startDate,
         endDate: exh.endDate,
         createdBy: exh.createdBy,
+        createdByName: exh.creator
+          ? `${exh.creator.firstName} ${exh.creator.lastName}`
+          : null,
         lastEditedBy: exh.lastEditedBy,
         isArchived: exh.isArchived,
         isDeleted: exh.isDeleted,
@@ -507,6 +515,59 @@ export const deleteExhibition = async (
 
     return res.status(500).json({
       msg: "Die Exhibition konnte nicht als gelöscht markiert werden.",
+    });
+  }
+};
+export const showDeletedExhibitions = async (
+  req: Request<{ languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { languageCode } = req.params;
+
+    const exhibitions = await Exhibition.findAll({
+      where: {
+        isDeleted: true,
+      },
+      include: [
+        {
+          model: ExhibitionTranslation,
+          where: {
+            languageCode,
+          },
+        },
+      ],
+    });
+
+    const result = exhibitions.map((exh) => {
+      const translation = exh.ExhibitionTranslations?.[0];
+
+      return {
+        id: exh.id,
+        coverImageId: exh.coverImageId,
+        startDate: exh.startDate,
+        endDate: exh.endDate,
+        createdBy: exh.createdBy,
+        lastEditedBy: exh.lastEditedBy,
+        isArchived: exh.isArchived,
+        isDeleted: exh.isDeleted,
+        backgroundColor: exh.backgroundColor,
+
+        languageCode: translation?.languageCode,
+        title: translation?.title,
+        subtitle: translation?.subtitle,
+        location: translation?.location,
+        description: translation?.description,
+        isScreen: translation?.isScreen,
+      };
+    });
+
+    return res.status(200).json(result);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
     });
   }
 };

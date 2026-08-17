@@ -1,14 +1,19 @@
 import express from "express";
 import { checkAuth } from "../middleware/checkAuth.js";
+import { requireSuperUser } from "../middleware/requireSuperUser.js";
+
 import {
   showOneExhibition,
   showAllExhibitions,
+  showDeletedExhibitions,
   createExhibition,
   updateExhibition,
   archiveExhibition,
   deleteExhibition,
 } from "../controllers/exhibitionController.js";
+
 import { validateBody, validateParams } from "../middleware/validate.js";
+
 import {
   exhibitionIdSchema,
   exhibitionLanguageSchema,
@@ -21,11 +26,41 @@ const router = express.Router();
 
 router.use(checkAuth);
 
+/*
+ * --------------------------------------------------------------------------
+ * GELÖSCHTE EXHIBITIONS
+ * --------------------------------------------------------------------------
+ *
+ * Nur Super-User dürfen gelöschte Exhibitions sehen.
+ *
+ * Beispiel:
+ * GET /exhibition/deleted/de
+ */
+
+router.get(
+  "/deleted/:languageCode",
+  requireSuperUser,
+  validateParams(exhibitionLanguageSchema),
+  showDeletedExhibitions
+);
+
+/*
+ * --------------------------------------------------------------------------
+ * ALLE AKTUELLEN EXHIBITIONS
+ * --------------------------------------------------------------------------
+ */
+
 router.get(
   "/:languageCode",
   validateParams(exhibitionLanguageSchema),
   showAllExhibitions
 );
+
+/*
+ * --------------------------------------------------------------------------
+ * EINE EXHIBITION
+ * --------------------------------------------------------------------------
+ */
 
 router.get(
   "/:exhibitionId/:languageCode",
@@ -33,7 +68,19 @@ router.get(
   showOneExhibition
 );
 
+/*
+ * --------------------------------------------------------------------------
+ * NEUE EXHIBITION
+ * --------------------------------------------------------------------------
+ */
+
 router.post("/", validateBody(createExhibitionSchema), createExhibition);
+
+/*
+ * --------------------------------------------------------------------------
+ * ARCHIVIEREN
+ * --------------------------------------------------------------------------
+ */
 
 router.patch(
   "/:exhibitionId/archive",
@@ -41,11 +88,23 @@ router.patch(
   archiveExhibition
 );
 
+/*
+ * --------------------------------------------------------------------------
+ * LÖSCHEN
+ * --------------------------------------------------------------------------
+ */
+
 router.patch(
   "/:exhibitionId/delete",
   validateParams(exhibitionIdSchema),
   deleteExhibition
 );
+
+/*
+ * --------------------------------------------------------------------------
+ * EXHIBITION BEARBEITEN
+ * --------------------------------------------------------------------------
+ */
 
 router.patch(
   "/:exhibitionId/:languageCode",
