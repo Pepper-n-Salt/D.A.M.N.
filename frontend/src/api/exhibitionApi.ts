@@ -34,7 +34,8 @@ const languageToCode = (language: "german" | "english") => {
 
 export async function createExhibition(
   formData: ExhibitionFormData,
-  language: "german" | "english"
+  language: "german" | "english",
+  imageId: string | null
 ): Promise<CreateExhibitionResponse> {
   const response = await fetch(`${API_URL}/exhibition`, {
     method: "POST",
@@ -43,7 +44,7 @@ export async function createExhibition(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      coverImageId: null,
+      coverImageId: imageId,
       startDate: formData.startDate,
       endDate: formData.endDate,
       languageCode: languageToCode(language),
@@ -128,7 +129,8 @@ export async function getExhibition(
 export async function updateExhibition(
   exhibitionId: string,
   language: "german" | "english",
-  formData: ExhibitionFormData
+  formData: ExhibitionFormData,
+  imageId: string | null
 ): Promise<CreateExhibitionResponse> {
   const languageCode = languageToCode(language);
 
@@ -141,6 +143,7 @@ export async function updateExhibition(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        coverImageId: imageId,
         startDate: formData.startDate,
         endDate: formData.endDate,
         title: formData.title,

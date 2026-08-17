@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { useExhibitionValidation } from "../validation/exhibitionValidation";
-import { API_URL } from "../api/config.js";
 
 export type Language = "german" | "english";
 
@@ -22,15 +21,16 @@ type ExhibitionFormProps = {
   formData: ExhibitionFormData;
   setFormData: React.Dispatch<React.SetStateAction<ExhibitionFormData>>;
 
-  onSave: () => void;
+  onSave: (imageId: string | null) => void;
   onTranslate?: () => void;
 
   exhibitionSaved: boolean;
   showTranslateButton?: boolean;
   languageDisabled?: boolean;
+  showImage?: boolean;
 };
 
-const BASE_URL = API_URL;
+const API_URL = `${import.meta.env.VITE_API_URL || ""}`;
 
 export default function ExhibitionForm({
   language,
@@ -42,6 +42,7 @@ export default function ExhibitionForm({
   exhibitionSaved,
   showTranslateButton = true,
   languageDisabled = false,
+  showImage = true,
 }: ExhibitionFormProps) {
   const { t } = useTranslation("newExhibition");
 
@@ -74,7 +75,7 @@ export default function ExhibitionForm({
 
     formData.append("image", file);
 
-    const response = await fetch(`${BASE_URL}/api/media/uploadImage`, {
+    const response = await fetch(`${API_URL}/media/uploadImage`, {
       method: "POST",
       credentials: "include",
       body: formData,
@@ -110,7 +111,7 @@ export default function ExhibitionForm({
 
       console.log(imageId);
 
-      onSave();
+      onSave(imageId);
     } catch (error) {
       console.error(error);
     }
@@ -334,7 +335,7 @@ export default function ExhibitionForm({
       </div>
 
       {/* EVENTS */}
-      <div className="flex flex-col gap-2">
+      {/* <div className="flex flex-col gap-2">
         <label
           htmlFor={`events-${language}`}
           className="text-sm uppercase tracking-[0.2em]"
@@ -362,38 +363,40 @@ export default function ExhibitionForm({
             {errors.events}
           </p>
         )}
-      </div>
+      </div> */}
 
       {/* IMAGE */}
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor={`image-${language}`}
-          className="text-sm uppercase tracking-[0.2em]"
-        >
-          {t("form.image")}
-        </label>
+      {showImage && (
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor={`image-${language}`}
+            className="text-sm uppercase tracking-[0.2em]"
+          >
+            {t("form.image")}
+          </label>
 
-        <input
-          type="file"
-          id={`image-${language}`}
-          name={`image-${language}`}
-          accept="image/*"
-          onChange={(e) => updateField("image", e.target.files?.[0] ?? null)}
-          className={`cursor-pointer border bg-transparent p-3 ${
-            errors.image ? "border-red-600" : "border-black"
-          }`}
-          aria-invalid={!!errors.image}
-          aria-describedby={
-            errors.image ? `image-error-${language}` : undefined
-          }
-        />
+          <input
+            type="file"
+            id={`image-${language}`}
+            name={`image-${language}`}
+            accept="image/*"
+            onChange={(e) => updateField("image", e.target.files?.[0] ?? null)}
+            className={`cursor-pointer border bg-transparent p-3 ${
+              errors.image ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.image}
+            aria-describedby={
+              errors.image ? `image-error-${language}` : undefined
+            }
+          />
 
-        {errors.image && (
-          <p id={`image-error-${language}`} className="text-sm text-red-600">
-            {errors.image}
-          </p>
-        )}
-      </div>
+          {errors.image && (
+            <p id={`image-error-${language}`} className="text-sm text-red-600">
+              {errors.image}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* ACTIONS */}
       <div className="flex flex-wrap gap-4">
