@@ -26,6 +26,10 @@ export const showAllExhibitions = async (
           as: "creator",
           attributes: ["id", "firstName", "lastName"],
         },
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
+        },
       ],
     });
 
@@ -35,6 +39,7 @@ export const showAllExhibitions = async (
       return {
         id: exh.id,
         coverImageId: exh.coverImageId,
+        fileUrl: exh.Medium?.fileUrl ?? null,
         startDate: exh.startDate,
         endDate: exh.endDate,
         createdBy: exh.createdBy,
