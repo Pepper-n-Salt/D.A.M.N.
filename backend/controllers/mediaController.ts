@@ -55,7 +55,14 @@ export const uploadMedia = async (req: Request, res: Response) => {
   }
 };
 
-// Bilder löschen
+// Bild beim Editieren eines Formulars wieder anzeigen
+// muss noch getestet werden (stand: 17.08.)
+export const getMedia = async (req: Request, res: Response) => {
+  try {
+  } catch (e) {}
+};
+
+// Bild löschen
 // muss noch getestet werden (stand: 17.08.)
 export const deleteMedia = async (
   req: Request<{ mediaId: string }>,
