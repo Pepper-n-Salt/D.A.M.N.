@@ -1,6 +1,5 @@
 import express from "express";
 import multer from "multer"; // middleware für dateiupload in express
-
 import { checkAuth } from "../middleware/checkAuth.js";
 import { uploadMedia } from "../controllers/mediaController.js";
 

@@ -223,7 +223,7 @@ export default function NewExhibitionPage() {
    * ------------------------------------------------------------------------
    */
 
-  const handleSave = async () => {
+  const handleSave = async (imageId: string | null) => {
     if (isSaving) return;
 
     setError(null);
@@ -238,7 +238,7 @@ export default function NewExhibitionPage() {
        */
 
       if (!isEditMode) {
-        const result = await createExhibition(formData, language);
+        const result = await createExhibition(formData, language, imageId);
 
         setExhibitionId(result.id);
         setExhibitionSaved(true);
@@ -259,7 +259,7 @@ export default function NewExhibitionPage() {
         throw new Error("Keine Exhibition-ID vorhanden.");
       }
 
-      const result = await updateExhibition(id, language, formData);
+      const result = await updateExhibition(id, language, formData, imageId);
 
       setExhibitionId(result.id);
       setExhibitionSaved(true);
@@ -461,6 +461,7 @@ export default function NewExhibitionPage() {
               onSave={handleSaveTranslation}
               showTranslateButton={false}
               languageDisabled={true}
+              showImage={false}
             />
 
             {translationSaved && (
