@@ -13,6 +13,7 @@
     "events": "Events",
     "image": "Image",
     "thumbnail": "Thumbnail",
+    "chooseImage": "Choose image",
     "languages": {
       "german": "German",
       "english": "English"

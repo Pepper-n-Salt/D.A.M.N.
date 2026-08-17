@@ -68,6 +68,29 @@ export default function NewExhibitionPage() {
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+  const handleRemoveImage = () => {
+    setImageUrl(null);
+    setImagePreviewUrl(null);
+
+    setFormData((previous) => ({
+      ...previous,
+      image: null,
+    }));
+  };
+
+  const handleImageSelect = (file: File | null) => {
+    if (!file) {
+      setImagePreviewUrl(null);
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+
+    setImagePreviewUrl(previewUrl);
+  };
+
   /*
    * ------------------------------------------------------------------------
    * Bestehende Exhibition laden
@@ -430,7 +453,9 @@ export default function NewExhibitionPage() {
             exhibitionSaved={exhibitionSaved}
             onSave={handleSave}
             imageUrl={imageUrl}
-            onRemoveImage={() => setImageUrl(null)}
+            imagePreviewUrl={imagePreviewUrl}
+            onRemoveImage={handleRemoveImage}
+            onImageSelect={handleImageSelect}
             onTranslate={handleTranslate}
             showTranslateButton={translationLanguage === null}
             languageDisabled={translationLanguage !== null}
@@ -460,7 +485,9 @@ export default function NewExhibitionPage() {
               exhibitionSaved={translationSaved}
               onSave={handleSaveTranslation}
               imageUrl={imageUrl}
-              onRemoveImage={() => setImageUrl(null)}
+              imagePreviewUrl={imagePreviewUrl}
+              onRemoveImage={handleRemoveImage}
+              onImageSelect={handleImageSelect}
               showTranslateButton={false}
               languageDisabled={true}
               showImage={false}
