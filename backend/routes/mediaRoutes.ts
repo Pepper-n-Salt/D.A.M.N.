@@ -6,6 +6,8 @@ import {
   getMedia,
   deleteMedia,
 } from "../controllers/mediaController.js";
+import { validateParams } from "../middleware/validate.js";
+import { mediaIdSchema } from "../schemas/mediaSchema.js";
 
 const router = express.Router();
 
@@ -20,7 +22,7 @@ router.use(checkAuth);
 
 router.post("/uploadImage", upload.single("image"), uploadMedia); // FE muss dann die Datei unter Namen "image" schicken
 
-router.get("/:mediaId", getMedia);
+router.get("/:mediaId", validateParams(mediaIdSchema), getMedia);
 
 router.delete("/:mediaId", deleteMedia);
 
