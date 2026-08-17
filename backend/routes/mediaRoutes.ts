@@ -11,6 +11,7 @@ import { mediaIdSchema } from "../schemas/mediaSchema.js";
 
 const router = express.Router();
 
+// Dateigröße begrenzen
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
