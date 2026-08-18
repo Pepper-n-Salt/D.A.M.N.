@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Body für das Anlegen einer neuen ArtworkTranslation
 export const createArtworkTranslationSchema = z.object({
-  languageCode: z.string().min(2).max(7),
+  languageCode: z.enum(["de", "en"]),
   title: z.string().min(1).max(255),
   subtitle: z.string().max(255).nullable(),
   country: z.string().max(255).nullable(),
@@ -19,4 +19,8 @@ export const updateArtworkTranslationSchema = z.object({
   origin: z.string().max(255).nullable().optional(),
   material: z.string().max(255).nullable().optional(),
   description: z.string().nullable().optional(),
+});
+
+export const previewArtworkTranslationSchema = z.object({
+  targetLanguage: z.enum(["de", "en"]),
 });

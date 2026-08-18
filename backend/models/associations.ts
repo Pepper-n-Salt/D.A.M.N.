@@ -105,10 +105,12 @@ Artwork.belongsToMany(Artist, {
   through: ArtworkArtistAssociation,
   foreignKey: "artworkId",
   otherKey: "artistId",
+  as: "artists",
 });
 
 Artist.belongsToMany(Artwork, {
   through: ArtworkArtistAssociation,
   foreignKey: "artistId",
   otherKey: "artworkId",
+  as: "artworks",
 });

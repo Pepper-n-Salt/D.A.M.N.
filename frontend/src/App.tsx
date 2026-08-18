@@ -57,6 +57,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/landingpage/artworks/:id"
+                element={
+                  <ProtectedRoute>
+                    <NewArtworkPage />
+                  </ProtectedRoute>
+                }
+              />
 
               <Route
                 path="/landingpage/artworks/new"

@@ -1,11 +1,14 @@
 import express from "express";
 import { checkAuth } from "../middleware/checkAuth.js";
+import { requireSuperUser } from "../middleware/requireSuperUser.js";
 import {
   showAllArtworks,
   showOneArtwork,
+  showDeletedArtworks,
   createArtwork,
   updateArtwork,
   deleteArtwork,
+  restoreArtwork,
 } from "../controllers/artworkController";
 import { validateBody, validateParams } from "../middleware/validate.js";
 import {
@@ -25,6 +28,12 @@ router.get(
   validateParams(artworkLanguageSchema),
   showAllArtworks
 );
+router.get(
+  "/deleted/:languageCode",
+  requireSuperUser,
+  validateParams(artworkLanguageSchema),
+  showDeletedArtworks
+);
 
 router.get(
   "/:artworkId/:languageCode",
@@ -34,7 +43,19 @@ router.get(
 
 router.post("/", validateBody(createArtworkSchema), createArtwork);
 
-router.patch("/:artworkId", validateParams(artworkIdSchema), deleteArtwork);
+router.patch(
+  "/:artworkId/delete",
+  requireSuperUser,
+  validateParams(artworkIdSchema),
+  deleteArtwork
+);
+
+router.patch(
+  "/:artworkId/restore",
+  requireSuperUser,
+  validateParams(artworkIdSchema),
+  restoreArtwork
+);
 
 router.patch(
   "/:artworkId/:languageCode",

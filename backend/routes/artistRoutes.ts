@@ -76,12 +76,7 @@ router.get(
  * --------------------------------------------------------------------------
  */
 
-router.post(
-  "/",
-  requireSuperUser,
-  validateBody(createArtistSchema),
-  createArtist
-);
+router.post("/", validateBody(createArtistSchema), createArtist);
 
 /*
  * --------------------------------------------------------------------------
@@ -112,7 +107,6 @@ router.patch(
  */
 router.patch(
   "/:artistId/:languageCode",
-  requireSuperUser,
   validateParams(artistIdLanguageParamsSchema),
   validateBody(updateArtistSchema),
   updateArtist
