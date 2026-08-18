@@ -6,6 +6,7 @@ import {
   ArtworkArtistAssociation,
   User,
   Artist,
+  Media,
 } from "../models";
 
 import db from "../lib/db";
@@ -46,6 +47,7 @@ const createArtworkResponse = (
     year: artwork.year,
     dimensions: artwork.dimensions,
     imageId: artwork.imageId,
+    fileUrl: artwork.Medium?.fileUrl ?? null,
 
     createdBy: artwork.createdBy,
 
@@ -109,6 +111,10 @@ export const showAllArtworks = async (
           model: User,
           as: "creator",
           attributes: ["id", "firstName", "lastName"],
+        },
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
         },
 
         /*
@@ -195,6 +201,10 @@ export const showOneArtwork = async (
           model: User,
           as: "creator",
           attributes: ["id", "firstName", "lastName"],
+        },
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
         },
 
         /*

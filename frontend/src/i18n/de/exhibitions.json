@@ -15,5 +15,9 @@
   },
   "deleted": {
     "title": "Gelöschte Ausstellungen"
+  },
+  "messages": {
+    "loadError": "Die Ausstellungen konnten nicht geladen werden.",
+    "noItems": "Keine Ausstellungen gefunden."
   }
 }

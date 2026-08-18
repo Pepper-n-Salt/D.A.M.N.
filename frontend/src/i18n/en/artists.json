@@ -14,5 +14,9 @@
     "title": "Deleted Artists",
     "button": "Delete artist →",
     "notfound": "No deleted artists found."
+  },
+  "messages": {
+    "loadError": "The artists could not be loaded.",
+    "noItems": "No artists found."
   }
 }

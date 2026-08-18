@@ -31,11 +31,30 @@
     "material": "Material",
     "dimensions": "Dimensions",
     "description": "Description",
-    "image": "Upload Image"
+    "image": "Upload Image",
+    "chooseImage": "Choose image",
+    "thumbnail": "Thumbnail"
   },
   "actions": {
     "save": "Save Artwork",
     "translateToEnglish": "Translate into English",
     "translateToGerman": "Translate into German"
+  },
+  "messages": {
+    "imageSelected": "Image selected.",
+    "savingImage": "Saving image...",
+    "noGermanTranslation": "No German translation found.",
+    "noEnglishTranslation": "No English translation found.",
+    "loadError": "The artwork or its translations could not be loaded.",
+    "loadErrorFallback": "The artwork could not be loaded.",
+    "noArtworkId": "No artwork ID available.",
+    "saveError": "The artwork could not be saved.",
+    "translateRequiresSave": "The artwork must be saved before it can be translated.",
+    "translationError": "The translation could not be created.",
+    "translationRequiresSave": "The artwork must be saved and translated first.",
+    "translationSaveError": "The translation could not be saved.",
+    "saving": "Saving...",
+    "translating": "Creating translation...",
+    "translationSaved": "Translation saved."
   }
 }

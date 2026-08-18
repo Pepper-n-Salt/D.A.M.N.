@@ -15,5 +15,9 @@
   },
   "deleted": {
     "title": "Deleted Exhibitions"
+  },
+  "messages": {
+    "loadError": "The exhibitions could not be loaded.",
+    "noItems": "No exhibitions found."
   }
 }

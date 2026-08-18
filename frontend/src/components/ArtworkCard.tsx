@@ -44,9 +44,15 @@ export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
     >
       {/* IMAGE */}
 
-      <div className="aspect-square w-full bg-neutral-100">
-        {/* Bild kommt später über Cloudinary */}
-      </div>
+      {artwork.fileUrl ? (
+        <img
+          src={artwork.fileUrl}
+          alt={artwork.title}
+          className="aspect-square w-full object-cover"
+        />
+      ) : (
+        <div className="aspect-square w-full bg-neutral-100" />
+      )}
 
       {/* CONTENT */}
 

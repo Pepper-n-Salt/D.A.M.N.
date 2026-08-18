@@ -33,7 +33,8 @@ export type ArtworkResponse = {
 
   year: number | null;
   dimensions: string | null;
-  imageId: string;
+  imageId: string | null;
+  fileUrl: string | null;
 
   createdBy: string;
   createdByName?: string | null;
@@ -54,6 +55,7 @@ export type ArtworkResponse = {
    * Artists, die diesem Artwork zugeordnet sind
    */
   artists: ArtworkArtist[];
+  // artists: string[];
 
   isScreen?: boolean;
 };
