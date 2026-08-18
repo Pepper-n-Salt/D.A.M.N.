@@ -467,13 +467,13 @@ export default function NewArtistPage() {
 
           {isSaving && !translationLanguage && (
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-              Speichern...
+              {t("messages.saving")}
             </p>
           )}
 
           {isTranslating && (
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-              Übersetzung wird erstellt...
+              {t("messages.translationCreating")}
             </p>
           )}
         </div>
@@ -497,7 +497,7 @@ export default function NewArtistPage() {
 
             {translationSaved && (
               <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-                Übersetzung gespeichert.
+                {t("messages.translationSaved")}
               </p>
             )}
           </div>

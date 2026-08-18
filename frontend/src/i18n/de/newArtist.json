@@ -15,6 +15,21 @@
     "description": "Beschreibung",
     "image": "Bild hochladen"
   },
+  "messages": {
+    "savingImage": "Bild wird gespeichert...",
+    "imageSelected": "Bild ausgewählt",
+    "saving": "Speichern...",
+    "translationCreating": "Übersetzung wird erstellt...",
+    "translationSaved": "Übersetzung gespeichert.",
+    "artistMustBeSaved": "Der Artist muss zuerst gespeichert werden, bevor er übersetzt werden kann.",
+    "artistMustBeSavedAndTranslated": "Der Artist muss zuerst gespeichert und übersetzt werden.",
+    "artistNotFound": "Der Artist oder seine Übersetzungen konnten nicht geladen werden.",
+    "loadError": "Der Artist konnte nicht geladen werden.",
+    "saveError": "Der Artist konnte nicht gespeichert werden.",
+    "translationError": "Die Übersetzung konnte nicht erstellt werden.",
+    "translationSaveError": "Die Übersetzung konnte nicht gespeichert werden.",
+    "noArtistId": "Keine Artist-ID vorhanden."
+  },
   "actions": {
     "save": "Künstler:in speichern",
     "translateToEnglish": "Ins Englische übersetzen",

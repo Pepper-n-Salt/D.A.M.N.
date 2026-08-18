@@ -32,6 +32,9 @@ export default function ArtistCarousel() {
 
         const result = await getArtists(languageCode);
 
+        console.log("ARTISTS:", result);
+        console.log("LANGUAGE:", languageCode);
+
         setArtists(result);
         setStartIndex(0);
       } catch (error) {
