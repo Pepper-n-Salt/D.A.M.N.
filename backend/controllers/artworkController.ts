@@ -1,9 +1,84 @@
 import type { Request, Response } from "express";
-import { Artwork, ArtworkTranslation } from "../models";
+
+import {
+  Artwork,
+  ArtworkTranslation,
+  ArtworkArtistAssociation,
+  User,
+  Artist,
+} from "../models";
+
 import db from "../lib/db";
 
-// Alle Artworks abrufen
-// getestet: klappt!
+import { processArtworkTranslation } from "../services/artworkMistralService.ts";
+
+/*
+ * --------------------------------------------------------------------------
+ * Hilfsfunktion
+ * --------------------------------------------------------------------------
+ *
+ * Erstellt aus einem Artwork + Translation die Response-Struktur.
+ *
+ * Die Artist-IDs werden aus der N:M-Association übernommen.
+ * Dadurch bekommt das Frontend direkt:
+ *
+ * artists: ["artist-id-1", "artist-id-2"]
+ *
+ * Zusätzlich wird der Name des Erstellers aus dem geladenen Creator
+ * zusammengesetzt:
+ *
+ * createdByName: "Max Mustermann"
+ * --------------------------------------------------------------------------
+ */
+
+const createArtworkResponse = (
+  artwork: Artwork,
+  translation: ArtworkTranslation | undefined,
+  artistIds: string[] = []
+) => {
+  const artworkWithCreator = artwork as Artwork & {
+    creator?: User;
+  };
+
+  return {
+    id: artwork.id,
+
+    year: artwork.year,
+    dimensions: artwork.dimensions,
+    imageId: artwork.imageId,
+
+    createdBy: artwork.createdBy,
+
+    createdByName: artworkWithCreator.creator
+      ? `${artworkWithCreator.creator.firstName} ${artworkWithCreator.creator.lastName}`
+      : null,
+
+    lastEditedBy: artwork.lastEditedBy,
+
+    isDeleted: artwork.isDeleted,
+
+    languageCode: translation?.languageCode,
+
+    title: translation?.title,
+    subtitle: translation?.subtitle,
+
+    country: translation?.country,
+    origin: translation?.origin,
+    material: translation?.material,
+    description: translation?.description,
+
+    artists: artistIds,
+
+    isScreen: translation?.isScreen,
+  };
+};
+
+/*
+ * --------------------------------------------------------------------------
+ * Alle Artworks abrufen
+ * --------------------------------------------------------------------------
+ */
+
 export const showAllArtworks = async (
   req: Request<{ languageCode: string }>,
   res: Response
@@ -12,13 +87,45 @@ export const showAllArtworks = async (
     const { languageCode } = req.params;
 
     const artworks = await Artwork.findAll({
-      where: { isDeleted: false },
+      where: {
+        isDeleted: false,
+      },
+
       include: [
+        /*
+         * Translation
+         */
         {
           model: ArtworkTranslation,
           where: {
             languageCode,
           },
+        },
+
+        /*
+         * Creator
+         */
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "firstName", "lastName"],
+        },
+
+        /*
+         * Artists
+         *
+         * Artwork <-> Artist ist eine N:M-Beziehung.
+         */
+        {
+          model: Artist,
+          as: "artists",
+          through: {
+            attributes: [],
+          },
+          where: {
+            isDeleted: false,
+          },
+          required: false,
         },
       ],
     });
@@ -26,37 +133,37 @@ export const showAllArtworks = async (
     const result = artworks.map((artwork) => {
       const translation = artwork.ArtworkTranslations?.[0];
 
-      return {
-        id: artwork.id,
-        year: artwork.year,
-        dimensions: artwork.dimensions,
-        imageId: artwork.imageId,
-        createdBy: artwork.createdBy,
-        lastEditedBy: artwork.lastEditedBy,
-        isDeleted: artwork.isDeleted,
-
-        languageCode: translation?.languageCode,
-        title: translation?.title,
-        subtitle: translation?.subtitle,
-        country: translation?.country,
-        origin: translation?.origin,
-        material: translation?.material,
-        description: translation?.description,
-        // aiGenerated: translation?.aiGenerated,
-        isScreen: translation?.isScreen,
+      /*
+       * Die über die N:M-Association geladenen Artists auslesen.
+       *
+       * Sequelize hängt sie unter artwork.artists an.
+       */
+      const artworkWithArtists = artwork as Artwork & {
+        artists?: Artist[];
       };
+
+      const artistIds =
+        artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
+
+      return createArtworkResponse(artwork, translation, artistIds);
     });
 
     return res.status(200).json(result);
   } catch (e) {
     console.error(e);
 
-    return res.status(500).json({ msg: "Server-Fehler." });
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
   }
 };
 
-// Einzelnes Artwork abrufen
-// getestet: klappt!
+/*
+ * --------------------------------------------------------------------------
+ * Einzelnes Artwork abrufen
+ * --------------------------------------------------------------------------
+ */
+
 export const showOneArtwork = async (
   req: Request<{ artworkId: string; languageCode: string }>,
   res: Response
@@ -69,16 +176,48 @@ export const showOneArtwork = async (
         id: artworkId,
         isDeleted: false,
       },
+
       include: [
+        /*
+         * Translation
+         */
         {
           model: ArtworkTranslation,
-          where: { languageCode },
+          where: {
+            languageCode,
+          },
+        },
+
+        /*
+         * Creator
+         */
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "firstName", "lastName"],
+        },
+
+        /*
+         * Artists
+         */
+        {
+          model: Artist,
+          as: "artists",
+          through: {
+            attributes: [],
+          },
+          where: {
+            isDeleted: false,
+          },
+          required: false,
         },
       ],
     });
 
     if (!singleArtwork) {
-      return res.status(404).json({ msg: "Artwork wurde nicht gefunden." });
+      return res.status(404).json({
+        msg: "Artwork wurde nicht gefunden.",
+      });
     }
 
     const translation = singleArtwork.ArtworkTranslations?.[0];
@@ -89,38 +228,44 @@ export const showOneArtwork = async (
       });
     }
 
-    return res.status(200).json({
-      id: singleArtwork.id,
-      year: singleArtwork.year,
-      dimensions: singleArtwork.dimensions,
-      imageId: singleArtwork.imageId,
-      createdBy: singleArtwork.createdBy,
-      lastEditedBy: singleArtwork.lastEditedBy,
-      isDeleted: singleArtwork.isDeleted,
+    const artworkWithArtists = singleArtwork as Artwork & {
+      artists?: Artist[];
+    };
 
-      languageCode: translation.languageCode,
-      title: translation.title,
-      subtitle: translation.subtitle,
-      country: translation.country,
-      origin: translation.origin,
-      material: translation.material,
-      description: translation.description,
-      // aiGenerated: translation.aiGenerated,
-      isScreen: translation.isScreen,
-    });
+    const artistIds =
+      artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
+
+    return res
+      .status(200)
+      .json(createArtworkResponse(singleArtwork, translation, artistIds));
   } catch (e) {
     console.error(e);
 
-    return res.status(500).json({ msg: "Server-Fehler." });
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
   }
 };
 
-// Neues Artwork inklusive der ersten Übersetzung anlegen
-// getestet: klappt!
-// Es muss eine schon in der DB vorhandene imageId verwendet werden
-export const createArtwork = async (req: Request, res: Response) => {
-  const t = await db.transaction();
+/*
+ * --------------------------------------------------------------------------
+ * Neues Artwork inklusive erster Übersetzung und Artists anlegen
+ * --------------------------------------------------------------------------
+ *
+ * Ablauf:
+ *
+ * 1. Body lesen
+ * 2. KI-Übersetzung validieren
+ * 3. DB-Transaktion starten
+ * 4. Artwork erstellen
+ * 5. Translation erstellen
+ * 6. Artist-Verknüpfungen erstellen
+ * 7. Transaktion committen
+ * 8. Artwork inklusive Creator zurückgeben
+ * --------------------------------------------------------------------------
+ */
 
+export const createArtwork = async (req: Request, res: Response) => {
   try {
     const {
       year,
@@ -133,72 +278,226 @@ export const createArtwork = async (req: Request, res: Response) => {
       origin,
       material,
       description,
+      artists = [],
     } = req.body;
 
-    const artwork = await Artwork.create(
-      {
-        id: crypto.randomUUID(),
-        year,
-        dimensions,
-        imageId,
-        createdBy: req.user!.id,
-        lastEditedBy: req.user!.id,
-        isDeleted: false,
-      },
-      { transaction: t }
-    );
+    /*
+     * ----------------------------------------------------------------------
+     * KI-Übersetzung prüfen
+     * ----------------------------------------------------------------------
+     */
 
-    const artworkTranslation = await ArtworkTranslation.create(
-      {
-        artworkId: artwork.id,
-        languageCode,
-        title,
-        subtitle,
-        country,
-        origin,
-        material,
-        description,
-        aiGenerated: false,
-        isScreen: false,
-      },
-      { transaction: t }
-    );
-
-    await t.commit();
-
-    // return res.status(201).json({ artwork, artworkTranslation });
-    return res.status(201).json({
-      id: artwork.id,
-      year: artwork.year,
-      dimensions: artwork.dimensions,
-      imageId: artwork.imageId,
-      createdBy: artwork.createdBy,
-      lastEditedBy: artwork.lastEditedBy,
-      isDeleted: artwork.isDeleted,
-
-      languageCode: artworkTranslation.languageCode,
-      title: artworkTranslation.title,
-      subtitle: artworkTranslation.subtitle,
-      country: artworkTranslation.country,
-      origin: artworkTranslation.origin,
-      material: artworkTranslation.material,
-      description: artworkTranslation.description,
-      // aiGenereated: artworkTranslation.aiGenerated,
-      isScreen: artworkTranslation.isScreen,
+    const aiResult = await processArtworkTranslation({
+      sourceLanguage: languageCode,
+      country,
+      title,
+      subtitle,
+      origin,
+      material,
+      description,
     });
-  } catch (e) {
-    await t.rollback();
 
+    if (aiResult.sourceLanguage !== languageCode) {
+      return res.status(422).json({
+        msg: "Die Ausgangssprache stimmt nicht mit der angegebenen Sprache überein.",
+
+        aiValidation: {
+          sourceLanguage: aiResult.sourceLanguage,
+          expectedLanguage: languageCode,
+        },
+      });
+    }
+
+    if (aiResult.targetLanguage !== (languageCode === "de" ? "en" : "de")) {
+      return res.status(422).json({
+        msg: "Die Zielsprache der KI-Antwort ist ungültig.",
+      });
+    }
+
+    /*
+     * ----------------------------------------------------------------------
+     * Transaktion starten
+     * ----------------------------------------------------------------------
+     */
+
+    const t = await db.transaction();
+
+    try {
+      /*
+       * Artwork erstellen
+       */
+
+      const artwork = await Artwork.create(
+        {
+          id: crypto.randomUUID(),
+
+          year,
+          dimensions,
+          imageId,
+
+          createdBy: req.user!.id,
+          lastEditedBy: req.user!.id,
+
+          isDeleted: false,
+        },
+        {
+          transaction: t,
+        }
+      );
+
+      /*
+       * Erste Translation erstellen
+       */
+
+      const artworkTranslation = await ArtworkTranslation.create(
+        {
+          artworkId: artwork.id,
+
+          languageCode,
+
+          title,
+          subtitle,
+          country,
+          origin,
+          material,
+          description,
+
+          aiGenerated: false,
+          isScreen: false,
+        },
+        {
+          transaction: t,
+        }
+      );
+
+      /*
+       * Artist-Verknüpfungen erstellen
+       *
+       * Beispiel:
+       *
+       * artists = [
+       *   "artist-uuid-1",
+       *   "artist-uuid-2"
+       * ]
+       *
+       * wird zu:
+       *
+       * artwork_artist_association
+       *
+       * artworkId | artistId
+       * ----------|----------
+       * artwork   | artist-1
+       * artwork   | artist-2
+       */
+
+      if (artists.length > 0) {
+        await ArtworkArtistAssociation.bulkCreate(
+          artists.map((artistId: string) => ({
+            id: crypto.randomUUID(),
+            artworkId: artwork.id,
+            artistId,
+          })),
+          {
+            transaction: t,
+          }
+        );
+      }
+
+      /*
+       * Alles erfolgreich
+       */
+
+      await t.commit();
+
+      /*
+       * --------------------------------------------------------------------
+       * Artwork inklusive Creator erneut laden
+       * --------------------------------------------------------------------
+       *
+       * Artwork.create() lädt die Association "creator" noch nicht.
+       * Deshalb laden wir das Artwork nach dem Commit erneut.
+       */
+
+      const artworkWithCreator = await Artwork.findOne({
+        where: {
+          id: artwork.id,
+        },
+
+        include: [
+          {
+            model: User,
+            as: "creator",
+            attributes: ["id", "firstName", "lastName"],
+          },
+        ],
+      });
+
+      if (!artworkWithCreator) {
+        return res.status(500).json({
+          msg: "Das erstellte Artwork konnte nicht erneut geladen werden.",
+        });
+      }
+
+      /*
+       * Response
+       */
+
+      return res
+        .status(201)
+        .json(
+          createArtworkResponse(artworkWithCreator, artworkTranslation, artists)
+        );
+    } catch (e) {
+      await t.rollback();
+
+      throw e;
+    }
+  } catch (e) {
     console.error(e);
 
-    return res.status(500).json({ msg: "Server-Fehler." });
+    return res.status(500).json({
+      msg:
+        e instanceof Error
+          ? e.message
+          : "Das Artwork konnte nicht erstellt werden.",
+    });
   }
 };
 
-// Artwork und die dazugehörige Übersetzung aktualisieren
-// getestet: klappt jetzt endlich!
+/*
+ * --------------------------------------------------------------------------
+ * Artwork und zugehörige Übersetzung aktualisieren
+ * --------------------------------------------------------------------------
+ *
+ * Aktualisiert:
+ *
+ * - Artwork
+ *   - year
+ *   - dimensions
+ *   - imageId
+ *
+ * - Translation
+ *   - title
+ *   - subtitle
+ *   - country
+ *   - origin
+ *   - material
+ *   - description
+ *
+ * - Artists
+ *   - bestehende Verknüpfungen werden entfernt
+ *   - neue Verknüpfungen werden angelegt
+ *
+ * Wenn "artists" nicht im Request vorhanden ist, bleiben die
+ * bestehenden Artist-Verknüpfungen unverändert.
+ * --------------------------------------------------------------------------
+ */
+
 export const updateArtwork = async (
-  req: Request<{ artworkId: string; languageCode: string }>,
+  req: Request<{
+    artworkId: string;
+    languageCode: string;
+  }>,
   res: Response
 ) => {
   const t = await db.transaction();
@@ -210,20 +509,29 @@ export const updateArtwork = async (
       year,
       dimensions,
       imageId,
+
       title,
       subtitle,
       country,
       origin,
       material,
       description,
+
+      artists,
     } = req.body;
 
-    // Nicht gelöschtes Artwork suchen
+    /*
+     * ----------------------------------------------------------------------
+     * Artwork suchen
+     * ----------------------------------------------------------------------
+     */
+
     const artwork = await Artwork.findOne({
       where: {
         id: artworkId,
         isDeleted: false,
       },
+
       transaction: t,
     });
 
@@ -235,12 +543,18 @@ export const updateArtwork = async (
       });
     }
 
-    // languageCode ist Bestandteil des zusammengesetzten Primary Keys
+    /*
+     * ----------------------------------------------------------------------
+     * Translation suchen
+     * ----------------------------------------------------------------------
+     */
+
     const artworkTranslation = await ArtworkTranslation.findOne({
       where: {
         artworkId,
         languageCode,
       },
+
       transaction: t,
     });
 
@@ -252,50 +566,201 @@ export const updateArtwork = async (
       });
     }
 
-    // Artwork aktualisieren
-    await artwork.update(
-      {
-        year,
-        dimensions,
-        imageId,
-        lastEditedBy: req.user!.id,
-      },
-      { transaction: t }
-    );
+    /*
+     * ----------------------------------------------------------------------
+     * Artwork aktualisieren
+     * ----------------------------------------------------------------------
+     *
+     * Nur tatsächlich übergebene Werte verändern.
+     *
+     * Das ist besonders wichtig bei PATCH.
+     */
 
-    // Übersetzung aktualisieren
-    await artworkTranslation.update(
-      {
-        title,
-        subtitle,
-        country,
-        origin,
-        material,
-        description,
-      },
-      { transaction: t }
-    );
+    const artworkUpdate: {
+      year?: number;
+      dimensions?: string | null;
+      imageId?: string;
+      lastEditedBy: string;
+    } = {
+      lastEditedBy: req.user!.id,
+    };
+
+    if (year !== undefined) {
+      artworkUpdate.year = year;
+    }
+
+    if (dimensions !== undefined) {
+      artworkUpdate.dimensions = dimensions;
+    }
+
+    if (imageId !== undefined) {
+      artworkUpdate.imageId = imageId;
+    }
+
+    await artwork.update(artworkUpdate, {
+      transaction: t,
+    });
+
+    /*
+     * ----------------------------------------------------------------------
+     * Translation aktualisieren
+     * ----------------------------------------------------------------------
+     */
+
+    const translationUpdate: {
+      title?: string;
+      subtitle?: string | null;
+      country?: string | null;
+      origin?: string | null;
+      material?: string | null;
+      description?: string | null;
+    } = {};
+
+    if (title !== undefined) {
+      translationUpdate.title = title;
+    }
+
+    if (subtitle !== undefined) {
+      translationUpdate.subtitle = subtitle;
+    }
+
+    if (country !== undefined) {
+      translationUpdate.country = country;
+    }
+
+    if (origin !== undefined) {
+      translationUpdate.origin = origin;
+    }
+
+    if (material !== undefined) {
+      translationUpdate.material = material;
+    }
+
+    if (description !== undefined) {
+      translationUpdate.description = description;
+    }
+
+    await artworkTranslation.update(translationUpdate, {
+      transaction: t,
+    });
+
+    /*
+     * ----------------------------------------------------------------------
+     * Artists aktualisieren
+     * ----------------------------------------------------------------------
+     *
+     * Nur wenn "artists" tatsächlich im PATCH enthalten ist.
+     *
+     * Ein leeres Array bedeutet bewusst:
+     *
+     * "Alle Artists entfernen."
+     */
+
+    if (artists !== undefined) {
+      /*
+       * Bestehende Associations entfernen
+       */
+
+      await ArtworkArtistAssociation.destroy({
+        where: {
+          artworkId,
+        },
+
+        transaction: t,
+      });
+
+      /*
+       * Neue Associations anlegen
+       */
+
+      if (artists.length > 0) {
+        await ArtworkArtistAssociation.bulkCreate(
+          artists.map((artistId: string) => ({
+            id: crypto.randomUUID(),
+            artworkId,
+            artistId,
+          })),
+          {
+            transaction: t,
+          }
+        );
+      }
+    }
+
+    /*
+     * ----------------------------------------------------------------------
+     * Transaktion committen
+     * ----------------------------------------------------------------------
+     */
 
     await t.commit();
 
-    return res.status(200).json({
-      id: artwork.id,
-      year: artwork.year,
-      dimensions: artwork.dimensions,
-      imageId: artwork.imageId,
-      createdBy: artwork.createdBy,
-      lastEditedBy: artwork.lastEditedBy,
-      isDeleted: artwork.isDeleted,
+    /*
+     * ----------------------------------------------------------------------
+     * Artist-IDs für Response bestimmen
+     * ----------------------------------------------------------------------
+     *
+     * Wenn artists im Request vorhanden war, können wir diese direkt
+     * zurückgeben.
+     *
+     * Falls artists nicht übergeben wurde, laden wir die aktuellen
+     * Associations aus der DB.
+     */
 
-      title: artworkTranslation.title,
-      subtitle: artworkTranslation.subtitle,
-      country: artworkTranslation.country,
-      origin: artworkTranslation.origin,
-      material: artworkTranslation.material,
-      description: artworkTranslation.description,
-      // aiGenereated: artworkTranslation.aiGenerated,
-      isScreen: artworkTranslation.isScreen,
+    let artistIds: string[];
+
+    if (artists !== undefined) {
+      artistIds = artists;
+    } else {
+      const associations = await ArtworkArtistAssociation.findAll({
+        where: {
+          artworkId,
+        },
+      });
+
+      artistIds = associations.map((association) => association.artistId);
+    }
+
+    /*
+     * ----------------------------------------------------------------------
+     * Artwork inklusive Creator erneut laden
+     * ----------------------------------------------------------------------
+     *
+     * Dadurch steht createdByName auch nach einem PATCH zur Verfügung.
+     */
+
+    const artworkWithCreator = await Artwork.findOne({
+      where: {
+        id: artworkId,
+        isDeleted: false,
+      },
+
+      include: [
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "firstName", "lastName"],
+        },
+      ],
     });
+
+    if (!artworkWithCreator) {
+      return res.status(500).json({
+        msg: "Das aktualisierte Artwork konnte nicht erneut geladen werden.",
+      });
+    }
+
+    /*
+     * ----------------------------------------------------------------------
+     * Response
+     * ----------------------------------------------------------------------
+     */
+
+    return res
+      .status(200)
+      .json(
+        createArtworkResponse(artworkWithCreator, artworkTranslation, artistIds)
+      );
   } catch (e) {
     await t.rollback();
 
@@ -307,16 +772,24 @@ export const updateArtwork = async (
   }
 };
 
-// Artwork per Soft Delete als gelöscht markieren
-// getestet: klappt!
-export const deleteArtwork = async (req: Request, res: Response) => {
+/*
+ * --------------------------------------------------------------------------
+ * Artwork per Soft Delete als gelöscht markieren
+ * --------------------------------------------------------------------------
+ */
+
+export const deleteArtwork = async (
+  req: Request<{ artworkId: string }>,
+  res: Response
+) => {
   try {
     const { artworkId } = req.params;
 
-    console.log("DELETE PARAMS:", req.params);
-
     const artwork = await Artwork.findOne({
-      where: { id: artworkId, isDeleted: false },
+      where: {
+        id: artworkId,
+        isDeleted: false,
+      },
     });
 
     if (!artwork) {
@@ -325,7 +798,10 @@ export const deleteArtwork = async (req: Request, res: Response) => {
       });
     }
 
-    await artwork.update({ isDeleted: true, lastEditedBy: req.user!.id });
+    await artwork.update({
+      isDeleted: true,
+      lastEditedBy: req.user!.id,
+    });
 
     return res.status(200).json(artwork);
   } catch (e) {
@@ -333,6 +809,125 @@ export const deleteArtwork = async (req: Request, res: Response) => {
 
     return res.status(500).json({
       msg: "Das Artwork konnte nicht als gelöscht markiert werden.",
+    });
+  }
+};
+
+/*
+ * --------------------------------------------------------------------------
+ * Gelöschte Artworks laden
+ * --------------------------------------------------------------------------
+ */
+
+export const showDeletedArtworks = async (
+  req: Request<{ languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { languageCode } = req.params;
+
+    const artworks = await Artwork.findAll({
+      where: {
+        isDeleted: true,
+      },
+
+      include: [
+        /*
+         * Translation
+         */
+        {
+          model: ArtworkTranslation,
+          where: {
+            languageCode,
+          },
+        },
+
+        /*
+         * Creator
+         */
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "firstName", "lastName"],
+        },
+
+        /*
+         * Artists
+         */
+        {
+          model: Artist,
+          as: "artists",
+          through: {
+            attributes: [],
+          },
+          where: {
+            isDeleted: false,
+          },
+          required: false,
+        },
+      ],
+    });
+
+    const result = artworks.map((artwork) => {
+      const translation = artwork.ArtworkTranslations?.[0];
+
+      const artworkWithArtists = artwork as Artwork & {
+        artists?: Artist[];
+      };
+
+      const artistIds =
+        artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
+
+      return createArtworkResponse(artwork, translation, artistIds);
+    });
+
+    return res.status(200).json(result);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
+  }
+};
+
+/*
+ * --------------------------------------------------------------------------
+ * Artwork wiederherstellen
+ * --------------------------------------------------------------------------
+ */
+
+export const restoreArtwork = async (
+  req: Request<{ artworkId: string }>,
+  res: Response
+) => {
+  try {
+    const { artworkId } = req.params;
+
+    const artwork = await Artwork.findOne({
+      where: {
+        id: artworkId,
+        isDeleted: true,
+      },
+    });
+
+    if (!artwork) {
+      return res.status(404).json({
+        msg: "Das gelöschte Artwork konnte nicht gefunden werden.",
+      });
+    }
+
+    await artwork.update({
+      isDeleted: false,
+      lastEditedBy: req.user!.id,
+    });
+
+    return res.status(200).json(artwork);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Das Artwork konnte nicht wiederhergestellt werden.",
     });
   }
 };

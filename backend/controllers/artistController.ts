@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { Artist, ArtistTranslation, User } from "../models";
 import db from "../lib/db";
-import { processArtistTranslation } from "../services/artistMistralService.js";
+import { processArtistTranslation } from "../services/artistMistralService.ts";
 
 // Alle Artists abrufen
 // Wird z. B. für das Select-/Suchfeld im Artwork-Formular verwendet

@@ -1,8 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
+
 import { useArtworkValidation } from "../validation/artworkValidation";
 
-export type Language = "de" | "en";
+export type Language = "german" | "english";
 
 export type ArtworkFormData = {
   title: string;
@@ -14,40 +15,56 @@ export type ArtworkFormData = {
   material: string;
   dimensions: string;
   description: string;
+  image: File | null;
+  imageId: string;
 };
 
 export type Artist = {
   id: string;
+
   imageId: string | null;
+
   dateOfBirth: string | null;
   dateOfDeath: string | null;
+
   createdBy: string;
+  createdByName?: string | null;
+
   lastEditedBy: string | null;
+
   isDeleted: boolean;
-  translations: {
-    artistId: string;
-    languageCode: string;
-    firstName: string;
-    lastName: string;
-    description: string | null;
-    country: string;
-    aiGenerated: boolean;
-    isScreen: boolean;
-  }[];
+
+  languageCode: "de" | "en";
+
+  firstName: string;
+  lastName: string;
+
+  country: string | null;
+  description: string | null;
+
+  isScreen?: boolean;
 };
 
 type ArtworkFormProps = {
   language: Language;
   onLanguageChange: (language: Language) => void;
+
   languageDisabled?: boolean;
+
   formData: ArtworkFormData;
   setFormData: Dispatch<SetStateAction<ArtworkFormData>>;
+
   artists: Artist[];
-  getArtistName: (artist: Artist) => string;
+
   artworkSaved: boolean;
+
   onSave: () => void;
   onTranslate?: () => void;
+
   showTranslateButton?: boolean;
+
+  isSaving?: boolean;
+  isTranslating?: boolean;
 };
 
 export default function ArtworkForm({
@@ -57,16 +74,28 @@ export default function ArtworkForm({
   formData,
   setFormData,
   artists,
-  getArtistName,
   artworkSaved,
   onSave,
   onTranslate,
   showTranslateButton = true,
+  isSaving = false,
+  isTranslating = false,
 }: ArtworkFormProps) {
   const { t } = useTranslation("newArtwork");
+
   const { validateArtworkForm } = useArtworkValidation();
 
   const errors = validateArtworkForm(formData);
+
+  const updateField = <K extends keyof ArtworkFormData>(
+    field: K,
+    value: ArtworkFormData[K]
+  ) => {
+    setFormData((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -87,6 +116,7 @@ export default function ArtworkForm({
       noValidate
     >
       {/* LANGUAGE */}
+
       <div className="mb-10 flex flex-col gap-2 border-b border-black">
         <label
           htmlFor={`language-${language}`}
@@ -102,14 +132,17 @@ export default function ArtworkForm({
           onChange={(e) => onLanguageChange(e.target.value as Language)}
           className="border-b border-black bg-transparent py-3 outline-none disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <option value="de">{t("form.languages.german")}</option>
-          <option value="en">{t("form.languages.english")}</option>
+          <option value="german">{t("form.languages.german")}</option>
+
+          <option value="english">{t("form.languages.english")}</option>
         </select>
       </div>
 
       {/* MAIN FORM FIELDS */}
+
       <div className="grid gap-8 md:grid-cols-2">
         {/* TITLE */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`title-${language}`}
@@ -123,13 +156,11 @@ export default function ArtworkForm({
             id={`title-${language}`}
             name={`title-${language}`}
             value={formData.title}
-            onChange={(e) =>
-              setFormData((previous) => ({
-                ...previous,
-                title: e.target.value,
-              }))
-            }
-            className="border-b border-black bg-transparent py-3 outline-none"
+            onChange={(e) => updateField("title", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.title ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.title}
           />
 
           {errors.title && (
@@ -138,6 +169,7 @@ export default function ArtworkForm({
         </div>
 
         {/* SUBTITLE */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`subtitle-${language}`}
@@ -151,17 +183,13 @@ export default function ArtworkForm({
             id={`subtitle-${language}`}
             name={`subtitle-${language}`}
             value={formData.subtitle}
-            onChange={(e) =>
-              setFormData((previous) => ({
-                ...previous,
-                subtitle: e.target.value,
-              }))
-            }
+            onChange={(e) => updateField("subtitle", e.target.value)}
             className="border-b border-black bg-transparent py-3 outline-none"
           />
         </div>
 
         {/* ARTISTS */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`artists-${language}`}
@@ -180,22 +208,23 @@ export default function ArtworkForm({
                 selectedArtistId &&
                 !formData.artists.includes(selectedArtistId)
               ) {
-                setFormData((previous) => ({
-                  ...previous,
-                  artists: [...previous.artists, selectedArtistId],
-                }));
+                updateField("artists", [...formData.artists, selectedArtistId]);
               }
             }}
             className="tracking-widest leading-loose border-b border-black bg-transparent py-3 outline-none uppercase text-neutral-500"
           >
             <option value="">{t("form.selectArtist")}</option>
 
-            {artists.map((artist) => (
-              <option key={artist.id} value={artist.id}>
-                {getArtistName(artist)}
-              </option>
-            ))}
+            {artists
+              .filter((artist) => !artist.isDeleted)
+              .map((artist) => (
+                <option key={artist.id} value={artist.id}>
+                  {artist.firstName} {artist.lastName}
+                </option>
+              ))}
           </select>
+
+          {/* AUSGEWÄHLTE ARTISTS */}
 
           {formData.artists.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
@@ -207,17 +236,17 @@ export default function ArtworkForm({
                     key={artistId}
                     className="flex items-center gap-2 border border-black px-3 py-2 text-sm uppercase leading-loose tracking-widest"
                   >
-                    {artist ? getArtistName(artist) : artistId}
+                    {artist
+                      ? `${artist.firstName} ${artist.lastName}`
+                      : artistId}
 
                     <button
                       type="button"
                       onClick={() =>
-                        setFormData((previous) => ({
-                          ...previous,
-                          artists: previous.artists.filter(
-                            (id) => id !== artistId
-                          ),
-                        }))
+                        updateField(
+                          "artists",
+                          formData.artists.filter((id) => id !== artistId)
+                        )
                       }
                       className="text-xs"
                     >
@@ -235,6 +264,7 @@ export default function ArtworkForm({
         </div>
 
         {/* YEAR */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`year-${language}`}
@@ -249,19 +279,18 @@ export default function ArtworkForm({
             id={`year-${language}`}
             name={`year-${language}`}
             value={formData.year}
-            onChange={(e) =>
-              setFormData((previous) => ({
-                ...previous,
-                year: e.target.value,
-              }))
-            }
-            className="border-b border-black bg-transparent py-3 outline-none"
+            onChange={(e) => updateField("year", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.year ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.year}
           />
 
           {errors.year && <p className="text-sm text-red-600">{errors.year}</p>}
         </div>
 
         {/* COUNTRY */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`country-${language}`}
@@ -275,13 +304,11 @@ export default function ArtworkForm({
             id={`country-${language}`}
             name={`country-${language}`}
             value={formData.country}
-            onChange={(e) =>
-              setFormData((previous) => ({
-                ...previous,
-                country: e.target.value,
-              }))
-            }
-            className="border-b border-black bg-transparent py-3 outline-none"
+            onChange={(e) => updateField("country", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.country ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.country}
           />
 
           {errors.country && (
@@ -290,6 +317,7 @@ export default function ArtworkForm({
         </div>
 
         {/* ORIGIN */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`origin-${language}`}
@@ -303,13 +331,11 @@ export default function ArtworkForm({
             id={`origin-${language}`}
             name={`origin-${language}`}
             value={formData.origin}
-            onChange={(e) =>
-              setFormData((previous) => ({
-                ...previous,
-                origin: e.target.value,
-              }))
-            }
-            className="border-b border-black bg-transparent py-3 outline-none"
+            onChange={(e) => updateField("origin", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.origin ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.origin}
           />
 
           {errors.origin && (
@@ -318,6 +344,7 @@ export default function ArtworkForm({
         </div>
 
         {/* MATERIAL */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`material-${language}`}
@@ -331,13 +358,11 @@ export default function ArtworkForm({
             id={`material-${language}`}
             name={`material-${language}`}
             value={formData.material}
-            onChange={(e) =>
-              setFormData((previous) => ({
-                ...previous,
-                material: e.target.value,
-              }))
-            }
-            className="border-b border-black bg-transparent py-3 outline-none"
+            onChange={(e) => updateField("material", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.material ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.material}
           />
 
           {errors.material && (
@@ -346,6 +371,7 @@ export default function ArtworkForm({
         </div>
 
         {/* DIMENSIONS */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`dimensions-${language}`}
@@ -359,13 +385,11 @@ export default function ArtworkForm({
             id={`dimensions-${language}`}
             name={`dimensions-${language}`}
             value={formData.dimensions}
-            onChange={(e) =>
-              setFormData((previous) => ({
-                ...previous,
-                dimensions: e.target.value,
-              }))
-            }
-            className="border-b border-black bg-transparent py-3 outline-none"
+            onChange={(e) => updateField("dimensions", e.target.value)}
+            className={`border-b bg-transparent py-3 outline-none ${
+              errors.dimensions ? "border-red-600" : "border-black"
+            }`}
+            aria-invalid={!!errors.dimensions}
           />
 
           {errors.dimensions && (
@@ -375,6 +399,7 @@ export default function ArtworkForm({
       </div>
 
       {/* DESCRIPTION */}
+
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`description-${language}`}
@@ -388,12 +413,7 @@ export default function ArtworkForm({
           name={`description-${language}`}
           rows={6}
           value={formData.description}
-          onChange={(e) =>
-            setFormData((previous) => ({
-              ...previous,
-              description: e.target.value,
-            }))
-          }
+          onChange={(e) => updateField("description", e.target.value)}
           className="resize-none border-b border-black bg-transparent py-3 outline-none"
         />
 
@@ -403,6 +423,7 @@ export default function ArtworkForm({
       </div>
 
       {/* IMAGE */}
+
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`image-${language}`}
@@ -416,44 +437,72 @@ export default function ArtworkForm({
           id={`image-${language}`}
           name={`image-${language}`}
           accept="image/*"
+          onChange={(e) => updateField("image", e.target.files?.[0] ?? null)}
           className="cursor-pointer border border-black bg-transparent p-3"
         />
-
-        {/* {errors.image && <p className="text-sm text-red-600">{errors.image}</p>} */}
-
-        {/*
-          IMAGE VALIDATION
-
-          Currently optional while testing the frontend.
-
-          Later, when the database/image functionality is implemented,
-          an image MUST be required.
-        */}
       </div>
 
+      {/* IMAGE ID */}
+
+      {/* <div className="flex flex-col gap-2">
+        <label
+          htmlFor={`imageId-${language}`}
+          className="text-sm uppercase tracking-[0.2em]"
+        >
+          Image ID
+        </label>
+
+        <input
+          type="text"
+          id={`imageId-${language}`}
+          name={`imageId-${language}`}
+          value={formData.imageId}
+          onChange={(e) => updateField("imageId", e.target.value)}
+          placeholder="UUID"
+          className={`border-b bg-transparent py-3 outline-none ${
+            !formData.imageId ? "border-red-600" : "border-black"
+          }`}
+        />
+
+        {!formData.imageId && (
+          <p className="text-sm text-red-600">
+            Für ein neues Artwork wird aktuell eine vorhandene Image-ID
+            benötigt.
+          </p>
+        )}
+      </div> */}
+
       {/* ACTIONS */}
+
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"
-          className="border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white"
+          disabled={isSaving}
+          className={`border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
+            isSaving
+              ? "cursor-not-allowed opacity-50"
+              : "hover:bg-black hover:text-white"
+          }`}
         >
-          {t("actions.save")}
+          {isSaving ? "..." : t("actions.save")}
         </button>
 
         {showTranslateButton && (
           <button
             type="button"
-            disabled={!artworkSaved}
+            disabled={!artworkSaved || isTranslating}
             onClick={onTranslate}
             className={`border px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
-              artworkSaved
+              artworkSaved && !isTranslating
                 ? "border-black hover:bg-black hover:text-white"
                 : "cursor-not-allowed border-gray-300 text-gray-400"
             }`}
           >
-            {language === "de"
-              ? t("actions.translateToEnglish")
-              : t("actions.translateToGerman")}
+            {isTranslating
+              ? "..."
+              : language === "german"
+                ? t("actions.translateToEnglish")
+                : t("actions.translateToGerman")}
           </button>
         )}
       </div>
