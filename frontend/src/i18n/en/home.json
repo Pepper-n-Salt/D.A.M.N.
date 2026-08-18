@@ -12,7 +12,11 @@
     "previous": "Prev",
     "next": "Next",
     "workflow": "Workflow",
-    "steps": ["Contact", "Artwork", "Exhibition", "Screen"]
+    "steps": [
+      "Submit the contact form",
+      "Create Artists, Artworks and  Exhibition",
+      "Create Screens"
+    ]
   },
   "landing": {
     "currentCollection": "Current Collection",

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Carouselbutton from "../components/ui/buttons/Carouselbutton";
@@ -7,16 +8,38 @@ import H3 from "../components/ui/typography/H3";
 import P from "../components/ui/typography/P";
 
 export default function HomePage() {
-  const { t } = useTranslation("home"); // t ist eine von i18n bereitgestellte Übersetzungsfunktion, die normalerweise einen string zurückgibt
+  const { t, i18n } = useTranslation("home");
+
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const showcaseSteps = t("showcase.steps", {
     returnObjects: true,
   }) as string[];
 
-  const overviewItems = t("overview.items", { returnObjects: true }) as {
+  const overviewItems = t("overview.items", {
+    returnObjects: true,
+  }) as {
     title: string;
     description: string;
   }[];
+
+  const isGerman = i18n.language.startsWith("de");
+
+  const showcaseImages = isGerman
+    ? ["/ContactDE.png", "/ArtistFormDE.png", "/ScreenDE.png"]
+    : ["/ContactEN.png", "/ArtistFormEN.png", "/ScreenEN.png"];
+
+  const previousSlide = () => {
+    setCurrentSlide((current) =>
+      current === 0 ? showcaseImages.length - 1 : current - 1
+    );
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((current) =>
+      current === showcaseImages.length - 1 ? 0 : current + 1
+    );
+  };
 
   return (
     <section className="space-y-20">
@@ -32,31 +55,29 @@ export default function HomePage() {
 
       <section className="border-t border-neutral-200 pt-12 space-y-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-          {/* <div className="lg:col-span-8">
-            <div className="aspect-[16/9] border border-neutral-300 bg-neutral-100 overflow-hidden"> */}
-          {/* hier dann Screenshot als <Image> einsetzen */}
-          {/* <div className="flex h-full items-center justify-center uppercase tracking-[0.3em] text-neutral-400 text-sm">
-                Screenshot Dashboard 16:9
-              </div>
-            </div>
-          </div> */}
           <div className="lg:col-span-8">
-            <div className="aspect-video border border-neutral-300 bg-neutral-100 overflow-hidden">
-              {/* hier später Image-Komponente einsetzen */}
-              <div className="flex h-full items-center justify-center uppercase tracking-[0.3em] text-neutral-400 text-sm">
-                Screenshot Dashboard
-              </div>
+            <div className="aspect-video border border-neutral-300 overflow-hidden bg-white">
+              <img
+                src={showcaseImages[currentSlide]}
+                alt={`Screenshot ${currentSlide + 1}`}
+                className="h-[102%] w-[90%] object-cover bg-white"
+              />
             </div>
 
             <div className="flex justify-between gap-4">
-              <Carouselbutton aria-label="Previous screenshot">
+              <Carouselbutton
+                aria-label="Previous screenshot"
+                onClick={previousSlide}
+              >
                 <span className="transition-transform duration-300 group-hover:-translate-x-1">
                   ←
                 </span>
                 {t("showcase.previous")}
               </Carouselbutton>
-              <P>01 / 04</P>
-              <Carouselbutton aria-label="Next screenshot">
+
+              <P>{String(currentSlide + 1).padStart(2, "0")} / 03</P>
+
+              <Carouselbutton aria-label="Next screenshot" onClick={nextSlide}>
                 {t("showcase.next")}
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                   →
@@ -67,8 +88,10 @@ export default function HomePage() {
 
           <aside className="lg:col-span-4">
             <H2>{t("showcase.workflow")}</H2>
+
             <br />
             <br />
+
             <div className="space-y-6">
               {showcaseSteps.map((step, index) => (
                 <div key={index}>
@@ -104,9 +127,11 @@ export default function HomePage() {
               <div className="md:col-span-2 text-sm text-neutral-400">
                 {String(index + 1).padStart(2, "0")}
               </div>
+
               <div className="md:col-span-4">
                 <H3>{item.title}</H3>
               </div>
+
               <div className="md:col-span-6 tracking-widest leading-loose">
                 <P>{item.description}</P>
               </div>
