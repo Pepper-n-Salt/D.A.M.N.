@@ -1,6 +1,34 @@
 {
   "hero": {
     "title": "Imprint",
-    "paragraph": "Placeholder content for the Imprint Page"
+    "paragraph": "Information pursuant to Section 5 DDG"
+  },
+  "provider": {
+    "title": "Provider",
+    "name": "Mela Heß",
+    "address": "Tarostr. 15",
+    "city": "Leipzig, Germany"
+  },
+  "contact": {
+    "title": "Contact",
+    "email": {
+      "label": "Email:"
+    }
+  },
+  "contentLiability": {
+    "title": "Liability for content",
+    "paragraph": "The contents of this website have been created with the greatest possible care. However, no guarantee can be given for the accuracy, completeness or timeliness of the information provided."
+  },
+  "linkLiability": {
+    "title": "Liability for links",
+    "paragraph": "This website contains links to external third-party websites. We have no influence over their content and therefore cannot assume any liability for such external content. The respective provider or operator of the linked pages is always responsible for their content."
+  },
+  "copyright": {
+    "title": "Copyright",
+    "paragraph": "The content published on this website is subject to German copyright law. Third-party contributions are identified as such. Any reproduction, editing, distribution or other use beyond the limits of copyright law requires the written consent of the respective author or creator."
+  },
+  "disputeResolution": {
+    "title": "Dispute resolution",
+    "paragraph": "I am neither obliged nor willing to participate in dispute resolution proceedings before a consumer arbitration board."
   }
 }

@@ -61,7 +61,7 @@ export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
 
         {/* ARTISTS */}
 
-        {artwork.artists.length > 0 && (
+        {artwork.artists?.length > 0 && (
           <div className="space-y-1">
             <p className="text-sm uppercase tracking-[0.15em]">Artists</p>
 

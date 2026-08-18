@@ -24,6 +24,7 @@ import ArtistsPage from "./pages/ArtistsPage";
 import NewArtistPage from "./pages/NewArtistPage";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -175,6 +176,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           <Footer />
