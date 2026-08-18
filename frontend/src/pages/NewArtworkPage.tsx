@@ -202,33 +202,6 @@ export default function NewArtworkPage() {
 
           setImageUrl(germanResult.fileUrl ?? null);
 
-          // Ensure the artists list contains the artists assigned to this artwork
-          if (germanResult.artists && germanResult.artists.length > 0) {
-            setArtists((prev) => {
-              const existingIds = new Set(prev.map((a) => a.id));
-
-              const toAdd = germanResult.artists
-                .filter((a: any) => !existingIds.has(a.id))
-                .map((a: any) => ({
-                  id: a.id,
-                  imageId: a.imageId ?? null,
-                  dateOfBirth: a.dateOfBirth ?? null,
-                  dateOfDeath: a.dateOfDeath ?? null,
-                  createdBy: a.createdBy,
-                  createdByName: a.createdByName ?? null,
-                  lastEditedBy: a.lastEditedBy ?? null,
-                  isDeleted: a.isDeleted ?? false,
-                  languageCode: a.languageCode ?? "de",
-                  firstName: a.firstName,
-                  lastName: a.lastName,
-                  country: a.country ?? null,
-                  description: a.description ?? null,
-                }));
-
-              return [...prev, ...toAdd];
-            });
-          }
-
           setTranslationLanguage(null);
           setTranslationSaved(false);
         }
@@ -256,33 +229,6 @@ export default function NewArtworkPage() {
 
           setImageUrl(englishResult.fileUrl ?? null);
 
-          // Ensure the artists list contains the artists assigned to this artwork
-          if (englishResult.artists && englishResult.artists.length > 0) {
-            setArtists((prev) => {
-              const existingIds = new Set(prev.map((a) => a.id));
-
-              const toAdd = englishResult.artists
-                .filter((a: any) => !existingIds.has(a.id))
-                .map((a: any) => ({
-                  id: a.id,
-                  imageId: a.imageId ?? null,
-                  dateOfBirth: a.dateOfBirth ?? null,
-                  dateOfDeath: a.dateOfDeath ?? null,
-                  createdBy: a.createdBy,
-                  createdByName: a.createdByName ?? null,
-                  lastEditedBy: a.lastEditedBy ?? null,
-                  isDeleted: a.isDeleted ?? false,
-                  languageCode: a.languageCode ?? "en",
-                  firstName: a.firstName,
-                  lastName: a.lastName,
-                  country: a.country ?? null,
-                  description: a.description ?? null,
-                }));
-
-              return [...prev, ...toAdd];
-            });
-          }
-
           setTranslationLanguage(null);
           setTranslationSaved(false);
         }
@@ -309,33 +255,6 @@ export default function NewArtworkPage() {
           });
 
           setImageUrl(germanResult.fileUrl ?? null);
-
-          // Ensure the artists list contains the artists assigned to this artwork
-          if (germanResult.artists && germanResult.artists.length > 0) {
-            setArtists((prev) => {
-              const existingIds = new Set(prev.map((a) => a.id));
-
-              const toAdd = germanResult.artists
-                .filter((a: any) => !existingIds.has(a.id))
-                .map((a: any) => ({
-                  id: a.id,
-                  imageId: a.imageId ?? null,
-                  dateOfBirth: a.dateOfBirth ?? null,
-                  dateOfDeath: a.dateOfDeath ?? null,
-                  createdBy: a.createdBy,
-                  createdByName: a.createdByName ?? null,
-                  lastEditedBy: a.lastEditedBy ?? null,
-                  isDeleted: a.isDeleted ?? false,
-                  languageCode: a.languageCode ?? "de",
-                  firstName: a.firstName,
-                  lastName: a.lastName,
-                  country: a.country ?? null,
-                  description: a.description ?? null,
-                }));
-
-              return [...prev, ...toAdd];
-            });
-          }
 
           setTranslationLanguage("english");
 
