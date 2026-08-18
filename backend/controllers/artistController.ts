@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Artist, ArtistTranslation, User } from "../models";
+import { Artist, ArtistTranslation, User, Media } from "../models";
 import db from "../lib/db";
 import { processArtistTranslation } from "../services/artistMistralService.js";
 
@@ -27,6 +27,10 @@ export const showAllArtists = async (
           as: "creator",
           attributes: ["id", "firstName", "lastName"],
         },
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
+        },
       ],
     });
 
@@ -36,6 +40,7 @@ export const showAllArtists = async (
       return {
         id: artist.id,
         imageId: artist.imageId,
+        fileUrl: artist.Medium?.fileUrl ?? null,
         dateOfBirth: artist.dateOfBirth,
         dateOfDeath: artist.dateOfDeath,
         createdBy: artist.createdBy,
@@ -84,6 +89,10 @@ export const showOneArtist = async (
           model: ArtistTranslation,
           where: { languageCode },
         },
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
+        },
       ],
     });
 
@@ -104,6 +113,7 @@ export const showOneArtist = async (
     return res.status(200).json({
       id: artist.id,
       imageId: artist.imageId,
+      fileUrl: artist.Medium?.fileUrl ?? null,
       dateOfBirth: artist.dateOfBirth,
       dateOfDeath: artist.dateOfDeath,
       createdBy: artist.createdBy,
