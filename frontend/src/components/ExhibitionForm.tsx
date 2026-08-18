@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useExhibitionValidation } from "../validation/exhibitionValidation";
 
@@ -21,12 +22,18 @@ type ExhibitionFormProps = {
   formData: ExhibitionFormData;
   setFormData: React.Dispatch<React.SetStateAction<ExhibitionFormData>>;
 
-  onSave: (imageId: string | null) => void;
+  onSave: (imageId: string | null, imageUrl: string | null) => void;
+  imageUrl: string | null;
+  imagePreviewUrl: string | null;
+  onRemoveImage: () => void;
+  onImageSelect: (file: File | null) => void;
+
   onTranslate?: () => void;
 
   exhibitionSaved: boolean;
   showTranslateButton?: boolean;
   languageDisabled?: boolean;
+
   showImage?: boolean;
 };
 
@@ -38,6 +45,10 @@ export default function ExhibitionForm({
   formData,
   setFormData,
   onSave,
+  imageUrl,
+  imagePreviewUrl,
+  onRemoveImage,
+  onImageSelect,
   onTranslate,
   exhibitionSaved,
   showTranslateButton = true,
@@ -47,6 +58,10 @@ export default function ExhibitionForm({
   const { t } = useTranslation("newExhibition");
 
   const { validateExhibitionForm } = useExhibitionValidation();
+
+  const [isSavingImage, setIsSavingImage] = useState(false);
+
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   /*
    * Die Validierungsfehler werden bei jedem Render neu berechnet.
@@ -88,6 +103,14 @@ export default function ExhibitionForm({
     return response.json();
   };
 
+  const handleRemoveImage = () => {
+    if (imageInputRef.current) {
+      imageInputRef.current.value = "";
+    }
+
+    onRemoveImage();
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -98,20 +121,27 @@ export default function ExhibitionForm({
     }
 
     try {
-      let imageId = null;
+      let imageId: string | null = null;
+      let imageUrl: string | null = null;
 
       // Bild hochladen
       if (formData.image) {
-        const uploadedImage = await uploadImage(formData.image);
+        setIsSavingImage(true);
+        try {
+          const uploadedImage = await uploadImage(formData.image);
 
-        console.log("Bild erfolgreich hochgeladen:", uploadedImage);
+          console.log("Bild erfolgreich hochgeladen:", uploadedImage);
 
-        imageId = uploadedImage.id;
+          imageId = uploadedImage.id;
+          imageUrl = uploadedImage.fileUrl;
+        } finally {
+          setIsSavingImage(false);
+        }
       }
 
       console.log(imageId);
 
-      onSave(imageId);
+      onSave(imageId, imageUrl);
     } catch (error) {
       console.error(error);
     }
@@ -379,16 +409,58 @@ export default function ExhibitionForm({
             type="file"
             id={`image-${language}`}
             name={`image-${language}`}
+            ref={imageInputRef}
             accept="image/*"
-            onChange={(e) => updateField("image", e.target.files?.[0] ?? null)}
-            className={`cursor-pointer border bg-transparent p-3 ${
-              errors.image ? "border-red-600" : "border-black"
-            }`}
-            aria-invalid={!!errors.image}
-            aria-describedby={
-              errors.image ? `image-error-${language}` : undefined
-            }
+            onChange={(e) => {
+              const file = e.target.files?.[0] ?? null;
+
+              updateField("image", file);
+              onImageSelect(file);
+            }}
+            className="hidden"
+            // className={`cursor-pointer border bg-transparent p-3 ${
+            //   errors.image ? "border-red-600" : "border-black"
+            // }`}
+            // aria-invalid={!!errors.image}
+            // aria-describedby={
+            //   errors.image ? `image-error-${language}` : undefined
+            // }
           />
+
+          <label
+            htmlFor={`image-${language}`}
+            className="inline-block text-sm uppercase tracking-[0.2em] cursor-pointer border border-black px-4 py-3"
+          >
+            {t("form.chooseImage")}
+          </label>
+
+          {isSavingImage && (
+            <p className="text-sm uppercase tracking-[0.2em]">
+              {t("messages.savingImage")}
+            </p>
+          )}
+
+          {(imagePreviewUrl || imageUrl) && !isSavingImage && (
+            <>
+              <div className="relative mt-4 w-32 border border-black">
+                <img
+                  src={imagePreviewUrl || imageUrl || ""}
+                  alt={t("form.thumbnail")}
+                  className="h-32 w-32 object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center cursor-pointer bg-black text-white hover:bg-gray-800"
+                >
+                  ×
+                </button>
+              </div>
+              <p className="mt-2 text-sm uppercase tracking-[0.2em]">
+                {t("messages.imageSelected")}
+              </p>
+            </>
+          )}
 
           {errors.image && (
             <p id={`image-error-${language}`} className="text-sm text-red-600">

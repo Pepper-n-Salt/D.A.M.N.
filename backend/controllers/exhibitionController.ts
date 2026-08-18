@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Exhibition, ExhibitionTranslation, User } from "../models";
+import { Exhibition, ExhibitionTranslation, User, Media } from "../models";
 import db from "../lib/db";
 import { processExhibitionTranslation } from "../services/exhibitionMistralService.js";
 
@@ -26,6 +26,10 @@ export const showAllExhibitions = async (
           as: "creator",
           attributes: ["id", "firstName", "lastName"],
         },
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
+        },
       ],
     });
 
@@ -35,6 +39,7 @@ export const showAllExhibitions = async (
       return {
         id: exh.id,
         coverImageId: exh.coverImageId,
+        fileUrl: exh.Medium?.fileUrl ?? null,
         startDate: exh.startDate,
         endDate: exh.endDate,
         createdBy: exh.createdBy,
@@ -85,12 +90,17 @@ export const showOneExhibition = async (
           model: ExhibitionTranslation,
           where: { languageCode },
         },
+        {
+          model: Media,
+        },
       ],
     });
 
     if (!exhibition) {
       return res.status(404).json({ msg: "Exhibition nicht gefunden." });
     }
+
+    console.log("EXHIBITION MEDIA:", exhibition.Medium?.fileUrl);
 
     const translation = exhibition.ExhibitionTranslations?.[0];
 
@@ -104,6 +114,7 @@ export const showOneExhibition = async (
     return res.status(200).json({
       id: exhibition.id,
       coverImageId: exhibition.coverImageId,
+      fileUrl: exhibition.Medium?.fileUrl,
       startDate: exhibition.startDate,
       endDate: exhibition.endDate,
       createdBy: exhibition.createdBy,

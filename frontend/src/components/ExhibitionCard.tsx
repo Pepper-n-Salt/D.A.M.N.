@@ -43,8 +43,16 @@ export default function ExhibitionCard({
       to={`/landingpage/exhibitions/${exhibition.id}`}
       className="group overflow-hidden border"
     >
-      {/* Bild kommt später über Cloudinary */}
-      <div className="aspect-4/3 w-full bg-neutral-100" />
+      {/* Hier jetzt das Bild aus Cloudinary */}
+      {exhibition.fileUrl ? (
+        <img
+          src={exhibition.fileUrl}
+          alt={exhibition.title}
+          className="aspect-4/3 w-full object-cover"
+        />
+      ) : (
+        <div className="aspect-4/3 w-full bg-neutral-100" />
+      )}
 
       <div className="space-y-2 p-6">
         <H3>{exhibition.title}</H3>

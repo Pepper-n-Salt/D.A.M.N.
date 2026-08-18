@@ -43,6 +43,7 @@ export default function ExhibitionCarousel() {
           languageCode === "de" ? "de" : "en"
         );
 
+        console.log("EXHIBITIONS:", result);
         setExhibitions(result);
         setStartIndex(0);
       } catch (error) {

@@ -66,6 +66,31 @@ export default function NewExhibitionPage() {
 
   const [error, setError] = useState<string | null>(null);
 
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+  const handleRemoveImage = () => {
+    setImageUrl(null);
+    setImagePreviewUrl(null);
+
+    setFormData((previous) => ({
+      ...previous,
+      image: null,
+    }));
+  };
+
+  const handleImageSelect = (file: File | null) => {
+    if (!file) {
+      setImagePreviewUrl(null);
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+
+    setImagePreviewUrl(previewUrl);
+  };
+
   /*
    * ------------------------------------------------------------------------
    * Bestehende Exhibition laden
@@ -108,9 +133,7 @@ export default function NewExhibitionPage() {
          */
 
         if (!germanResult && !englishResult) {
-          throw new Error(
-            "Die Exhibition oder ihre Übersetzungen konnten nicht geladen werden."
-          );
+          throw new Error(t("messages.loadError"));
         }
 
         setExhibitionId(id);
@@ -135,6 +158,7 @@ export default function NewExhibitionPage() {
             image: null,
           });
 
+          setImageUrl(germanResult.fileUrl ?? null);
           setTranslationLanguage(null);
           setTranslationSaved(false);
         }
@@ -159,6 +183,7 @@ export default function NewExhibitionPage() {
             image: null,
           });
 
+          setImageUrl(englishResult.fileUrl ?? null);
           setTranslationLanguage(null);
           setTranslationSaved(false);
         }
@@ -186,6 +211,8 @@ export default function NewExhibitionPage() {
             image: null,
           });
 
+          setImageUrl(englishResult.fileUrl ?? null);
+
           setTranslationLanguage("english");
 
           setTranslationFormData({
@@ -209,7 +236,7 @@ export default function NewExhibitionPage() {
         setError(
           error instanceof Error
             ? error.message
-            : "Die Exhibition konnte nicht geladen werden."
+            : t("messages.loadErrorFallback")
         );
       }
     };
@@ -223,7 +250,11 @@ export default function NewExhibitionPage() {
    * ------------------------------------------------------------------------
    */
 
-  const handleSave = async (imageId: string | null) => {
+  const handleSave = async (
+    imageId: string | null,
+    newImageUrl: string | null
+  ) => {
+    setImageUrl(newImageUrl);
     if (isSaving) return;
 
     setError(null);
@@ -256,7 +287,7 @@ export default function NewExhibitionPage() {
        */
 
       if (!id) {
-        throw new Error("Keine Exhibition-ID vorhanden.");
+        throw new Error(t("messages.noExhibitionId"));
       }
 
       const result = await updateExhibition(id, language, formData, imageId);
@@ -269,9 +300,7 @@ export default function NewExhibitionPage() {
       console.error(error);
 
       setError(
-        error instanceof Error
-          ? error.message
-          : "Die Exhibition konnte nicht gespeichert werden."
+        error instanceof Error ? error.message : t("messages.saveError")
       );
 
       setExhibitionSaved(false);
@@ -288,9 +317,7 @@ export default function NewExhibitionPage() {
 
   const handleTranslate = async () => {
     if (!exhibitionId) {
-      setError(
-        "Die Exhibition muss zuerst gespeichert werden, bevor sie übersetzt werden kann."
-      );
+      setError(t("messages.translateRequiresSave"));
 
       return;
     }
@@ -325,9 +352,7 @@ export default function NewExhibitionPage() {
       console.error(error);
 
       setError(
-        error instanceof Error
-          ? error.message
-          : "Die Übersetzung konnte nicht erstellt werden."
+        error instanceof Error ? error.message : t("messages.translationError")
       );
     } finally {
       setIsTranslating(false);
@@ -342,7 +367,7 @@ export default function NewExhibitionPage() {
 
   const handleSaveTranslation = async () => {
     if (!exhibitionId || !translationLanguage) {
-      setError("Die Exhibition muss zuerst gespeichert und übersetzt werden.");
+      setError(t("messages.translationRequiresSave"));
 
       return;
     }
@@ -394,7 +419,7 @@ export default function NewExhibitionPage() {
       setError(
         error instanceof Error
           ? error.message
-          : "Die Übersetzung konnte nicht gespeichert werden."
+          : t("messages.translationSaveError")
       );
 
       setTranslationSaved(false);
@@ -431,6 +456,10 @@ export default function NewExhibitionPage() {
             setFormData={setFormData}
             exhibitionSaved={exhibitionSaved}
             onSave={handleSave}
+            imageUrl={imageUrl}
+            imagePreviewUrl={imagePreviewUrl}
+            onRemoveImage={handleRemoveImage}
+            onImageSelect={handleImageSelect}
             onTranslate={handleTranslate}
             showTranslateButton={translationLanguage === null}
             languageDisabled={translationLanguage !== null}
@@ -438,13 +467,13 @@ export default function NewExhibitionPage() {
 
           {isSaving && !translationLanguage && (
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-              Speichern...
+              {t("messages.saving")}
             </p>
           )}
 
           {isTranslating && (
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-              Übersetzung wird erstellt...
+              {t("messages.translationSaved")}
             </p>
           )}
         </div>
@@ -459,6 +488,10 @@ export default function NewExhibitionPage() {
               setFormData={setTranslationFormData}
               exhibitionSaved={translationSaved}
               onSave={handleSaveTranslation}
+              imageUrl={imageUrl}
+              imagePreviewUrl={imagePreviewUrl}
+              onRemoveImage={handleRemoveImage}
+              onImageSelect={handleImageSelect}
               showTranslateButton={false}
               languageDisabled={true}
               showImage={false}
@@ -466,7 +499,7 @@ export default function NewExhibitionPage() {
 
             {translationSaved && (
               <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-                Übersetzung gespeichert.
+                {t("messages.translationSaved")}
               </p>
             )}
           </div>
