@@ -34,6 +34,9 @@ type ExhibitionFormProps = {
   showTranslateButton?: boolean;
   languageDisabled?: boolean;
 
+  isSaving?: boolean;
+  isTranslating?: boolean;
+
   showImage?: boolean;
 };
 
@@ -53,6 +56,8 @@ export default function ExhibitionForm({
   exhibitionSaved,
   showTranslateButton = true,
   languageDisabled = false,
+  isSaving = false,
+  isTranslating = false,
   showImage = true,
 }: ExhibitionFormProps) {
   const { t } = useTranslation("newExhibition");
@@ -474,25 +479,32 @@ export default function ExhibitionForm({
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"
-          className="border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white"
+          disabled={isSaving}
+          className={`border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
+            isSaving
+              ? "cursor-not-allowed opacity-50"
+              : "hover:bg-black hover:text-white"
+          }`}
         >
-          {t("actions.save")}
+          {isSaving ? "..." : t("actions.save")}
         </button>
 
         {showTranslateButton && (
           <button
             type="button"
-            disabled={!exhibitionSaved}
+            disabled={!exhibitionSaved || isTranslating}
             onClick={onTranslate}
             className={`border px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
-              exhibitionSaved
+              exhibitionSaved && !isTranslating
                 ? "border-black hover:bg-black hover:text-white"
                 : "cursor-not-allowed border-gray-300 text-gray-400"
             }`}
           >
-            {language === "german"
-              ? t("actions.translateToEnglish")
-              : t("actions.translateToGerman")}
+            {isTranslating
+              ? "..."
+              : language === "german"
+                ? t("actions.translateToEnglish")
+                : t("actions.translateToGerman")}
           </button>
         )}
       </div>
