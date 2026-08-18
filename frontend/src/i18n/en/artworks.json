@@ -12,5 +12,9 @@
   },
   "deleted": {
     "title": "Deleted Artworks"
+  },
+  "messages": {
+    "loadError": "The artworks could not be loaded.",
+    "noItems": "No artworks found."
   }
 }

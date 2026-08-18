@@ -14,5 +14,9 @@
     "title": "Gelöschte Künstler:innen",
     "button": "Künstler:in löschen →",
     "notfound": "Keine gelöschten Künstler:innen gefunden."
+  },
+  "messages": {
+    "loadError": "Die Artists konnten nicht geladen werden.",
+    "noItems": "Keine Artists gefunden."
   }
 }

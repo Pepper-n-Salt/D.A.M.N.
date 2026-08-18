@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useArtworkValidation } from "../validation/artworkValidation";
@@ -15,8 +16,8 @@ export type ArtworkFormData = {
   material: string;
   dimensions: string;
   description: string;
-  image: File | null;
-  imageId: string;
+  image: File | null; // die neu ausgwählte datei
+  imageId: string; // die bereits hochgeladene media-id
 };
 
 export type Artist = {
@@ -57,14 +58,18 @@ type ArtworkFormProps = {
   artists: Artist[];
 
   artworkSaved: boolean;
-
-  onSave: () => void;
+  onSave: (imageId: string | null, newImageUrl: string | null) => void;
   onTranslate?: () => void;
 
   showTranslateButton?: boolean;
 
   isSaving?: boolean;
   isTranslating?: boolean;
+  showImage?: boolean;
+  imageUrl?: string | null;
+  imagePreviewUrl?: string | null;
+  onRemoveImage?: () => void;
+  onImageSelect?: (file: File | null) => void;
 };
 
 export default function ArtworkForm({
@@ -80,12 +85,23 @@ export default function ArtworkForm({
   showTranslateButton = true,
   isSaving = false,
   isTranslating = false,
+  showImage = true,
+  imageUrl = null,
+  imagePreviewUrl = null,
+  onRemoveImage,
+  onImageSelect,
 }: ArtworkFormProps) {
   const { t } = useTranslation("newArtwork");
 
   const { validateArtworkForm } = useArtworkValidation();
 
   const errors = validateArtworkForm(formData);
+
+  const API_URL = `${import.meta.env.VITE_API_URL || ""}`;
+
+  const [isSavingImage, setIsSavingImage] = useState(false);
+
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   const updateField = <K extends keyof ArtworkFormData>(
     field: K,
@@ -106,7 +122,41 @@ export default function ArtworkForm({
       return;
     }
 
-    onSave();
+    (async () => {
+      try {
+        let imageId: string | null = null;
+        let imageUrlLocal: string | null = null;
+
+        if (formData.image) {
+          setIsSavingImage(true);
+          try {
+            const form = new FormData();
+            form.append("image", formData.image);
+
+            const response = await fetch(`${API_URL}/media/uploadImage`, {
+              method: "POST",
+              credentials: "include",
+              body: form,
+            });
+
+            if (!response.ok) {
+              throw new Error("Bild konnte nicht hochgeladen werden.");
+            }
+
+            const uploadedImage = await response.json();
+
+            imageId = uploadedImage.id;
+            imageUrlLocal = uploadedImage.fileUrl;
+          } finally {
+            setIsSavingImage(false);
+          }
+        }
+
+        onSave(imageId, imageUrlLocal);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
   };
 
   return (
@@ -424,23 +474,71 @@ export default function ArtworkForm({
 
       {/* IMAGE */}
 
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor={`image-${language}`}
-          className="text-sm uppercase tracking-[0.2em]"
-        >
-          {t("form.image")}
-        </label>
+      {showImage && (
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor={`image-${language}`}
+            className="text-sm uppercase tracking-[0.2em]"
+          >
+            {t("form.image")}
+          </label>
 
-        <input
-          type="file"
-          id={`image-${language}`}
-          name={`image-${language}`}
-          accept="image/*"
-          onChange={(e) => updateField("image", e.target.files?.[0] ?? null)}
-          className="cursor-pointer border border-black bg-transparent p-3"
-        />
-      </div>
+          <input
+            type="file"
+            id={`image-${language}`}
+            name={`image-${language}`}
+            ref={imageInputRef}
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0] ?? null;
+
+              updateField("image", file);
+              onImageSelect?.(file);
+            }}
+            className="hidden"
+          />
+
+          <label
+            htmlFor={`image-${language}`}
+            className="inline-block cursor-pointer border border-black px-4 py-3 text-sm uppercase tracking-[0.2em]"
+          >
+            {t("form.chooseImage")}
+          </label>
+
+          {isSavingImage && (
+            <p className="text-sm uppercase tracking-[0.2em]">
+              {t("messages.savingImage")}
+            </p>
+          )}
+
+          {(imagePreviewUrl || imageUrl) && !isSavingImage && (
+            <>
+              <div className="relative mt-4 w-32 border border-black">
+                <img
+                  src={imagePreviewUrl || imageUrl || ""}
+                  alt={t("form.thumbnail")}
+                  className="h-32 w-32 object-cover"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (imageInputRef.current) imageInputRef.current.value = "";
+                    onRemoveImage?.();
+                  }}
+                  className="absolute right-1 top-1 flex h-6 w-6 cursor-pointer items-center justify-center bg-black text-white hover:bg-gray-800"
+                >
+                  ×
+                </button>
+              </div>
+
+              <p className="mt-2 text-sm uppercase tracking-[0.2em]">
+                {t("messages.imageSelected")}
+              </p>
+            </>
+          )}
+        </div>
+      )}
 
       {/* IMAGE ID */}
 

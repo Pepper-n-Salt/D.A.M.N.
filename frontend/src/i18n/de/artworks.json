@@ -12,5 +12,9 @@
   },
   "deleted": {
     "title": "Gelöschte Kunstwerke"
+  },
+  "messages": {
+    "loadError": "Die Artworks konnten nicht geladen werden.",
+    "noItems": "Keine Artworks gefunden."
   }
 }
