@@ -44,8 +44,16 @@ export default function ArtistCard({ artist, onDeleted }: ArtistCardProps) {
       to={`/landingpage/artists/${artist.id}`}
       className="group overflow-hidden border"
     >
-      {/* Bild kommt später über Cloudinary */}
-      <div className="aspect-4/3 w-full bg-neutral-100" />
+      {/* Hier jetzt das Bild aus Cloudinary */}
+      {artist.fileUrl ? (
+        <img
+          src={artist.fileUrl}
+          alt={`${artist.firstName} ${artist.lastName}`}
+          className="aspect-4/3 w-full object-cover"
+        />
+      ) : (
+        <div className="aspect-4/3 w-full bg-neutral-100" />
+      )}
 
       <div className="space-y-2 p-6">
         <H3>

@@ -62,6 +62,30 @@ export default function NewArtistPage() {
 
   const [error, setError] = useState<string | null>(null);
 
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+  const handleImageSelect = (file: File | null) => {
+    if (!file) {
+      setImagePreviewUrl(null);
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+
+    setImagePreviewUrl(previewUrl);
+  };
+
+  const handleRemoveImage = () => {
+    setImageUrl(null);
+    setImagePreviewUrl(null);
+
+    setFormData((previous) => ({
+      ...previous,
+      image: null,
+    }));
+  };
+
   /*
    * ------------------------------------------------------------------------
    * Bestehenden Artist laden
@@ -129,6 +153,8 @@ export default function NewArtistPage() {
             image: null,
           });
 
+          setImageUrl(germanResult.fileUrl ?? null);
+
           setTranslationLanguage(null);
           setTranslationSaved(false);
         }
@@ -151,6 +177,8 @@ export default function NewArtistPage() {
             description: englishResult.description ?? "",
             image: null,
           });
+
+          setImageUrl(englishResult.fileUrl ?? null);
 
           setTranslationLanguage(null);
           setTranslationSaved(false);
@@ -177,6 +205,8 @@ export default function NewArtistPage() {
             description: germanResult.description ?? "",
             image: null,
           });
+
+          setImageUrl(germanResult.fileUrl ?? englishResult.fileUrl ?? null);
 
           setTranslationLanguage("english");
 
@@ -214,7 +244,12 @@ export default function NewArtistPage() {
    * ------------------------------------------------------------------------
    */
 
-  const handleSave = async () => {
+  const handleSave = async (
+    imageId: string | null,
+    newImageUrl: string | null
+  ) => {
+    setImageUrl(newImageUrl);
+
     if (isSaving) return;
 
     setError(null);
@@ -229,7 +264,7 @@ export default function NewArtistPage() {
        */
 
       if (!isEditMode) {
-        const result = await createArtist(formData, language);
+        const result = await createArtist(formData, language, imageId);
 
         setArtistId(result.id);
         setArtistSaved(true);
@@ -250,7 +285,7 @@ export default function NewArtistPage() {
         throw new Error("Keine Artist-ID vorhanden.");
       }
 
-      const result = await updateArtist(id, language, formData);
+      const result = await updateArtist(id, language, formData, imageId);
 
       setArtistId(result.id);
       setArtistSaved(true);
@@ -424,17 +459,21 @@ export default function NewArtistPage() {
             languageDisabled={translationLanguage !== null}
             isSaving={isSaving}
             isTranslating={isTranslating}
+            imageUrl={imageUrl}
+            imagePreviewUrl={imagePreviewUrl}
+            onImageSelect={handleImageSelect}
+            onRemoveImage={handleRemoveImage}
           />
 
           {isSaving && !translationLanguage && (
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-              Speichern...
+              {t("messages.saving")}
             </p>
           )}
 
           {isTranslating && (
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-              Übersetzung wird erstellt...
+              {t("messages.translationCreating")}
             </p>
           )}
         </div>
@@ -453,11 +492,12 @@ export default function NewArtistPage() {
               showTranslateButton={false}
               languageDisabled={true}
               isSaving={isSaving}
+              showImage={false}
             />
 
             {translationSaved && (
               <p className="mt-4 text-sm uppercase tracking-[0.2em]">
-                Übersetzung gespeichert.
+                {t("messages.translationSaved")}
               </p>
             )}
           </div>

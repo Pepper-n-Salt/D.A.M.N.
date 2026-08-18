@@ -70,16 +70,6 @@ export default function NewExhibitionPage() {
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
-  const handleRemoveImage = () => {
-    setImageUrl(null);
-    setImagePreviewUrl(null);
-
-    setFormData((previous) => ({
-      ...previous,
-      image: null,
-    }));
-  };
-
   const handleImageSelect = (file: File | null) => {
     if (!file) {
       setImagePreviewUrl(null);
@@ -89,6 +79,16 @@ export default function NewExhibitionPage() {
     const previewUrl = URL.createObjectURL(file);
 
     setImagePreviewUrl(previewUrl);
+  };
+
+  const handleRemoveImage = () => {
+    setImageUrl(null);
+    setImagePreviewUrl(null);
+
+    setFormData((previous) => ({
+      ...previous,
+      image: null,
+    }));
   };
 
   /*
@@ -211,7 +211,7 @@ export default function NewExhibitionPage() {
             image: null,
           });
 
-          setImageUrl(englishResult.fileUrl ?? null);
+          setImageUrl(germanResult.fileUrl ?? englishResult.fileUrl ?? null);
 
           setTranslationLanguage("english");
 
@@ -456,6 +456,8 @@ export default function NewExhibitionPage() {
             setFormData={setFormData}
             exhibitionSaved={exhibitionSaved}
             onSave={handleSave}
+            isSaving={isSaving}
+            isTranslating={isTranslating}
             imageUrl={imageUrl}
             imagePreviewUrl={imagePreviewUrl}
             onRemoveImage={handleRemoveImage}
@@ -465,7 +467,7 @@ export default function NewExhibitionPage() {
             languageDisabled={translationLanguage !== null}
           />
 
-          {isSaving && !translationLanguage && (
+          {/* {isSaving && !translationLanguage && (
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
               {t("messages.saving")}
             </p>
@@ -475,7 +477,7 @@ export default function NewExhibitionPage() {
             <p className="mt-4 text-sm uppercase tracking-[0.2em]">
               {t("messages.translationSaved")}
             </p>
-          )}
+          )} */}
         </div>
 
         {/* TRANSLATION */}
@@ -488,6 +490,7 @@ export default function NewExhibitionPage() {
               setFormData={setTranslationFormData}
               exhibitionSaved={translationSaved}
               onSave={handleSaveTranslation}
+              isSaving={isSaving}
               imageUrl={imageUrl}
               imagePreviewUrl={imagePreviewUrl}
               onRemoveImage={handleRemoveImage}

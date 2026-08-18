@@ -8,6 +8,7 @@ export type CreateArtistResponse = {
   id: string;
 
   imageId: string | null;
+  fileUrl: string | null;
 
   dateOfBirth: string | null;
   dateOfDeath: string | null;
@@ -41,7 +42,8 @@ const languageToCode = (language: Language): "de" | "en" => {
 
 export async function createArtist(
   formData: ArtistFormData,
-  language: Language
+  language: Language,
+  imageId: string | null
 ): Promise<CreateArtistResponse> {
   const response = await fetch(`${API_URL}/artist`, {
     method: "POST",
@@ -61,7 +63,7 @@ export async function createArtist(
       country: formData.country || null,
       description: formData.description || null,
 
-      imageId: null,
+      imageId: imageId,
     }),
   });
 
@@ -135,7 +137,8 @@ export async function getArtist(
 export async function updateArtist(
   artistId: string,
   language: Language,
-  formData: ArtistFormData
+  formData: ArtistFormData,
+  imageId: string | null
 ): Promise<CreateArtistResponse> {
   const languageCode = languageToCode(language);
 
@@ -157,7 +160,7 @@ export async function updateArtist(
         country: formData.country || null,
         description: formData.description || null,
 
-        imageId: null,
+        imageId: imageId,
       }),
     }
   );

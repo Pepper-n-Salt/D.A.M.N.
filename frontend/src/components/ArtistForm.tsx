@@ -1,5 +1,5 @@
+import { useRef, useState } from "react"; // useRef, um das File-Input zurüclsetzen zu können
 import { useTranslation } from "react-i18next";
-
 import { useArtistValidation } from "../validation/artistValidation";
 
 export type Language = "german" | "english";
@@ -21,7 +21,12 @@ type ArtistFormProps = {
   formData: ArtistFormData;
   setFormData: React.Dispatch<React.SetStateAction<ArtistFormData>>;
 
-  onSave: () => void;
+  onSave: (imageId: string | null, newImageUrl: string | null) => void;
+  imageUrl?: string | null;
+  imagePreviewUrl?: string | null;
+  onRemoveImage?: () => void;
+  onImageSelect?: (file: File | null) => void;
+
   onTranslate?: () => void;
 
   artistSaved: boolean;
@@ -30,7 +35,11 @@ type ArtistFormProps = {
 
   isSaving?: boolean;
   isTranslating?: boolean;
+
+  showImage?: boolean;
 };
+
+const API_URL = `${import.meta.env.VITE_API_URL || ""}`;
 
 export default function ArtistForm({
   language,
@@ -38,15 +47,24 @@ export default function ArtistForm({
   formData,
   setFormData,
   onSave,
+  imageUrl,
+  imagePreviewUrl,
+  onRemoveImage,
+  onImageSelect,
   onTranslate,
   artistSaved,
   showTranslateButton = true,
   languageDisabled = false,
   isSaving = false,
   isTranslating = false,
+  showImage = true,
 }: ArtistFormProps) {
   const { t } = useTranslation("newArtist");
   const { validateArtistForm } = useArtistValidation();
+
+  const [isSavingImage, setIsSavingImage] = useState(false);
+
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   const errors = validateArtistForm(formData);
 
@@ -60,7 +78,33 @@ export default function ArtistForm({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRemoveImage = () => {
+    if (imageInputRef.current) {
+      imageInputRef.current.value = "";
+    }
+
+    onRemoveImage?.();
+  };
+
+  const uploadImage = async (file: File) => {
+    const formData = new FormData();
+
+    formData.append("image", file);
+
+    const response = await fetch(`${API_URL}/media/uploadImage`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Bild konnte nicht hochgeladen werden.");
+    }
+
+    return response.json();
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const validationErrors = validateArtistForm(formData);
@@ -69,7 +113,29 @@ export default function ArtistForm({
       return;
     }
 
-    onSave();
+    try {
+      let imageId: string | null = null;
+      let imageUrl: string | null = null;
+
+      if (formData.image) {
+        setIsSavingImage(true);
+
+        try {
+          const uploadedImage = await uploadImage(formData.image);
+
+          console.log("Das Bild wurde erfolgreich hochgeladen:", uploadedImage);
+
+          imageId = uploadedImage.id;
+          imageUrl = uploadedImage.fileUrl;
+        } finally {
+          setIsSavingImage(false);
+        }
+      }
+
+      onSave(imageId, imageUrl);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -262,23 +328,68 @@ export default function ArtistForm({
 
       {/* IMAGE */}
 
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor={`image-${language}`}
-          className="text-sm uppercase tracking-[0.2em]"
-        >
-          {t("form.image")}
-        </label>
+      {showImage && (
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor={`image-${language}`}
+            className="text-sm uppercase tracking-[0.2em]"
+          >
+            {t("form.image")}
+          </label>
 
-        <input
-          type="file"
-          id={`image-${language}`}
-          name={`image-${language}`}
-          accept="image/*"
-          onChange={(e) => updateField("image", e.target.files?.[0] ?? null)}
-          className="cursor-pointer border border-black bg-transparent p-3"
-        />
-      </div>
+          <input
+            type="file"
+            id={`image-${language}`}
+            name={`image-${language}`}
+            ref={imageInputRef}
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0] ?? null;
+
+              updateField("image", file);
+              onImageSelect?.(file);
+            }}
+            className="hidden"
+          />
+
+          <label
+            htmlFor={`image-${language}`}
+            className="inline-block cursor-pointer border border-black px-4 py-3 text-sm uppercase tracking-[0.2em]"
+          >
+            {t("form.chooseImage")}
+          </label>
+
+          {isSavingImage && (
+            <p className="text-sm uppercase tracking-[0.2em]">
+              {t("messages.savingImage")}
+            </p>
+          )}
+
+          {(imagePreviewUrl || imageUrl) && !isSavingImage && (
+            <>
+              <div className="relative mt-4 w-32 border border-black">
+                <img
+                  src={imagePreviewUrl || imageUrl || ""}
+                  alt={t("form.thumbnail")}
+                  className="h-32 w-32 object-cover"
+                />
+
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="absolute right-1 top-1 flex h-6 w-6 cursor-pointer items-center justify-center bg-black text-white hover:bg-gray-800"
+                >
+                  ×
+                </button>
+              </div>
+
+              <p className="mt-2 text-sm uppercase tracking-[0.2em]">
+                {t("messages.imageSelected")}
+              </p>
+            </>
+          )}
+        </div>
+      )}
 
       {/* ACTIONS */}
 
