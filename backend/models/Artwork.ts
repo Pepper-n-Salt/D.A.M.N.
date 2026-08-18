@@ -2,6 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import db from "../lib/db.js";
 import ArtworkTranslation from "./ArtworkTranslation.js";
 import User from "./User.js";
+import Media from "./Media.js";
 
 class Artwork extends Model {
   declare id: string;
@@ -14,6 +15,7 @@ class Artwork extends Model {
 
   declare ArtworkTranslations?: ArtworkTranslation[];
   declare creator?: User;
+  declare Medium?: Media;
 }
 
 Artwork.init(
