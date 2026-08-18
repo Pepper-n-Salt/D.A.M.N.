@@ -1,6 +1,114 @@
 {
   "hero": {
     "title": "Privacy Policy",
-    "paragraph": "Placeholder content for the privacy policy page"
+    "paragraph": "This privacy policy explains the nature, scope and purpose of the processing of personal data when using D.A.M.N. (Digital Artwork Management Network)."
+  },
+
+  "responsible": {
+    "title": "Controller",
+    "name": "Mela Heß",
+    "address": "Tarostr. 15",
+    "city": "04103 Leipzig, Germany",
+    "email": "Email: melaniehe@t-online.de"
+  },
+
+  "general": {
+    "title": "General Information",
+    "paragraph": "Protecting personal data is important to us. Personal data is only processed where this is necessary for the operation of D.A.M.N., the provision of its features, or communication with prospective and existing users. D.A.M.N. is designed in particular for artists, galleries, museums and cultural institutions and supports the management, organisation and presentation of digital artworks."
+  },
+
+  "contact": {
+    "title": "Contacting Us",
+    "paragraph": "The website provides the option to contact us via a contact form. Information submitted through the form, such as name, email address and message, is used solely to process the respective enquiry and for subsequent communication. Contacting us does not automatically result in the creation of a user account, and the submitted data is not automatically stored as a user profile in the database. A user account may only be created after prior communication and once the interested person has explicitly decided to use D.A.M.N."
+  },
+
+  "accounts": {
+    "title": "User Accounts",
+    "paragraph": "A user account is only created after prior communication and once an interested person has explicitly stated that they wish to use D.A.M.N. To create and manage a user account, data such as first name, last name, email address, a hashed password, user ID, organisation affiliation and user role may be processed. This data is required to provide access to the platform, authenticate users and manage their respective access permissions."
+  },
+
+  "cookies": {
+    "title": "Cookies",
+    "paragraph": "D.A.M.N. only uses technically necessary cookies or comparable technical mechanisms where these are required for authentication and the operation of the platform. No cookies are used for advertising, analytics or tracking purposes."
+  },
+
+  "platform": {
+    "title": "Use of the Platform",
+    "paragraph": "When using D.A.M.N., data required for the respective functions of the platform is processed. This includes, in particular, data relating to user accounts, organisations, artworks, artists, exhibitions, collections, digital media and their respective relationships. The specific data processed depends on the functions used within the platform and the content entered by users."
+  },
+
+  "media": {
+    "title": "Digital Media",
+    "paragraph": "D.A.M.N. enables users to manage and present digital artworks and therefore allows digital media to be uploaded and retrieved. This may include image files and other media files. The processing takes place in order to make artworks, exhibitions and other content created by users available within the platform."
+  },
+
+  "cloudinary": {
+    "title": "Cloudinary",
+    "paragraph": "Cloudinary is used for the storage, processing and delivery of digital media files. This may include uploaded images and media files as well as technically necessary information relating to these files. Depending on the service used and its configuration, personal data may also be processed outside the European Union."
+  },
+
+  "ai": {
+    "title": "AI Features",
+    "paragraph": "D.A.M.N. provides AI-supported features using services provided by Mistral AI. When users use such an AI feature, the content entered for this purpose and technically necessary information may be transmitted to Mistral AI. Such transmission only takes place to the extent necessary for the respective AI feature. Depending on the service used and its configuration, processing may take place outside the European Union."
+  },
+
+  "email": {
+    "title": "Email Communication",
+    "paragraph": "Email communication with prospective and, where applicable, existing users is handled through an external SMTP service. When someone contacts us, the information provided, in particular their name, email address and message, is processed in order to handle the enquiry and communicate by email. Contacting us does not automatically result in the person being stored as a user in D.A.M.N."
+  },
+
+  "technical": {
+    "title": "Technical Data",
+    "paragraph": "When operating the website and API, technically necessary data may be processed. This may include, in particular, IP address, date and time of a request, requested resources, browser and device information, as well as technical error and connection information. This data is processed where necessary for the secure and technically proper operation of the website."
+  },
+
+  "infrastructure": {
+    "title": "Database and Technical Infrastructure",
+    "paragraph": "A relational database is used to store data required within D.A.M.N. This may include user account data, organisation data, as well as data relating to artworks, artists, exhibitions and media associations. Access to this data is protected through technical and organisational measures as well as role-based and access-based permissions."
+  },
+
+  "legalBasis": {
+    "title": "Legal Bases",
+    "paragraph": "Personal data is processed in particular on the basis of Article 6(1)(b) GDPR where processing is necessary for the provision of agreed platform services or for taking steps at the request of the data subject prior to entering into an agreement, and on the basis of Article 6(1)(f) GDPR where processing is necessary for the purposes of legitimate interests, in particular for the secure and technically proper operation of the platform. Where processing is based on consent, it is carried out on the basis of Article 6(1)(a) GDPR."
+  },
+
+  "recipients": {
+    "title": "Recipients of Personal Data",
+    "paragraph": "Personal data may be transmitted to technical service providers used in the operation of D.A.M.N. These may include hosting and infrastructure providers, database and storage providers, providers for the processing of digital media, email or SMTP providers, and providers of AI services. Personal data is not shared for advertising purposes."
+  },
+
+  "thirdCountries": {
+    "title": "Transfers to Third Countries",
+    "paragraph": "Where individual external services process personal data outside the European Union or the European Economic Area, such processing is carried out in compliance with the applicable legal requirements for transfers to third countries. Depending on the service used and its configuration, this may be relevant in particular for Cloudinary or Mistral AI."
+  },
+
+  "retention": {
+    "title": "Storage Period",
+    "paragraph": "Personal data is generally stored only for as long as necessary for the respective purpose. User account data is generally processed for as long as the account is required for the use of D.A.M.N., or for as long as statutory retention obligations or legitimate interests require longer storage. Data from contact enquiries is only retained for as long as necessary to process the enquiry and subsequent communication, unless further storage is required due to subsequent use of D.A.M.N. or statutory obligations."
+  },
+
+  "security": {
+    "title": "Data Security",
+    "paragraph": "Appropriate technical and organisational measures are used to protect personal data. These include, in particular, encrypted transmission via HTTPS, secure authentication mechanisms, password hashing, role-based access controls, server-side input validation and restricted access to data and technical systems."
+  },
+
+  "rights": {
+    "title": "Rights of Data Subjects",
+    "paragraph": "Subject to the applicable legal requirements, data subjects have in particular the right of access under Article 15 GDPR, rectification under Article 16 GDPR, erasure under Article 17 GDPR, restriction of processing under Article 18 GDPR, data portability under Article 20 GDPR and the right to object under Article 21 GDPR. Where processing is based on consent, the consent may also be withdrawn at any time with effect for the future. To exercise these rights, it is sufficient to contact Mela Heß at melaniehe@t-online.de."
+  },
+
+  "complaint": {
+    "title": "Right to Lodge a Complaint",
+    "paragraph": "Data subjects have the right to lodge a complaint with a data protection supervisory authority regarding the processing of their personal data. The competent supervisory authority may be determined in particular by the data subject's habitual residence, place of work or the place of the alleged infringement."
+  },
+
+  "automatedDecisionMaking": {
+    "title": "Automated Decision-Making",
+    "paragraph": "The AI features used within D.A.M.N. are intended to support certain functions of the platform. No automated decision-making within the meaning of Article 22 GDPR takes place that produces legal effects concerning users or similarly significantly affects them."
+  },
+
+  "changes": {
+    "title": "Changes to this Privacy Policy",
+    "paragraph": "This privacy policy may be updated if the technical implementation, the features offered or the applicable legal requirements change. The current version published on this website shall apply."
   }
 }

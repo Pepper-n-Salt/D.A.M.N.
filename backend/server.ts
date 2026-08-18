@@ -49,6 +49,12 @@ app.use("/api/metartwork", metArtworkRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/media", mediaRoutes);
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Not Found",
+    message: "Der angeforderte Endpunkt existiert nicht.",
+  });
+});
 
 async function startServer() {
   await db.authenticate(); // prüft die Verbindung von Sequelize zur DB

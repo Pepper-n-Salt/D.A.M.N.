@@ -35,6 +35,7 @@ i18n.use(initReactI18next).init({
     "imprint",
     "privacy",
     "validation",
+    "notFound",
   ],
 
   interpolation: {
