@@ -8,6 +8,7 @@ export type CreateArtistResponse = {
   id: string;
 
   imageId: string | null;
+  fileUrl: string | null;
 
   dateOfBirth: string | null;
   dateOfDeath: string | null;
