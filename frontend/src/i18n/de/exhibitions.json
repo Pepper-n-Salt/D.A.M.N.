@@ -27,5 +27,11 @@
   "messages": {
     "loadError": "Die Ausstellungen konnten nicht geladen werden.",
     "noItems": "Keine Ausstellungen gefunden."
+  },
+  "card": {
+    "createdBy": "Erstellt von",
+    "delete": "Löschen",
+    "deleteConfirm": "Möchtest du diese Exhibition wirklich löschen? Die deutsche und englische Version werden gemeinsam gelöscht.",
+    "deleteError": "Die Exhibition konnte nicht gelöscht werden."
   }
 }

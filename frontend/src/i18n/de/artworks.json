@@ -22,5 +22,12 @@
   "messages": {
     "loadError": "Die Kunstwerke konnten nicht geladen werden.",
     "noItems": "Keine Kunstwerke gefunden."
+  },
+  "card": {
+    "artists": "Künstler",
+    "createdBy": "Erstellt von",
+    "delete": "Löschen",
+    "deleteConfirm": "Möchtest du dieses Artwork wirklich löschen? Die deutsche und englische Version werden gemeinsam gelöscht.",
+    "deleteError": "Das Artwork konnte nicht gelöscht werden."
   }
 }

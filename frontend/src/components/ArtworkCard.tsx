@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import H3 from "./ui/typography/H3";
 import P from "./ui/typography/P";
@@ -12,16 +13,13 @@ interface ArtworkCardProps {
 }
 
 export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
-  console.log("ArtworkCard:", artwork);
-  console.log("Artists:", artwork.artists);
+  const { t } = useTranslation("artworks");
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const confirmed = window.confirm(
-      "Möchtest du dieses Artwork wirklich löschen? Die deutsche und englische Version werden gemeinsam gelöscht."
-    );
+    const confirmed = window.confirm(t("card.deleteConfirm"));
 
     if (!confirmed) return;
 
@@ -32,11 +30,7 @@ export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
     } catch (error) {
       console.error(error);
 
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Das Artwork konnte nicht gelöscht werden."
-      );
+      alert(error instanceof Error ? error.message : t("card.deleteError"));
     }
   };
 
@@ -72,7 +66,9 @@ export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
 
         {artwork.artists?.length > 0 && (
           <div className="space-y-1">
-            {/* <p className="text-sm uppercase tracking-[0.15em]">Artists</p> */}
+            <p className="text-sm uppercase tracking-[0.15em]">
+              {t("card.artists")}
+            </p>
 
             {artwork.artists.map((artist) => (
               <P key={artist.id}>
@@ -109,7 +105,7 @@ export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
         {/* CREATED BY */}
 
         <p className="text-sm text-gray-500">
-          Created by: {artwork.createdByName}
+          {t("card.createdBy")}: {artwork.createdByName}
         </p>
 
         {/* DELETE */}
@@ -119,7 +115,7 @@ export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
           onClick={handleDelete}
           className="mt-4 border border-red-600 px-4 py-2 text-sm uppercase tracking-[0.15em] text-red-600 transition-colors duration-300 hover:bg-red-600 hover:text-white"
         >
-          Delete
+          {t("card.delete")}
         </button>
       </div>
     </Link>

@@ -1,62 +1,31 @@
 {
   "newScreen": {
-    "title": "Display erstellen",
-    "paragraph": "Konfiguriere eine digitale Präsentation für deine Ausstellungen, Kunstwerke und die ausgestellten Künstler:innen.",
-    "selectType": "Bildschirmtyp auswählen",
-    "error": "Beim Laden der Inhalte ist ein Fehler aufgetreten. Bitte versuche es erneut. Sollte der Fehler weiterhin bestehen, wende dich bitte an den Support.",
+    "title": "Static Screen erstellen",
+    "paragraph": "WÃ¤hlen Sie zunÃ¤chst aus, welchen Inhalt Sie auf dem Screen anzeigen mÃ¶chten.",
+    "selectType": "Inhalt auswÃ¤hlen",
+    "loading": "Laden...",
+    "error": "Die Inhalte konnten nicht geladen werden.",
+    "createStaticScreen": "Static Screen erstellen",
 
     "staticScreens": {
-      "title": "Statische Bildschirme",
-
       "exhibition": {
         "title": "Ausstellung",
-        "show": "Ausstellungen anzeigen",
-        "description": "Zeigt aktuelle Ausstellungen und zugehörige Informationen an."
+        "description": "Eine Ausstellung als statischen Screen anzeigen.",
+        "show": "Ausstellungen auswÃ¤hlen",
+        "empty": "Keine Ausstellungen vorhanden."
       },
-
       "artwork": {
         "title": "Kunstwerk",
-        "show": "Kunstwerke anzeigen",
-        "description": "Präsentiert einzelne Kunstwerke mit Metadaten."
+        "description": "Ein Kunstwerk als statischen Screen anzeigen.",
+        "show": "Kunstwerke auswÃ¤hlen",
+        "empty": "Keine Kunstwerke vorhanden."
       },
-
       "artist": {
-        "title": "Künstler:in",
-        "show": "Künstler:innen anzeigen",
-        "description": "Zeigt Informationen über Künstler:innen und ausgewählte Werke."
+        "title": "KÃ¼nstler",
+        "description": "Einen KÃ¼nstler als statischen Screen anzeigen.",
+        "show": "KÃ¼nstler auswÃ¤hlen",
+        "empty": "Keine KÃ¼nstler vorhanden."
       }
-    },
-
-    "dynamicScreens": {
-      "title": "Dynamische Bildschirme",
-
-      "interactiveArtwork": {
-        "title": "Interaktives Kunstwerk",
-        "description": "Erkunden Sie Kunstwerke durch Zoomen und Interaktion.",
-        "comingSoon": "Demnächst verfügbar"
-      },
-
-      "digitalExperience": {
-        "title": "Digitales Erlebnis",
-        "description": "Erstellen Sie immersive und animierte Präsentationen.",
-        "comingSoon": "Demnächst verfügbar"
-      }
-    },
-
-    "screenInformation": {
-      "title": "Bildschirminformationen",
-
-      "screenName": {
-        "label": "Bildschirmname",
-        "placeholder": "Hauptbildschirm der Galerie"
-      },
-
-      "location": {
-        "label": "Standort",
-        "placeholder": "Eingangshalle"
-      },
-
-      "submit": "Screen erstellen"
     }
   }
 }

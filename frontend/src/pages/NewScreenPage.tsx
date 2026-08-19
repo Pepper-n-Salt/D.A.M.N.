@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import H1 from "../components/ui/typography/H1";
@@ -6,143 +7,102 @@ import H2 from "../components/ui/typography/H2";
 import H3 from "../components/ui/typography/H3";
 import P from "../components/ui/typography/P";
 
+import {
+  getExhibitions,
+  type CreateExhibitionResponse,
+} from "../api/exhibitionApi";
+
+import { getArtworks, type ArtworkResponse } from "../api/artworkApi";
+
+import { getArtists, type CreateArtistResponse } from "../api/artistApi";
+
 type ScreenType = "exhibition" | "artwork" | "artist";
 
-type Translation = {
-  languageCode: string;
-  title?: string;
-  firstName?: string;
-  lastName?: string;
-};
-
-type Exhibition = {
-  id: string;
-  translations?: Translation[];
-};
-
-type Artwork = {
-  id: string;
-  year: number | null;
-  translations?: Translation[];
-};
-
-type Artist = {
-  id: string;
-  translations?: Translation[];
-};
-
 export default function NewScreenPage() {
-  const { t } = useTranslation("newScreen");
+  const { i18n, t } = useTranslation("newScreen");
+  const navigate = useNavigate();
 
   const [selectedType, setSelectedType] = useState<ScreenType | null>(null);
 
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
 
-  const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [artists, setArtists] = useState<Artist[]>([]);
+  const [exhibitions, setExhibitions] = useState<CreateExhibitionResponse[]>(
+    []
+  );
+
+  const [artworks, setArtworks] = useState<ArtworkResponse[]>([]);
+
+  const [artists, setArtists] = useState<CreateArtistResponse[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [language] = useState("en");
+  const languageCode = i18n.language.startsWith("en") ? "en" : "de";
 
   useEffect(() => {
     if (!selectedType) {
+      setExhibitions([]);
+      setArtworks([]);
+      setArtists([]);
       setSelectedObjectId(null);
+      setError(null);
+
       return;
     }
 
-    const fetchObjects = async () => {
-      setIsLoading(true);
-      setError(null);
-      setSelectedObjectId(null);
-
+    const loadContent = async () => {
       try {
-        let endpoint = "";
+        setIsLoading(true);
+        setError(null);
+        setSelectedObjectId(null);
 
         if (selectedType === "exhibition") {
-          endpoint = "/api/screens/available/exhibitions";
+          const result = await getExhibitions(languageCode);
+
+          setExhibitions(result);
+          setArtworks([]);
+          setArtists([]);
         }
 
         if (selectedType === "artwork") {
-          endpoint = "/api/screens/available/artworks";
+          const result = await getArtworks(languageCode);
+
+          setArtworks(result);
+          setExhibitions([]);
+          setArtists([]);
         }
 
         if (selectedType === "artist") {
-          endpoint = "/api/screens/available/artists";
-        }
+          const result = await getArtists(languageCode);
 
-        const response = await fetch(`${endpoint}?languageCode=${language}`, {
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error(`Fehler beim Laden der ${selectedType}-Daten.`);
-        }
-
-        const data = await response.json();
-
-        if (selectedType === "exhibition") {
-          setExhibitions(data);
-        }
-
-        if (selectedType === "artwork") {
-          setArtworks(data);
-        }
-
-        if (selectedType === "artist") {
-          setArtists(data);
+          setArtists(result);
+          setExhibitions([]);
+          setArtworks([]);
         }
       } catch (error) {
         console.error(error);
 
-        setError("Die verfügbaren Inhalte konnten nicht geladen werden.");
+        setError(error instanceof Error ? error.message : t("newScreen.error"));
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchObjects();
-  }, [selectedType, language]);
+    loadContent();
+  }, [selectedType, languageCode, t]);
 
-  function getExhibitionName(exhibition: Exhibition) {
-    const translation = exhibition.translations?.find(
-      (translation) => translation.languageCode === language
-    );
+  const handleSelectType = (type: ScreenType) => {
+    setSelectedType(type);
+    setSelectedObjectId(null);
+  };
 
-    return translation?.title ?? exhibition.id;
-  }
-
-  function getArtworkName(artwork: Artwork) {
-    const translation = artwork.translations?.find(
-      (translation) => translation.languageCode === language
-    );
-
-    return translation?.title ?? artwork.id;
-  }
-
-  function getArtistName(artist: Artist) {
-    const translation = artist.translations?.find(
-      (translation) => translation.languageCode === language
-    );
-
-    if (!translation) {
-      return artist.id;
-    }
-
-    return `${translation.firstName ?? ""} ${
-      translation.lastName ?? ""
-    }`.trim();
-  }
-
-  function createScreen() {
+  const handleCreateStaticScreen = () => {
     if (!selectedType || !selectedObjectId) {
       return;
     }
 
-    window.open(`/display/${selectedType}/${selectedObjectId}`, "_blank");
-  }
+    navigate(`/display/static/${selectedType}/${selectedObjectId}`);
+  };
 
   return (
     <section className="space-y-20">
@@ -155,279 +115,258 @@ export default function NewScreenPage() {
       <section className="space-y-8">
         <H2>{t("newScreen.selectType")}</H2>
 
-        <div className="space-y-6">
-          <H3>{t("newScreen.staticScreens.title")}</H3>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <button
+            type="button"
+            onClick={() => handleSelectType("exhibition")}
+            className={`
+              border p-6 text-left transition
+              ${
+                selectedType === "exhibition"
+                  ? "border-black bg-black text-white"
+                  : "border-neutral-300 hover:bg-black hover:text-white"
+              }
+            `}
+          >
+            <H3>{t("newScreen.staticScreens.exhibition.title")}</H3>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <button
-              type="button"
-              onClick={() => setSelectedType("exhibition")}
+            <p
               className={`
-                border p-6 text-left transition
+                mt-3 text-sm
                 ${
                   selectedType === "exhibition"
-                    ? "border-black bg-black text-white"
-                    : "border-neutral-300 hover:bg-black hover:text-white"
+                    ? "text-neutral-300"
+                    : "text-neutral-500"
                 }
               `}
             >
-              <h3 className="text-xl font-light">
-                {t("newScreen.staticScreens.exhibition.title")}
-              </h3>
+              {t("newScreen.staticScreens.exhibition.description")}
+            </p>
+          </button>
 
-              <p
-                className={`
-                  mt-3 text-sm
-                  ${
-                    selectedType === "exhibition"
-                      ? "text-neutral-300"
-                      : "text-neutral-500"
-                  }
-                `}
-              >
-                {t("newScreen.staticScreens.exhibition.description")}
-              </p>
-            </button>
+          <button
+            type="button"
+            onClick={() => handleSelectType("artwork")}
+            className={`
+              border p-6 text-left transition
+              ${
+                selectedType === "artwork"
+                  ? "border-black bg-black text-white"
+                  : "border-neutral-300 hover:bg-black hover:text-white"
+              }
+            `}
+          >
+            <H3>{t("newScreen.staticScreens.artwork.title")}</H3>
 
-            <button
-              type="button"
-              onClick={() => setSelectedType("artwork")}
+            <p
               className={`
-                border p-6 text-left transition
+                mt-3 text-sm
                 ${
                   selectedType === "artwork"
-                    ? "border-black bg-black text-white"
-                    : "border-neutral-300 hover:bg-black hover:text-white"
+                    ? "text-neutral-300"
+                    : "text-neutral-500"
                 }
               `}
             >
-              <h3 className="text-xl font-light">
-                {t("newScreen.staticScreens.artwork.title")}
-              </h3>
+              {t("newScreen.staticScreens.artwork.description")}
+            </p>
+          </button>
 
-              <p
-                className={`
-                  mt-3 text-sm
-                  ${
-                    selectedType === "artwork"
-                      ? "text-neutral-300"
-                      : "text-neutral-500"
-                  }
-                `}
-              >
-                {t("newScreen.staticScreens.artwork.description")}
-              </p>
-            </button>
+          <button
+            type="button"
+            onClick={() => handleSelectType("artist")}
+            className={`
+              border p-6 text-left transition
+              ${
+                selectedType === "artist"
+                  ? "border-black bg-black text-white"
+                  : "border-neutral-300 hover:bg-black hover:text-white"
+              }
+            `}
+          >
+            <H3>{t("newScreen.staticScreens.artist.title")}</H3>
 
-            <button
-              type="button"
-              onClick={() => setSelectedType("artist")}
+            <p
               className={`
-                border p-6 text-left transition
+                mt-3 text-sm
                 ${
                   selectedType === "artist"
-                    ? "border-black bg-black text-white"
-                    : "border-neutral-300 hover:bg-black hover:text-white"
+                    ? "text-neutral-300"
+                    : "text-neutral-500"
                 }
               `}
             >
-              <h3 className="text-xl font-light">
-                {t("newScreen.staticScreens.artist.title")}
-              </h3>
-
-              <p
-                className={`
-                  mt-3 text-sm
-                  ${
-                    selectedType === "artist"
-                      ? "text-neutral-300"
-                      : "text-neutral-500"
-                  }
-                `}
-              >
-                {t("newScreen.staticScreens.artist.description")}
-              </p>
-            </button>
-          </div>
+              {t("newScreen.staticScreens.artist.description")}
+            </p>
+          </button>
         </div>
 
         {selectedType && (
           <div className="space-y-6 border-t border-neutral-200 pt-12">
             <H2>
-              {selectedType === "exhibition" && (
-                <p>{t("newScreen.staticScreens.exhibition.show")}</p>
-              )}
+              {selectedType === "exhibition" &&
+                t("newScreen.staticScreens.exhibition.show")}
 
-              {selectedType === "artwork" && (
-                <p>{t("newScreen.staticScreens.artwork.show")}</p>
-              )}
+              {selectedType === "artwork" &&
+                t("newScreen.staticScreens.artwork.show")}
 
-              {selectedType === "artist" && (
-                <p>{t("newScreen.staticScreens.artist.show")}</p>
-              )}
+              {selectedType === "artist" &&
+                t("newScreen.staticScreens.artist.show")}
             </H2>
 
-            {isLoading && <P>Inhalte werden geladen...</P>}
+            {isLoading && <P>{t("newScreen.loading")}</P>}
 
-            {error && (
-              <p className="text-sm text-red-600">{t("newScreen.error")}</p>
-            )}
+            {error && <p className="text-sm text-red-600">{error}</p>}
 
             {!isLoading && !error && selectedType === "exhibition" && (
-              <div className="divide-y divide-neutral-200">
-                {exhibitions.map((exhibition) => (
-                  <button
-                    key={exhibition.id}
-                    type="button"
-                    onClick={() => setSelectedObjectId(exhibition.id)}
-                    className={`
-                        w-full py-6 text-left transition
-                        ${
-                          selectedObjectId === exhibition.id
-                            ? "bg-black px-4 text-white"
-                            : "hover:bg-neutral-50"
-                        }
-                      `}
-                  >
-                    <p className="text-xl font-light">
-                      {getExhibitionName(exhibition)}
-                    </p>
-                  </button>
-                ))}
+              <div className="space-y-6">
+                <div className="divide-y divide-neutral-200">
+                  {exhibitions.map((exhibition) => {
+                    const isSelected = selectedObjectId === exhibition.id;
+
+                    return (
+                      <button
+                        key={exhibition.id}
+                        type="button"
+                        onClick={() => setSelectedObjectId(exhibition.id)}
+                        className={`
+                            w-full py-6 text-left transition
+                            ${
+                              isSelected
+                                ? "bg-neutral-100 px-6"
+                                : "hover:bg-neutral-50"
+                            }
+                          `}
+                      >
+                        <p className="text-xl font-light">{exhibition.title}</p>
+
+                        <p className="mt-2 text-sm text-neutral-500">
+                          {exhibition.startDate} - {exhibition.endDate}
+                        </p>
+
+                        {exhibition.location && (
+                          <p className="mt-1 text-sm text-neutral-500">
+                            {exhibition.location}
+                          </p>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
 
                 {exhibitions.length === 0 && (
-                  <P>Keine Ausstellungen verfügbar.</P>
+                  <P>{t("newScreen.staticScreens.exhibition.empty")}</P>
                 )}
               </div>
             )}
 
             {!isLoading && !error && selectedType === "artwork" && (
-              <div className="divide-y divide-neutral-200">
-                {artworks.map((artwork) => (
-                  <button
-                    key={artwork.id}
-                    type="button"
-                    onClick={() => setSelectedObjectId(artwork.id)}
-                    className={`
-                        w-full py-6 text-left transition
-                        ${
-                          selectedObjectId === artwork.id
-                            ? "bg-black px-4 text-white"
-                            : "hover:bg-neutral-50"
-                        }
-                      `}
-                  >
-                    <p className="text-xl font-light">
-                      {getArtworkName(artwork)}
-                    </p>
+              <div className="space-y-6">
+                <div className="divide-y divide-neutral-200">
+                  {artworks.map((artwork) => {
+                    const isSelected = selectedObjectId === artwork.id;
 
-                    {artwork.year && (
-                      <p
+                    return (
+                      <button
+                        key={artwork.id}
+                        type="button"
+                        onClick={() => setSelectedObjectId(artwork.id)}
                         className={`
-                            mt-2 text-sm
+                            w-full py-6 text-left transition
                             ${
-                              selectedObjectId === artwork.id
-                                ? "text-neutral-300"
-                                : "text-neutral-500"
+                              isSelected
+                                ? "bg-neutral-100 px-6"
+                                : "hover:bg-neutral-50"
                             }
                           `}
                       >
-                        {artwork.year}
-                      </p>
-                    )}
-                  </button>
-                ))}
+                        <p className="text-xl font-light">{artwork.title}</p>
 
-                {artworks.length === 0 && <P>Keine Kunstwerke verfügbar.</P>}
+                        {artwork.subtitle && (
+                          <p className="mt-1 text-sm text-neutral-500">
+                            {artwork.subtitle}
+                          </p>
+                        )}
+
+                        {artwork.year && (
+                          <p className="mt-2 text-sm text-neutral-500">
+                            {artwork.year}
+                          </p>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {artworks.length === 0 && (
+                  <P>{t("newScreen.staticScreens.artwork.empty")}</P>
+                )}
               </div>
             )}
 
             {!isLoading && !error && selectedType === "artist" && (
-              <div className="divide-y divide-neutral-200">
-                {artists.map((artist) => (
-                  <button
-                    key={artist.id}
-                    type="button"
-                    onClick={() => setSelectedObjectId(artist.id)}
-                    className={`
-                        w-full py-6 text-left transition
-                        ${
-                          selectedObjectId === artist.id
-                            ? "bg-black px-4 text-white"
-                            : "hover:bg-neutral-50"
-                        }
-                      `}
-                  >
-                    <p className="text-xl font-light">
-                      {getArtistName(artist)}
-                    </p>
-                  </button>
-                ))}
+              <div className="space-y-6">
+                <div className="divide-y divide-neutral-200">
+                  {artists.map((artist) => {
+                    const isSelected = selectedObjectId === artist.id;
 
-                {artists.length === 0 && <P>Keine Künstler verfügbar.</P>}
+                    return (
+                      <button
+                        key={artist.id}
+                        type="button"
+                        onClick={() => setSelectedObjectId(artist.id)}
+                        className={`
+                            w-full py-6 text-left transition
+                            ${
+                              isSelected
+                                ? "bg-neutral-100 px-6"
+                                : "hover:bg-neutral-50"
+                            }
+                          `}
+                      >
+                        <p className="text-xl font-light">
+                          {artist.firstName} {artist.lastName}
+                        </p>
+
+                        {artist.country && (
+                          <p className="mt-1 text-sm text-neutral-500">
+                            {artist.country}
+                          </p>
+                        )}
+
+                        {(artist.dateOfBirth || artist.dateOfDeath) && (
+                          <p className="mt-2 text-sm text-neutral-500">
+                            {artist.dateOfBirth || ""}
+                            {artist.dateOfDeath
+                              ? ` - ${artist.dateOfDeath}`
+                              : ""}
+                          </p>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {artists.length === 0 && (
+                  <P>{t("newScreen.staticScreens.artist.empty")}</P>
+                )}
+              </div>
+            )}
+
+            {selectedObjectId && (
+              <div className="border-t border-neutral-200 pt-8">
+                <button
+                  type="button"
+                  onClick={handleCreateStaticScreen}
+                  className="border border-black px-6 py-3 text-sm uppercase tracking-[0.15em] transition-colors duration-300 hover:bg-black hover:text-white"
+                >
+                  {t("newScreen.createStaticScreen")}
+                </button>
               </div>
             )}
           </div>
         )}
       </section>
-      {/* 
-      <section className="border-t border-neutral-200 pt-12">
-        <H2>{t("newScreen.screenInformation.title")}</H2>
-
-        <br />
-
-        <div className="max-w-xl space-y-8">
-          <div>
-            <label className="text-sm leading-loose tracking-widest text-neutral-500">
-              {t("newScreen.screenInformation.screenName.label")}
-            </label>
-
-            <input
-              type="text"
-              placeholder={t(
-                "newScreen.screenInformation.screenName.placeholder"
-              )}
-              className="mt-3 w-full border-b border-black bg-transparent py-3 outline-none placeholder:text-neutral-400"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm leading-loose tracking-widest text-neutral-500">
-              {t("newScreen.screenInformation.location.label")}
-            </label>
-
-            <input
-              type="text"
-              placeholder={t(
-                "newScreen.screenInformation.location.placeholder"
-              )}
-              className="mt-3 w-full border-b border-black bg-transparent py-3 outline-none placeholder:text-neutral-400"
-            />
-          </div> */}
-
-      <button
-        type="button"
-        onClick={createScreen}
-        disabled={!selectedType || !selectedObjectId}
-        className="
-              border
-              border-black
-              px-8
-              py-3
-              text-sm
-              uppercase
-              tracking-[0.25em]
-              transition
-              hover:bg-black
-              hover:text-white
-              disabled:cursor-not-allowed
-              disabled:opacity-30
-            "
-      >
-        {t("newScreen.screenInformation.submit")}
-      </button>
-      {/* </div> 
-      </section>*/}
     </section>
   );
 }

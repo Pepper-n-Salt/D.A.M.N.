@@ -27,5 +27,11 @@
   "messages": {
     "loadError": "The exhibitions could not be loaded.",
     "noItems": "No exhibitions found."
+  },
+  "card": {
+    "createdBy": "Created by",
+    "delete": "Delete",
+    "deleteConfirm": "Do you really want to delete this exhibition? The German and English versions will be deleted together.",
+    "deleteError": "The exhibition could not be deleted."
   }
 }

@@ -13,10 +13,20 @@
   "deleted": {
     "title": "Gelöschte Künstler:innen",
     "button": "Künstler:in löschen →",
-    "notfound": "Keine gelöschten Künstler:innen gefunden."
+    "notfound": "Keine gelöschten Künstler:innen gefunden.",
+    "restoreConfirm": "Möchtest du diese/n Künstler:in wirklich wiederherstellen?",
+    "restoreError": "Der Künstler:in konnte nicht wiederhergestellt werden.",
+    "loading": "Laden...",
+    "restore": "Wiederherstellen"
   },
   "messages": {
-    "loadError": "Die Artists konnten nicht geladen werden.",
-    "noItems": "Keine Artists gefunden."
+    "loadError": "Die Künstler:innen konnten nicht geladen werden.",
+    "noItems": "Keine Künstler:innen gefunden."
+  },
+  "card": {
+    "createdBy": "Erstellt von",
+    "delete": "Löschen",
+    "deleteConfirm": "Möchtest du diese/n Künstler:in wirklich löschen? Die deutsche und englische Version werden gemeinsam gelöscht.",
+    "deleteError": "Der Künstler:in konnte nicht gelöscht werden."
   }
 }
