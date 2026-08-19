@@ -16,8 +16,8 @@ const run = async () => {
         id: mediaId,
         mimeType: "image/jpeg",
         fileUrl:
-          "https://res.cloudinary.com/dmopqtosl/image/upload/v1786957218/media_02c51167-e5d9-4c14-8be0-efe91f48be14.jpg",
-        publicId: "media_02c51167-e5d9-4c14-8be0-efe91f48be14",
+          "https://res.cloudinary.com/dmopqtosl/image/upload/media_5bbb84ca-3e6a-4ce9-b1dd-e18cf112b44d.jpg",
+        publicId: "media_5bbb84ca-3e6a-4ce9-b1dd-e18cf112b44d",
       },
     });
 
