@@ -14,7 +14,7 @@ import H2 from "../components/ui/typography/H2";
 import P from "../components/ui/typography/P";
 
 export default function LandingPageScreens() {
-  const { t } = useTranslation("screens");
+  const { t, i18n } = useTranslation("screens");
 
   const [exhibitions, setExhibitions] = useState<CreateExhibitionResponse[]>(
     []
@@ -23,12 +23,15 @@ export default function LandingPageScreens() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const languageCode = i18n.language.startsWith("en") ? "en" : "de";
+
   useEffect(() => {
     const loadExhibitions = async () => {
       try {
         setLoading(true);
+        setError(null);
 
-        const data = await getExhibitions("de");
+        const data = await getExhibitions(languageCode);
 
         setExhibitions(data);
       } catch (error) {
@@ -45,7 +48,7 @@ export default function LandingPageScreens() {
     };
 
     loadExhibitions();
-  }, []);
+  }, [languageCode]);
 
   return (
     <section className="mx-auto space-y-20 py-20">

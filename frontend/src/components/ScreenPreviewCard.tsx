@@ -1,4 +1,4 @@
-import H3 from "./ui/typography/H3";
+// import H3 from "./ui/typography/H3";
 
 interface ScreenPreviewCardProps {
   title: string;
@@ -11,13 +11,15 @@ export default function ScreenPreviewCard({
 }: ScreenPreviewCardProps) {
   return (
     <div className="overflow-hidden border border-black">
-      <div className="aspect-video w-full overflow-hidden bg-neutral-100">
+      <div className="h-[600px] w-full overflow-hidden bg-neutral-100">
+        {" "}
+        {/* hier lieber doch eine feste Höhe statt "aspect-video" verwendet,  */}
         <iframe src={uri} title={title} className="h-full w-full border-0" />
       </div>
 
-      <div className="p-4">
+      {/* <div className="p-4">
         <H3>{title}</H3>
-      </div>
+      </div> */}
     </div>
   );
 }

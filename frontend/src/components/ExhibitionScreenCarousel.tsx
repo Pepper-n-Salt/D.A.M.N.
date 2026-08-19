@@ -13,7 +13,7 @@ export default function ExhibitionScreenCarousel({
   exhibitions,
 }: ExhibitionScreenCarouselProps) {
   const screens = exhibitions.filter((exh) => {
-    exh.isScreen === true;
+    return exh.isScreen === true;
   });
   const [startIndex, setStartIndex] = useState(0);
   const visibleScreens = screens.slice(startIndex, startIndex + 3);

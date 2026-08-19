@@ -100,7 +100,7 @@ export const showOneExhibition = async (
       return res.status(404).json({ msg: "Exhibition nicht gefunden." });
     }
 
-    console.log("EXHIBITION MEDIA:", exhibition.Medium?.fileUrl);
+    // console.log("EXHIBITION MEDIA:", exhibition.Medium?.fileUrl);
 
     const translation = exhibition.ExhibitionTranslations?.[0];
 
