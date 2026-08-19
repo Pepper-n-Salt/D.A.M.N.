@@ -23,7 +23,13 @@ export default function ExhibitionScreenCarousel({
     <>
       <div className="space-y-8">
         <div className="grid gap-4 lg:grid-cols-3">
-          {/* <ScreenPreviewCard ></ScreenPreviewCard> */}
+          {visibleScreens.map((exh) => (
+            <ScreenPreviewCard
+              key={exh.id}
+              title={exh.title}
+              uri={`/display/static/exhibition/${exh.id}`}
+            />
+          ))}
         </div>
       </div>
 
