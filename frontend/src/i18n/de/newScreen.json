@@ -1,8 +1,8 @@
 {
   "newScreen": {
     "title": "Static Screen erstellen",
-    "paragraph": "WÃ¤hlen Sie zunÃ¤chst aus, welchen Inhalt Sie auf dem Screen anzeigen mÃ¶chten.",
-    "selectType": "Inhalt auswÃ¤hlen",
+    "paragraph": "Wählen Sie zunächst aus, welchen Inhalt Sie auf dem Screen anzeigen möchten.",
+    "selectType": "Inhalt auswählen",
     "loading": "Laden...",
     "error": "Die Inhalte konnten nicht geladen werden.",
     "createStaticScreen": "Static Screen erstellen",
@@ -11,20 +11,20 @@
       "exhibition": {
         "title": "Ausstellung",
         "description": "Eine Ausstellung als statischen Screen anzeigen.",
-        "show": "Ausstellungen auswÃ¤hlen",
+        "show": "Ausstellungen auswählen",
         "empty": "Keine Ausstellungen vorhanden."
       },
       "artwork": {
         "title": "Kunstwerk",
         "description": "Ein Kunstwerk als statischen Screen anzeigen.",
-        "show": "Kunstwerke auswÃ¤hlen",
+        "show": "Kunstwerke auswählen",
         "empty": "Keine Kunstwerke vorhanden."
       },
       "artist": {
-        "title": "KÃ¼nstler",
-        "description": "Einen KÃ¼nstler als statischen Screen anzeigen.",
-        "show": "KÃ¼nstler auswÃ¤hlen",
-        "empty": "Keine KÃ¼nstler vorhanden."
+        "title": "Künstler:in",
+        "description": "Eine/n Künstler:in als statischen Screen anzeigen.",
+        "show": "Künstler:in auswählen",
+        "empty": "Keine Künstler:innen vorhanden."
       }
     }
   }
