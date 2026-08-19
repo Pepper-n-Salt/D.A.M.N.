@@ -102,8 +102,7 @@ AUFGABE:
 17. Kunsttitel dürfen nicht frei interpretiert oder kreativ
     umformuliert werden.
 
-18. Materialbezeichnungen dürfen fachlich korrekt übersetzt werden,
-    dürfen aber keine zusätzlichen Materialien enthalten.
+
 
 19. Technische oder kunsthistorische Begriffe sollen fachlich
     korrekt und natürlich übersetzt werden.
