@@ -17,7 +17,7 @@ const run = async () => {
         mimeType: "image/jpeg",
         fileUrl:
           "https://res.cloudinary.com/dmopqtosl/image/upload/v1786957218/media_02c51167-e5d9-4c14-8be0-efe91f48be14.jpg",
-        publicId: "exhibition-cover",
+        publicId: "media_02c51167-e5d9-4c14-8be0-efe91f48be14",
       },
     });
 
