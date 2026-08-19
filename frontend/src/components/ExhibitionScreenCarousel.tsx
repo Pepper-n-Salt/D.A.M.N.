@@ -15,9 +15,22 @@ export default function ExhibitionScreenCarousel({
   const screens = exhibitions.filter((exh) => {
     exh.isScreen === true;
   });
-
   const [startIndex, setStartIndex] = useState(0);
   const visibleScreens = screens.slice(startIndex, startIndex + 3);
+
+  const clickPrevious = () => {
+    setStartIndex((prev) => Math.max(prev - 3, 0));
+  };
+
+  const clickNext = () => {
+    setStartIndex((prev) =>
+      Math.min(prev + 3, Math.max(screens.length - 3, 0))
+    );
+  };
+
+  if (screens.length === 0) {
+    return null;
+  }
 
   return (
     <>
@@ -32,11 +45,19 @@ export default function ExhibitionScreenCarousel({
           ))}
         </div>
       </div>
-
-      <div>
-        <Carouselbutton>← Previous</Carouselbutton>
-        <Carouselbutton>Next →</Carouselbutton>
-      </div>
+      {screens.length > 3 && (
+        <div className="flex justify-between">
+          <Carouselbutton onClick={clickPrevious} disabled={startIndex === 0}>
+            ← Previous
+          </Carouselbutton>
+          <Carouselbutton
+            onClick={clickNext}
+            disabled={startIndex >= screens.length - 3}
+          >
+            Next →
+          </Carouselbutton>
+        </div>
+      )}
     </>
   );
 }
