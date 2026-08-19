@@ -9,6 +9,7 @@ import P from "../components/ui/typography/P";
 
 import {
   getExhibitions,
+  setExhibitionScreen,
   type CreateExhibitionResponse,
 } from "../api/exhibitionApi";
 
@@ -96,12 +97,22 @@ export default function NewScreenPage() {
     setSelectedObjectId(null);
   };
 
-  const handleCreateStaticScreen = () => {
+  const handleCreateStaticScreen = async () => {
     if (!selectedType || !selectedObjectId) {
       return;
     }
 
-    navigate(`/display/static/${selectedType}/${selectedObjectId}`);
+    try {
+      if (selectedType === "exhibition") {
+        await setExhibitionScreen(selectedObjectId, languageCode);
+      }
+
+      navigate(`/display/static/${selectedType}/${selectedObjectId}`);
+    } catch (e) {
+      console.error(e);
+
+      setError(e instanceof Error ? e.message : t("newScreen.error")); // evtl. noch in i18n aufnehmen
+    }
   };
 
   return (
