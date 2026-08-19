@@ -1,6 +1,11 @@
 {
-  "title": "Neue Ausstellung hinzufügen",
-  "paragraph": "Fülle das untenstehende Formular aus, um einen neuen Ausstellungseintrag zu erstellen.",
+  "hero": {
+    "title": "Neue Ausstellung hinzufügen",
+    "paragraph": "Fülle das untenstehende Formular aus, um einen neuen Ausstellungseintrag zu erstellen.",
+    "editTitle": "Ausstellung bearbeiten",
+    "editParagraph": "Bearbeite die folgenden Angaben, um die bestehende Ausstellung zu aktualisieren."
+  },
+
   "form": {
     "language": "In welcher Sprache möchten Sie die Ausstellung erstellen?",
     "title": "Titel",

@@ -200,3 +200,21 @@ export async function getDeletedExhibitions(
 
   return data;
 }
+
+export async function restoreExhibition(exhibitionId: string): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/exhibition/${exhibitionId}/restore`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.msg || "Die Exhibition konnte nicht wiederhergestellt werden."
+    );
+  }
+}

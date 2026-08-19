@@ -1,14 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-
+import P from "./ui/typography/P";
 import {
   getExhibitions,
   type CreateExhibitionResponse,
 } from "../api/exhibitionApi";
 
 export default function ArchivedExhibitions() {
-  const { i18n } = useTranslation("exhibitions");
+  const { i18n, t } = useTranslation("exhibitions");
 
   const [exhibitions, setExhibitions] = useState<CreateExhibitionResponse[]>(
     []
@@ -38,27 +38,19 @@ export default function ArchivedExhibitions() {
       } catch (error) {
         console.error(error);
 
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Die archivierten Exhibitions konnten nicht geladen werden."
-        );
+        setError(error instanceof Error ? error.message : t("archived.error"));
       }
     };
 
     loadExhibitions();
-  }, [i18n.language]);
+  }, [i18n.language, t]);
 
   if (error) {
     return <p className="text-red-600">{error}</p>;
   }
 
   if (exhibitions.length === 0) {
-    return (
-      <p className="text-sm uppercase tracking-[0.2em] text-gray-500">
-        Keine archivierten Exhibitions vorhanden.
-      </p>
-    );
+    return <P>{t("archived.notfound")}</P>;
   }
 
   return (

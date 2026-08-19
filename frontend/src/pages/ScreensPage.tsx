@@ -17,14 +17,14 @@ export default function LandingPageScreens() {
         <P>{t("hero.paragraph")}</P>
       </div>
 
-      <section
+      {/* <section
         id="current-screens"
         className="border-t border-neutral-200 pt-12 space-y-12"
       >
         <H2>{t("current.title")}</H2>
 
         <ScreenCarousel />
-      </section>
+      </section> */}
 
       <section className="border-t border-neutral-200 pt-12 space-y-12">
         <H2>{t("create.title")}</H2>

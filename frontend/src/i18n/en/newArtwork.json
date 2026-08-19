@@ -1,7 +1,9 @@
 {
   "hero": {
     "title": "Add New Artwork",
-    "paragraph": "Fill in the details below to create a new artwork entry for the platform."
+    "paragraph": "Fill in the details below to create a new artwork entry for the platform.",
+    "editTitle": "Edit Current Artwork",
+    "editParagraph": "Edit the details below to update the current artwork."
   },
   "import": {
     "open": "Import Artwork",

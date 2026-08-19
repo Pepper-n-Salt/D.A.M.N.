@@ -11,10 +11,18 @@
     "button": "Add new Exhibition →"
   },
   "archived": {
-    "title": "Archived Exhibitions"
+    "title": "Archived Exhibitions",
+    "notfound": "No archived exhibitions available.",
+    "error": "The archived exhibitions could not be loaded."
   },
   "deleted": {
-    "title": "Deleted Exhibitions"
+    "title": "Deleted Exhibitions",
+    "loading": "Loading...",
+    "notfound": "No deleted exhibitions found.",
+    "error": "The deleted exhibitions could not be loaded.",
+    "restore": "Restore",
+    "restoreConfirm": "Do you really want to restore this exhibition?",
+    "restoreError": "The exhibition could not be restored."
   },
   "messages": {
     "loadError": "The exhibitions could not be loaded.",

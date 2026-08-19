@@ -1,6 +1,10 @@
 {
-  "title": "Add a New Artist",
-  "paragraph": "Create a new artist entry for the platform.",
+  "hero": {
+    "title": "Add a New Artist",
+    "paragraph": "Create a new artist entry for the platform.",
+    "editTitle": "Edit Current Artist",
+    "editParagraph": "Edit the details below to update the current artist."
+  },
   "form": {
     "language": "In which language would you like to add the artist?",
     "languages": {

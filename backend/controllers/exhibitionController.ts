@@ -582,3 +582,37 @@ export const showDeletedExhibitions = async (
     });
   }
 };
+export const restoreExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
+  try {
+    const { exhibitionId } = req.params;
+
+    const artist = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: true,
+      },
+    });
+
+    if (!artist) {
+      return res.status(404).json({
+        msg: "Die gelöschte Exhibition konnte nicht gefunden werden.",
+      });
+    }
+
+    await artist.update({
+      isDeleted: false,
+      lastEditedBy: req.user!.id,
+    });
+
+    return res.status(200).json(artist);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Die Exhibition konnte nicht wiederhergestellt werden.",
+    });
+  }
+};
