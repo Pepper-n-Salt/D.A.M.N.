@@ -16,8 +16,8 @@ const run = async () => {
         id: mediaId,
         mimeType: "image/jpeg",
         fileUrl:
-          "https://res.cloudinary.com/dein-cloud-name/image/upload/v1234567890/upload-demo/exhibition-cover.jpg",
-        publicId: "exhibition-cover",
+          "https://res.cloudinary.com/dmopqtosl/image/upload/v1786957218/media_02c51167-e5d9-4c14-8be0-efe91f48be14.jpg",
+        publicId: "media_02c51167-e5d9-4c14-8be0-efe91f48be14",
       },
     });
 
