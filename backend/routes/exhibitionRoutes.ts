@@ -10,6 +10,7 @@ import {
   updateExhibition,
   archiveExhibition,
   deleteExhibition,
+  restoreExhibition,
 } from "../controllers/exhibitionController.js";
 
 import { validateBody, validateParams } from "../middleware/validate.js";
@@ -98,6 +99,13 @@ router.patch(
   "/:exhibitionId/delete",
   validateParams(exhibitionIdSchema),
   deleteExhibition
+);
+
+router.patch(
+  "/:exhibitionId/restore",
+  requireSuperUser,
+  validateParams(exhibitionIdSchema),
+  restoreExhibition
 );
 
 /*

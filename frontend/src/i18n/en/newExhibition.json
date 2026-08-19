@@ -1,7 +1,10 @@
 {
-  "title": "Add New Exhibition",
-  "paragraph": "Fill in the details below to create a new exhibition entry.",
-
+  "hero": {
+    "title": "Add New Exhibition",
+    "paragraph": "Fill in the details below to create a new exhibition entry.",
+    "editTitle": "Edit Current Exhibition",
+    "editParagraph": "Edit the details below to update the current exhibition."
+  },
   "form": {
     "language": "In which language would you like to create the exhibition?",
     "title": "Title",

@@ -11,10 +11,16 @@
     "button": "Neues Kunstwerk hinzufügen →"
   },
   "deleted": {
-    "title": "Gelöschte Kunstwerke"
+    "title": "Gelöschte Kunstwerke",
+    "loading": "Laden...",
+    "notfound": "Keine gelöschten Kunstwerke gefunden.",
+    "error": "Die gelöschten Kunstwerke konnten nicht geladen werden.",
+    "restore": "Wiederherstellen",
+    "restoreConfirm": "Möchtest du dieses Kunstwerk wirklich wiederherstellen?",
+    "restoreError": "Das Kunstwerk konnte nicht wiederhergestellt werden."
   },
   "messages": {
-    "loadError": "Die Artworks konnten nicht geladen werden.",
-    "noItems": "Keine Artworks gefunden."
+    "loadError": "Die Kunstwerke konnten nicht geladen werden.",
+    "noItems": "Keine Kunstwerke gefunden."
   }
 }

@@ -5,11 +5,12 @@ import P from "./ui/typography/P";
 
 import {
   getDeletedExhibitions,
+  restoreExhibition,
   type CreateExhibitionResponse,
 } from "../api/exhibitionApi";
 
 export default function DeletedExhibitions() {
-  const { i18n } = useTranslation("exhibitions");
+  const { i18n, t } = useTranslation("exhibitions");
 
   const [exhibitions, setExhibitions] = useState<CreateExhibitionResponse[]>(
     []
@@ -26,29 +27,47 @@ export default function DeletedExhibitions() {
         setIsLoading(true);
         setError(null);
 
-        const result = await getDeletedExhibitions(
-          languageCode === "de" ? "de" : "en"
-        );
+        const result = await getDeletedExhibitions(languageCode);
 
         setExhibitions(result);
       } catch (error) {
         console.error(error);
 
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Die gelöschten Exhibitions konnten nicht geladen werden."
-        );
+        setError(error instanceof Error ? error.message : t("deleted.error"));
       } finally {
         setIsLoading(false);
       }
     };
 
     loadDeletedExhibitions();
-  }, [languageCode]);
+  }, [languageCode, t]);
+
+  const handleRestore = async (exhibitionId: string) => {
+    const confirmed = window.confirm(t("deleted.restoreConfirm"));
+
+    if (!confirmed) return;
+
+    try {
+      await restoreExhibition(exhibitionId);
+
+      setExhibitions((currentExhibitions) =>
+        currentExhibitions.filter(
+          (exhibition) => exhibition.id !== exhibitionId
+        )
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(error instanceof Error ? error.message : t("deleted.restoreError"));
+    }
+  };
 
   if (isLoading) {
-    return <p className="text-sm uppercase tracking-[0.2em]">Loading...</p>;
+    return (
+      <p className="text-sm uppercase tracking-[0.2em]">
+        {t("deleted.loading")}
+      </p>
+    );
   }
 
   if (error) {
@@ -56,7 +75,7 @@ export default function DeletedExhibitions() {
   }
 
   if (exhibitions.length === 0) {
-    return <P>Keine gelöschten Exhibitions gefunden.</P>;
+    return <P>{t("deleted.notfound")}</P>;
   }
 
   return (
@@ -75,6 +94,14 @@ export default function DeletedExhibitions() {
           <div className="text-sm text-gray-500">
             {exhibition.startDate} - {exhibition.endDate}
           </div>
+
+          <button
+            type="button"
+            onClick={() => handleRestore(exhibition.id)}
+            className="border border-green-600 px-4 py-2 text-sm uppercase tracking-[0.15em] text-green-600 transition-colors duration-300 hover:bg-green-600 hover:text-white"
+          >
+            {t("deleted.restore")}
+          </button>
         </div>
       ))}
     </div>

@@ -11,7 +11,13 @@
     "button": "Add new artwork →"
   },
   "deleted": {
-    "title": "Deleted Artworks"
+    "title": "Deleted Artworks",
+    "loading": "Loading...",
+    "notfound": "No deleted artworks found.",
+    "error": "The deleted artworks could not be loaded.",
+    "restore": "Restore",
+    "restoreConfirm": "Do you really want to restore this artwork?",
+    "restoreError": "The artwork could not be restored."
   },
   "messages": {
     "loadError": "The artworks could not be loaded.",

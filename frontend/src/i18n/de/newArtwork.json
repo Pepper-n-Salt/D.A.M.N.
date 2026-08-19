@@ -1,7 +1,9 @@
 {
   "hero": {
     "title": "Neues Kunstwerk hinzufügen",
-    "paragraph": "Fülle das untenstehende Formular aus, um einen neuen Kunstwerkseintrag für die Plattform zu erstellen."
+    "paragraph": "Fülle das untenstehende Formular aus, um einen neuen Kunstwerkseintrag für die Plattform zu erstellen.",
+    "editTitle": "Kunstwerk bearbeiten",
+    "editParagraph": "Bearbeite die folgenden Angaben, um das bestehende Kunstwerk zu aktualisieren."
   },
   "import": {
     "open": "Kunstwerk importieren",

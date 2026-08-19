@@ -19,12 +19,6 @@ export default function DeletedArtworks() {
 
   const languageCode = i18n.language.startsWith("en") ? "en" : "de";
 
-  /*
-   * ------------------------------------------------------------------------
-   * Gelöschte Artworks laden
-   * ------------------------------------------------------------------------
-   */
-
   useEffect(() => {
     const loadDeletedArtworks = async () => {
       try {
@@ -37,29 +31,17 @@ export default function DeletedArtworks() {
       } catch (error) {
         console.error(error);
 
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Die gelöschten Artworks konnten nicht geladen werden."
-        );
+        setError(error instanceof Error ? error.message : t("deleted.error"));
       } finally {
         setIsLoading(false);
       }
     };
 
     loadDeletedArtworks();
-  }, [languageCode]);
-
-  /*
-   * ------------------------------------------------------------------------
-   * Artwork wiederherstellen
-   * ------------------------------------------------------------------------
-   */
+  }, [languageCode, t]);
 
   const handleRestore = async (artworkId: string) => {
-    const confirmed = window.confirm(
-      "Möchtest du dieses Artwork wirklich wiederherstellen?"
-    );
+    const confirmed = window.confirm(t("deleted.restoreConfirm"));
 
     if (!confirmed) return;
 
@@ -72,39 +54,21 @@ export default function DeletedArtworks() {
     } catch (error) {
       console.error(error);
 
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Das Artwork konnte nicht wiederhergestellt werden."
-      );
+      alert(error instanceof Error ? error.message : t("deleted.restoreError"));
     }
   };
 
-  /*
-   * ------------------------------------------------------------------------
-   * Loading
-   * ------------------------------------------------------------------------
-   */
-
   if (isLoading) {
-    return <p className="text-sm uppercase tracking-[0.2em]">Loading...</p>;
+    return (
+      <p className="text-sm uppercase tracking-[0.2em]">
+        {t("deleted.loading")}
+      </p>
+    );
   }
-
-  /*
-   * ------------------------------------------------------------------------
-   * Fehler
-   * ------------------------------------------------------------------------
-   */
 
   if (error) {
     return <p className="text-red-600">{error}</p>;
   }
-
-  /*
-   * ------------------------------------------------------------------------
-   * Keine Artworks
-   * ------------------------------------------------------------------------
-   */
 
   if (artworks.length === 0) {
     return <P>{t("deleted.notfound")}</P>;
@@ -115,7 +79,7 @@ export default function DeletedArtworks() {
       {artworks.map((artwork) => (
         <div
           key={artwork.id}
-          className="flex flex-col gap-4 border border-black px-8 py-4 uppercase tracking-[0.2em] sm:flex-row sm:items-center sm:justify-between"
+          className="flex flex-col gap-2 border border-black px-8 py-4 uppercase tracking-[0.2em] sm:flex-row sm:items-center sm:justify-between"
         >
           <div>
             <h3 className="font-medium">{artwork.title}</h3>
@@ -139,7 +103,7 @@ export default function DeletedArtworks() {
               onClick={() => handleRestore(artwork.id)}
               className="border border-green-600 px-4 py-2 text-sm uppercase tracking-[0.15em] text-green-600 transition-colors duration-300 hover:bg-green-600 hover:text-white"
             >
-              Restore
+              {t("deleted.restore")}
             </button>
           </div>
         </div>

@@ -1,6 +1,10 @@
 {
-  "title": "Neue:n Künstler:in hinzufügen",
-  "paragraph": "Erstelle einen neuen Eintrag für eine:n Künstler:in auf der Plattform.",
+  "hero": {
+    "title": "Neue:n Künstler:in hinzufügen",
+    "paragraph": "Erstelle einen neuen Eintrag für eine:n Künstler:in auf der Plattform.",
+    "editTitle": "Künstler:in bearbeiten",
+    "editParagraph": "Bearbeite die folgenden Angaben, um bestehende Künstler:innen zu aktualisieren."
+  },
   "form": {
     "language": "In welcher Sprache möchten Sie eine:n Künstler:in hinzufügen?",
     "languages": {

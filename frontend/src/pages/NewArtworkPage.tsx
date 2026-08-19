@@ -507,10 +507,8 @@ export default function NewArtworkPage() {
   return (
     <section className="space-y-10 py-8">
       <div className="space-y-8 border-b border-neutral-200 pt-12">
-        <H1>{t("hero.title")}</H1>
-
-        <P>{t("hero.paragraph")}</P>
-
+        <H1> {isEditMode ? t("hero.editTitle") : t("hero.title")} </H1>{" "}
+        <P> {isEditMode ? t("hero.editParagraph") : t("hero.paragraph")} </P>
         <br />
       </div>
 
