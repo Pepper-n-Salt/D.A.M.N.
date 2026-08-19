@@ -529,6 +529,8 @@ export const deleteExhibition = async (
     });
   }
 };
+
+// die soft deleteten Exhibtions für Superuser:innen anzeigen
 export const showDeletedExhibitions = async (
   req: Request<{ languageCode: string }>,
   res: Response
@@ -582,6 +584,8 @@ export const showDeletedExhibitions = async (
     });
   }
 };
+
+// eine Exhibition wiederherstellen (können nur Superuser:innen)
 export const restoreExhibition = async (
   req: Request<{ exhibitionId: string }>,
   res: Response
@@ -613,6 +617,43 @@ export const restoreExhibition = async (
 
     return res.status(500).json({
       msg: "Die Exhibition konnte nicht wiederhergestellt werden.",
+    });
+  }
+};
+
+export const setExhibitionScreen = async (
+  req: Request<{ exhibitionId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { exhibitionId, languageCode } = req.params;
+
+    const translation = await ExhibitionTranslation.findOne({
+      where: {
+        exhibitionId,
+        languageCode,
+        // isScreen: false,
+      },
+    });
+
+    if (!translation) {
+      return res.status(404).json({
+        message: "Die Exhibition Translation wurde nicht gefunden.",
+      });
+    }
+
+    translation.isScreen = true;
+
+    await translation.save();
+
+    return res.status(200).json({
+      msg: "Die Exhibition wurde als Screen markiert.",
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Diese Exhibition konnte nicht als Screen markiert werden.",
     });
   }
 };

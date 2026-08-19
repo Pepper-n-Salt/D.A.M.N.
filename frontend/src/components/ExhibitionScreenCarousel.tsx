@@ -45,19 +45,19 @@ export default function ExhibitionScreenCarousel({
           ))}
         </div>
       </div>
-      {screens.length > 3 && (
-        <div className="flex justify-between">
-          <Carouselbutton onClick={clickPrevious} disabled={startIndex === 0}>
-            ← Previous
-          </Carouselbutton>
-          <Carouselbutton
-            onClick={clickNext}
-            disabled={startIndex >= screens.length - 3}
-          >
-            Next →
-          </Carouselbutton>
-        </div>
-      )}
+      {/* {screens.length > 3 && ( */}
+      <div className="flex justify-between">
+        <Carouselbutton onClick={clickPrevious} disabled={startIndex === 0}>
+          ← Previous
+        </Carouselbutton>
+        <Carouselbutton
+          onClick={clickNext}
+          disabled={startIndex >= screens.length - 3}
+        >
+          Next →
+        </Carouselbutton>
+      </div>
+      {/* )} */}
     </>
   );
 }

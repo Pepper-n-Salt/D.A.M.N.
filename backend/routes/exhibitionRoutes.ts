@@ -11,6 +11,7 @@ import {
   archiveExhibition,
   deleteExhibition,
   restoreExhibition,
+  setExhibitionScreen,
 } from "../controllers/exhibitionController.js";
 
 import { validateBody, validateParams } from "../middleware/validate.js";
@@ -27,17 +28,7 @@ const router = express.Router();
 
 router.use(checkAuth);
 
-/*
- * --------------------------------------------------------------------------
- * GELÖSCHTE EXHIBITIONS
- * --------------------------------------------------------------------------
- *
- * Nur Super-User dürfen gelöschte Exhibitions sehen.
- *
- * Beispiel:
- * GET /exhibition/deleted/de
- */
-
+// Alle gelöschten Exhibitions abrufen (geht nur für SuperUser)
 router.get(
   "/deleted/:languageCode",
   requireSuperUser,
@@ -45,62 +36,38 @@ router.get(
   showDeletedExhibitions
 );
 
-/*
- * --------------------------------------------------------------------------
- * ALLE AKTUELLEN EXHIBITIONS
- * --------------------------------------------------------------------------
- */
-
+// Alle nicht gelöschten Exhibitions abrufen
 router.get(
   "/:languageCode",
   validateParams(exhibitionLanguageSchema),
   showAllExhibitions
 );
 
-/*
- * --------------------------------------------------------------------------
- * EINE EXHIBITION
- * --------------------------------------------------------------------------
- */
-
+// Nur eine einzelne Exhibtion abrufen
 router.get(
   "/:exhibitionId/:languageCode",
   validateParams(exhibitionIdLanguageParamsSchema),
   showOneExhibition
 );
 
-/*
- * --------------------------------------------------------------------------
- * NEUE EXHIBITION
- * --------------------------------------------------------------------------
- */
-
+// Eine neue Exhibtion anlegen
 router.post("/", validateBody(createExhibitionSchema), createExhibition);
 
-/*
- * --------------------------------------------------------------------------
- * ARCHIVIEREN
- * --------------------------------------------------------------------------
- */
-
+// Eine Exhibition archivieren
 router.patch(
   "/:exhibitionId/archive",
   validateParams(exhibitionIdSchema),
   archiveExhibition
 );
 
-/*
- * --------------------------------------------------------------------------
- * LÖSCHEN
- * --------------------------------------------------------------------------
- */
-
+// Eine Exhibition löschen (Soft Delete)
 router.patch(
   "/:exhibitionId/delete",
   validateParams(exhibitionIdSchema),
   deleteExhibition
 );
 
+// Eine Exhibtion wiederherstellen (geht nur für Superuser)
 router.patch(
   "/:exhibitionId/restore",
   requireSuperUser,
@@ -108,17 +75,19 @@ router.patch(
   restoreExhibition
 );
 
-/*
- * --------------------------------------------------------------------------
- * EXHIBITION BEARBEITEN
- * --------------------------------------------------------------------------
- */
-
+// Eine Exhibition aktualisieren / editieren
 router.patch(
   "/:exhibitionId/:languageCode",
   validateParams(exhibitionIdLanguageParamsSchema),
   validateBody(updateExhibitionSchema),
   updateExhibition
 );
+
+// Eine Exhibition als Screen markieren
+router.patch(
+  "/:exhibitionId/:languageCode/screen",
+  validateParams(exhibitionIdLanguageParamsSchema),
+  setExhibitionScreen
+); // hier noch weiterschreiben
 
 export default router;
