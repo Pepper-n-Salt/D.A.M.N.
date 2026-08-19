@@ -42,10 +42,6 @@ ArtistTranslation.init(
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    // slug: {
-    //   type: DataTypes.STRING(100),
-    //   allowNull: false,
-    // },
     aiGenerated: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -64,13 +60,6 @@ ArtistTranslation.init(
     tableName: "artist_translation",
     timestamps: false,
     underscored: true,
-    // indexes: [
-    //   {
-    //     unique: true,
-    //     name: "unique_artist_translation_slug_per_language",
-    //     fields: ["language_code", "slug"],
-    //   },
-    // ],
   }
 );
 

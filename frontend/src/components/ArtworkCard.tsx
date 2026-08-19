@@ -12,6 +12,9 @@ interface ArtworkCardProps {
 }
 
 export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
+  console.log("ArtworkCard:", artwork);
+  console.log("Artists:", artwork.artists);
+
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -69,7 +72,7 @@ export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
 
         {artwork.artists?.length > 0 && (
           <div className="space-y-1">
-            <p className="text-sm uppercase tracking-[0.15em]">Artists</p>
+            {/* <p className="text-sm uppercase tracking-[0.15em]">Artists</p> */}
 
             {artwork.artists.map((artist) => (
               <P key={artist.id}>

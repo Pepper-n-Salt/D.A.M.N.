@@ -99,6 +99,8 @@ export async function createArtwork(
       origin: formData.origin || null,
       material: formData.material || null,
       description: formData.description || null,
+
+      artists: formData.artists,
     }),
   });
 
@@ -202,6 +204,8 @@ export async function updateArtwork(
         origin: formData.origin || null,
         material: formData.material || null,
         description: formData.description || null,
+
+        artists: formData.artists,
       }),
     }
   );
