@@ -13,10 +13,20 @@
   "deleted": {
     "title": "Deleted Artists",
     "button": "Delete artist →",
-    "notfound": "No deleted artists found."
+    "notfound": "No deleted artists found.",
+    "restoreConfirm": "Do you really want to restore this artist?",
+    "restoreError": "The artist could not be restored.",
+    "loading": "Loading...",
+    "restore": "Restore"
   },
   "messages": {
     "loadError": "The artists could not be loaded.",
     "noItems": "No artists found."
+  },
+  "card": {
+    "createdBy": "Created by",
+    "delete": "Delete",
+    "deleteConfirm": "Do you really want to delete this artist? The German and English versions will be deleted together.",
+    "deleteError": "The artist could not be deleted."
   }
 }

@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import H3 from "./ui/typography/H3";
 import P from "./ui/typography/P";
 
@@ -11,13 +13,13 @@ interface ArtistCardProps {
 }
 
 export default function ArtistCard({ artist, onDeleted }: ArtistCardProps) {
+  const { t } = useTranslation("artists");
+
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const confirmed = window.confirm(
-      "Möchtest du diesen Artist wirklich löschen? Die deutsche und englische Version werden gemeinsam gelöscht."
-    );
+    const confirmed = window.confirm(t("card.deleteConfirm"));
 
     if (!confirmed) return;
 
@@ -31,11 +33,7 @@ export default function ArtistCard({ artist, onDeleted }: ArtistCardProps) {
     } catch (error) {
       console.error(error);
 
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Der Artist konnte nicht gelöscht werden."
-      );
+      alert(error instanceof Error ? error.message : t("card.deleteError"));
     }
   };
 
@@ -44,7 +42,6 @@ export default function ArtistCard({ artist, onDeleted }: ArtistCardProps) {
       to={`/landingpage/artists/${artist.id}`}
       className="group overflow-hidden border"
     >
-      {/* Hier jetzt das Bild aus Cloudinary */}
       {artist.fileUrl ? (
         <img
           src={artist.fileUrl}
@@ -72,7 +69,7 @@ export default function ArtistCard({ artist, onDeleted }: ArtistCardProps) {
         {artist.description && <P>{artist.description}</P>}
 
         <p className="text-sm text-gray-500">
-          Created by: {artist.createdByName}
+          {t("card.createdBy")}: {artist.createdByName}
         </p>
 
         <button
@@ -80,7 +77,7 @@ export default function ArtistCard({ artist, onDeleted }: ArtistCardProps) {
           onClick={handleDelete}
           className="mt-4 border border-red-600 px-4 py-2 text-sm uppercase tracking-[0.15em] text-red-600 transition-colors duration-300 hover:bg-red-600 hover:text-white"
         >
-          Delete
+          {t("card.delete")}
         </button>
       </div>
     </Link>

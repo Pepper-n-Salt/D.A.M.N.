@@ -22,5 +22,12 @@
   "messages": {
     "loadError": "The artworks could not be loaded.",
     "noItems": "No artworks found."
+  },
+  "card": {
+    "artists": "Artists",
+    "createdBy": "Created by",
+    "delete": "Delete",
+    "deleteConfirm": "Do you really want to delete this artwork? The German and English versions will be deleted together.",
+    "deleteError": "The artwork could not be deleted."
   }
 }

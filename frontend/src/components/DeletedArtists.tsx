@@ -45,9 +45,7 @@ export default function DeletedArtists() {
   }, [languageCode]);
 
   const handleRestore = async (artistId: string) => {
-    const confirmed = window.confirm(
-      "Möchtest du diesen Artist wirklich wiederherstellen?"
-    );
+    const confirmed = window.confirm(t("deleted.restoreConfirm"));
 
     if (!confirmed) return;
 
@@ -60,16 +58,16 @@ export default function DeletedArtists() {
     } catch (error) {
       console.error(error);
 
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Der Artist konnte nicht wiederhergestellt werden."
-      );
+      alert(error instanceof Error ? error.message : t("deleted.restoreError"));
     }
   };
 
   if (isLoading) {
-    return <p className="text-sm uppercase tracking-[0.2em]">Loading...</p>;
+    return (
+      <p className="text-sm uppercase tracking-[0.2em]">
+        {t("deleted.loading")}
+      </p>
+    );
   }
 
   if (error) {
@@ -108,7 +106,7 @@ export default function DeletedArtists() {
               onClick={() => handleRestore(artist.id)}
               className="border border-green-600 px-4 py-2 text-sm uppercase tracking-[0.15em] text-green-600 transition-colors duration-300 hover:bg-green-600 hover:text-white"
             >
-              Restore
+              {t("deleted.restore")}
             </button>
           </div>
         </div>
