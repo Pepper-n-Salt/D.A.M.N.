@@ -621,6 +621,7 @@ export const restoreExhibition = async (
   }
 };
 
+// Eine Exhibition als Screen markieren
 export const setExhibitionScreen = async (
   req: Request<{ exhibitionId: string; languageCode: string }>,
   res: Response
@@ -632,7 +633,7 @@ export const setExhibitionScreen = async (
       where: {
         exhibitionId,
         languageCode,
-        // isScreen: false,
+        // isScreen: false, // isScreen: true würde sonst auch, es wurde keine Exh. Translation gefunden ergeben. // wenn bereits isScreen: true ist, passiert einfach nichts :)
       },
     });
 
@@ -642,9 +643,9 @@ export const setExhibitionScreen = async (
       });
     }
 
-    translation.isScreen = true;
-
-    await translation.save();
+    await translation.update({
+      isScreen: true,
+    });
 
     return res.status(200).json({
       msg: "Die Exhibition wurde als Screen markiert.",
@@ -654,6 +655,43 @@ export const setExhibitionScreen = async (
 
     return res.status(500).json({
       msg: "Diese Exhibition konnte nicht als Screen markiert werden.",
+    });
+  }
+};
+
+// Umkehrroute: Exhibition aus Screens wieder entfernen
+export const removeExhibitionScreen = async (
+  req: Request<{ exhibitionId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { exhibitionId, languageCode } = req.params;
+
+    const translation = await ExhibitionTranslation.findOne({
+      where: {
+        exhibitionId,
+        languageCode,
+      },
+    });
+
+    if (!translation) {
+      return res.status(404).json({
+        msg: "Die Exhibition Translation wurde nicht gefunden.",
+      });
+    }
+
+    await translation.update({
+      isScreen: false,
+    });
+
+    return res.status(200).json({
+      msg: "Die Exhibition wurde nicht mehr als Screen markiert.",
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Die Exhibition konnte nicht als Screen entfernt werden.",
     });
   }
 };

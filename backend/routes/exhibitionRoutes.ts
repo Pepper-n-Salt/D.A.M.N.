@@ -12,6 +12,7 @@ import {
   deleteExhibition,
   restoreExhibition,
   setExhibitionScreen,
+  removeExhibitionScreen,
 } from "../controllers/exhibitionController.js";
 
 import { validateBody, validateParams } from "../middleware/validate.js";
@@ -88,6 +89,13 @@ router.patch(
   "/:exhibitionId/:languageCode/screen",
   validateParams(exhibitionIdLanguageParamsSchema),
   setExhibitionScreen
-); // hier noch weiterschreiben
+);
+
+// Eine Exhibition wieder als Screen entfernen
+router.patch(
+  "/:exhibitionId/:languageCode/unscreen",
+  validateParams(exhibitionIdLanguageParamsSchema),
+  removeExhibitionScreen
+);
 
 export default router;
