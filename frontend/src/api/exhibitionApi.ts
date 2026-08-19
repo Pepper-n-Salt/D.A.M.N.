@@ -208,6 +208,7 @@ export async function restoreExhibition(exhibitionId: string): Promise<void> {
   }
 }
 
+// eine Exhibition als Screen markieren
 export async function setExhibitionScreen(
   exhibitionId: string,
   languageCode: "de" | "en"
@@ -222,5 +223,25 @@ export async function setExhibitionScreen(
     throw new Error(
       data?.msg || "Die Exhibition konnte nicht als Screen markiert werden."
     );
+  }
+}
+
+// eine Exhibition von Screens entfernen
+export async function removeExhibitionScreen(
+  exhibitionId: string,
+  languageCode: "de" | "en"
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/exhibition/${exhibitionId}/${languageCode}/unscreen`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.msg || "Der Screen konnte nicht entfernt werden.");
   }
 }
