@@ -29,10 +29,10 @@ export default function Header() {
           // landingpage für eingeloggte user:innen
           <NavLink to="/landingpage" aria-label={t("header.goToLandingpage")}>
             <div className="leading-none">
-              <p className="-ml-1 text-6xl tracking-[0.02em]">
+              <p className="-ml-1.25 text-6xl tracking-[0.02em]">
                 {t("app.name")}
               </p>
-              <p className="mt-1 text-sm leading-loose">
+              <p className="mt-1 origin-left scale-x-[0.972] text-sm leading-loose">
                 {t("header.brandSubtitle")}
               </p>
             </div>
@@ -41,8 +41,10 @@ export default function Header() {
           // landingpage product
           // <div className="border-b border-gray-200 pb-6">
           <div className="leading-none">
-            <p className="-ml-1 text-6xl tracking-[0.02em]">{t("app.name")}</p>
-            <p className="mt-1 text-sm leading-loose">
+            <p className="-ml-1.25 text-6xl tracking-[0.02em]">
+              {t("app.name")}
+            </p>
+            <p className="mt-1 origin-left scale-x-[0.972] text-sm leading-loose">
               {t("header.brandSubtitle")}
             </p>
           </div>
