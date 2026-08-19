@@ -6,6 +6,7 @@ import {
   ArtworkArtistAssociation,
   User,
   Artist,
+  ArtistTranslation,
   Media,
 } from "../models";
 
@@ -35,7 +36,11 @@ import { processArtworkTranslation } from "../services/artworkMistralService.ts"
 const createArtworkResponse = (
   artwork: Artwork,
   translation: ArtworkTranslation | undefined,
-  artistIds: string[] = []
+  artists: {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+  }[] = []
 ) => {
   const artworkWithCreator = artwork as Artwork & {
     creator?: User;
@@ -69,7 +74,7 @@ const createArtworkResponse = (
     material: translation?.material,
     description: translation?.description,
 
-    artists: artistIds,
+    artists: artists,
 
     isScreen: translation?.isScreen,
   };
@@ -132,6 +137,15 @@ export const showAllArtworks = async (
             isDeleted: false,
           },
           required: false,
+          include: [
+            {
+              model: ArtistTranslation,
+              where: {
+                languageCode,
+              },
+              required: false,
+            },
+          ],
         },
       ],
     });
@@ -148,10 +162,22 @@ export const showAllArtworks = async (
         artists?: Artist[];
       };
 
-      const artistIds =
-        artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
+      // const artistIds =
+      //   artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
 
-      return createArtworkResponse(artwork, translation, artistIds);
+      const artists = artworkWithArtists.artists ?? [];
+
+      const artworkArtists = artists.map((artist) => {
+        const artistTranslation = artist.ArtistTranslations?.[0];
+
+        return {
+          id: artist.id,
+          firstName: artistTranslation?.firstName ?? null,
+          lastName: artistTranslation?.lastName ?? null,
+        };
+      });
+
+      return createArtworkResponse(artwork, translation, artworkArtists);
     });
 
     return res.status(200).json(result);
@@ -220,6 +246,15 @@ export const showOneArtwork = async (
             isDeleted: false,
           },
           required: false,
+          include: [
+            {
+              model: ArtistTranslation,
+              where: {
+                languageCode,
+              },
+              required: false,
+            },
+          ],
         },
       ],
     });
@@ -242,12 +277,24 @@ export const showOneArtwork = async (
       artists?: Artist[];
     };
 
-    const artistIds =
-      artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
+    // const artistIds =
+    //   artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
+
+    const artists = artworkWithArtists.artists ?? [];
+
+    const artworkArtists = artists.map((artist) => {
+      const artistTranslation = artist.ArtistTranslations?.[0];
+
+      return {
+        id: artist.id,
+        firstName: artistTranslation?.firstName ?? null,
+        lastName: artistTranslation?.lastName ?? null,
+      };
+    });
 
     return res
       .status(200)
-      .json(createArtworkResponse(singleArtwork, translation, artistIds));
+      .json(createArtworkResponse(singleArtwork, translation, artworkArtists));
   } catch (e) {
     console.error(e);
 
@@ -769,7 +816,7 @@ export const updateArtwork = async (
     return res
       .status(200)
       .json(
-        createArtworkResponse(artworkWithCreator, artworkTranslation, artistIds)
+        createArtworkResponse(artworkWithCreator, artworkTranslation, artists)
       );
   } catch (e) {
     await t.rollback();
@@ -874,6 +921,15 @@ export const showDeletedArtworks = async (
             isDeleted: false,
           },
           required: false,
+          include: [
+            {
+              model: ArtistTranslation,
+              where: {
+                languageCode,
+              },
+              required: false,
+            },
+          ],
         },
       ],
     });
@@ -885,10 +941,21 @@ export const showDeletedArtworks = async (
         artists?: Artist[];
       };
 
-      const artistIds =
-        artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
+      // const artistIds =
+      //   artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
+      const artists = artworkWithArtists.artists ?? [];
 
-      return createArtworkResponse(artwork, translation, artistIds);
+      const artworkArtists = artists.map((artist) => {
+        const artistTranslation = artist.ArtistTranslations?.[0];
+
+        return {
+          id: artist.id,
+          firstName: artistTranslation?.firstName ?? null,
+          lastName: artistTranslation?.lastName ?? null,
+        };
+      });
+
+      return createArtworkResponse(artwork, translation, artworkArtists);
     });
 
     return res.status(200).json(result);
