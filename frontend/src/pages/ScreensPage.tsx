@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import ScreenCarousel from "../components/ScreenCarousel";
+// import ScreenCarousel from "../components/ScreenCarousel";
 import { Link } from "react-router-dom";
 import Borderbutton from "../components/ui/buttons/Borderbutton";
 import H1 from "../components/ui/typography/H1";
