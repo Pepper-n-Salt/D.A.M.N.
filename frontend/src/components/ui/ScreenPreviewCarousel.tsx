@@ -19,17 +19,17 @@ export default function ScreenPreviewCarousel({ items }: CarouselProps) {
   const { t } = useTranslation();
   const [startIndex, setStartIndex] = useState(0);
 
-  const visibleItems = items.slice(startIndex, startIndex + 3);
+  const visibleItems = items.slice(startIndex, startIndex + 2);
 
-  const currentPage = Math.floor(startIndex / 3) + 1;
-  const totalPages = Math.ceil(items.length / 3);
+  const currentPage = Math.floor(startIndex / 2) + 1;
+  const totalPages = Math.ceil(items.length / 2);
 
   const clickPrevious = () => {
-    setStartIndex((prev) => Math.max(prev - 3, 0));
+    setStartIndex((prev) => Math.max(prev - 2, 0));
   };
 
   const clickNext = () => {
-    setStartIndex((prev) => Math.min(prev + 3, Math.max(items.length - 3, 0)));
+    setStartIndex((prev) => Math.min(prev + 2));
   };
 
   if (items.length === 0) {
@@ -39,7 +39,7 @@ export default function ScreenPreviewCarousel({ items }: CarouselProps) {
   return (
     <>
       <div className="space-y-8">
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-2">
           {visibleItems.map((item) => (
             <ScreenPreviewCard
               key={item.id}
@@ -62,7 +62,7 @@ export default function ScreenPreviewCarousel({ items }: CarouselProps) {
 
         <Carouselbutton
           onClick={clickNext}
-          disabled={startIndex >= items.length - 3}
+          disabled={startIndex >= items.length - 2}
         >
           {t("carousel.next")} →
         </Carouselbutton>

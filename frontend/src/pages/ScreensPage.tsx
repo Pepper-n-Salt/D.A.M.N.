@@ -70,6 +70,14 @@ export default function LandingPageScreens() {
         <P>{t("hero.paragraph")}</P>
       </div>
 
+      {/* Create new Screen */}
+      <section className="border-t border-neutral-200 pt-12 space-y-12">
+        <H2>{t("create.title")}</H2>
+        <Link to="/landingpage/screens/new">
+          <Borderbutton>{t("create.button")}</Borderbutton>
+        </Link>
+      </section>
+
       <section
         id="current-screens"
         className="border-t border-neutral-200 pt-12 space-y-12"
@@ -101,14 +109,6 @@ export default function LandingPageScreens() {
         {loading && <P>Loading ...</P>} {/* noch i18n */}
         {error && <P>{error}</P>}
         <ArtistScreenCarousel artists={artists} />
-      </section>
-
-      {/* Create new Screen */}
-      <section className="border-t border-neutral-200 pt-12 space-y-12">
-        <H2>{t("create.title")}</H2>
-        <Link to="/landingpage/screens/new">
-          <Borderbutton>{t("create.button")}</Borderbutton>
-        </Link>
       </section>
     </section>
   );
