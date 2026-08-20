@@ -299,7 +299,7 @@ export default function NewUserPage() {
                   placeholder={t("newUser.form.organisation")}
                 />
 
-                <P>{t("newUser.form.organisationHint")}</P>
+                {/* <P>{t("newUser.form.organisationHint")}</P> */}
               </div>
             ) : null}
 
