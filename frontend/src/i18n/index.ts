@@ -9,7 +9,7 @@ i18n.use(initReactI18next).init({
   // init() startet die Konfiguration mit den definierten Übersetzungen und Einstellungen.
   resources,
   // Legt die Standardsprache der Anwendung fest.
-  lng: "en",
+  lng: localStorage.getItem("language") || "en",
   fallbackLng: "de",
 
   // Definiert den Standard-Namespace, der verwendet wird, wenn kein Namespace angegeben wird. // festgelegte Schlüssel, lassen sich nicht umbenennen :(
