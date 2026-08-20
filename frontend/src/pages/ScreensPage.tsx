@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { getExhibitions } from "../api/exhibitionApi";
 import type { CreateExhibitionResponse } from "../api/exhibitionApi";
 
-// import ScreenCarousel from "../components/ScreenCarousel";
 import ExhibitionScreenCarousel from "../components/ExhibitionScreenCarousel";
 
 import Borderbutton from "../components/ui/buttons/Borderbutton";
@@ -51,8 +50,8 @@ export default function LandingPageScreens() {
   }, [languageCode]);
 
   return (
-    <section className="mx-auto space-y-20 py-20">
-      <div className="space-y-6">
+    <section className="space-y-20 py-8">
+      <div className="space-y-8">
         <H1>{t("hero.title")}</H1>
 
         <P>{t("hero.paragraph")}</P>

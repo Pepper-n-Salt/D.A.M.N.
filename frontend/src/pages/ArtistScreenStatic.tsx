@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { getArtist, type CreateArtistResponse } from "../api/artistApi";
+import { getPublicArtist, type CreateArtistResponse } from "../api/artistApi";
 
 export default function ArtistScreen() {
   const { t, i18n } = useTranslation("display");
@@ -20,14 +20,14 @@ export default function ArtistScreen() {
       return;
     }
 
-    const language = i18n.language.startsWith("de") ? "german" : "english";
+    const language = i18n.language.startsWith("de") ? "de" : "en";
 
     const loadArtist = async (artistId: string) => {
       try {
         setLoading(true);
         setError(false);
 
-        const data = await getArtist(artistId, language);
+        const data = await getPublicArtist(artistId, language);
 
         setArtist(data);
       } catch (err) {

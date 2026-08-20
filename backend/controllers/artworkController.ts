@@ -363,6 +363,98 @@ export const showOneArtwork = async (
   }
 };
 
+export const showPublicArtwork = async (
+  req: Request<{ artworkId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { artworkId, languageCode } = req.params;
+
+    const artwork = await Artwork.findOne({
+      where: {
+        id: artworkId,
+        isDeleted: false,
+      },
+
+      include: [
+        {
+          model: ArtworkTranslation,
+          where: {
+            languageCode,
+          },
+        },
+
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
+        },
+
+        {
+          model: Artist,
+          as: "artists",
+          through: {
+            attributes: [],
+          },
+          where: {
+            isDeleted: false,
+          },
+          required: false,
+
+          include: [
+            {
+              model: ArtistTranslation,
+              where: {
+                languageCode,
+              },
+              required: false,
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!artwork) {
+      return res.status(404).json({
+        msg: "Artwork nicht gefunden.",
+      });
+    }
+
+    const translation = artwork.ArtworkTranslations?.[0];
+
+    if (!translation) {
+      return res.status(404).json({
+        msg: "Die Übersetzung des Artworks wurde nicht gefunden.",
+      });
+    }
+
+    const artworkWithArtists = artwork as Artwork & {
+      artists?: Artist[];
+    };
+
+    const artists = artworkWithArtists.artists ?? [];
+
+    const artworkArtists = artists.map((artist) => {
+      const artistTranslation = artist.ArtistTranslations?.[0];
+
+      return {
+        id: artist.id,
+        firstName: artistTranslation?.firstName ?? null,
+        lastName: artistTranslation?.lastName ?? null,
+      };
+    });
+
+    return res
+      .status(200)
+      .json(createArtworkResponse(artwork, translation, artworkArtists));
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
+  }
+};
+
 /*
  * --------------------------------------------------------------------------
  * Neues Artwork erstellen

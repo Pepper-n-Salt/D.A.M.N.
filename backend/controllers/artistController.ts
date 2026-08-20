@@ -266,6 +266,78 @@ export const showOneArtist = async (
   }
 };
 
+// Artist ohne Auth für Screens anzeigen
+export const showPublicArtist = async (
+  req: Request<{ artistId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { artistId, languageCode } = req.params;
+
+    const artist = await Artist.findOne({
+      where: {
+        id: artistId,
+        isDeleted: false,
+      },
+
+      include: [
+        {
+          model: ArtistTranslation,
+          where: {
+            languageCode,
+          },
+        },
+
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
+        },
+      ],
+    });
+
+    if (!artist) {
+      return res.status(404).json({
+        msg: "Der Artist wurde nicht gefunden.",
+      });
+    }
+
+    const translation = artist.ArtistTranslations?.[0];
+
+    if (!translation) {
+      return res.status(404).json({
+        msg: "Die Übersetzung des Artists wurde nicht gefunden.",
+      });
+    }
+
+    return res.status(200).json({
+      id: artist.id,
+      imageId: artist.imageId,
+      fileUrl: artist.Medium?.fileUrl ?? null,
+
+      dateOfBirth: artist.dateOfBirth,
+      dateOfDeath: artist.dateOfDeath,
+
+      createdBy: artist.createdBy,
+      lastEditedBy: artist.lastEditedBy,
+
+      isDeleted: artist.isDeleted,
+
+      languageCode: translation.languageCode,
+      firstName: translation.firstName,
+      lastName: translation.lastName,
+      country: translation.country,
+      description: translation.description,
+      isScreen: translation.isScreen,
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
+  }
+};
+
 /*
  * --------------------------------------------------------------------------
  * Neuen Artist erstellen

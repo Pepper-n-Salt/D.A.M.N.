@@ -15,11 +15,13 @@ import artworkRoutes from "./routes/artworkRoutes.js";
 import artworkTranslationRoutes from "./routes/artworkTranslationRoutes.js";
 import artistRoutes from "./routes/artistRoutes.js";
 import artistTranslationRoutes from "./routes/artistTranslationRoutes.js";
-import metArtworkRoutes from "./routes/metArtworkRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import mediaRoutes from "./routes/mediaRoutes.js";
 import publicExhibitionRoutes from "./routes/publicExhibitionRoutes.js";
+import publicArtworkRoutes from "./routes/publicArtworkRoutes.js";
+import publicArtistRoutes from "./routes/publicArtistRoutes.js";
+
 import { setupChatWebSocket } from "./websocket/chatServer.js";
 
 const PORT = process.env.PORT || 3000;
@@ -38,19 +40,23 @@ app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Route Prefix + Routes einbinden
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/history", historyRoutes);
+
 app.use("/api/exhibition", publicExhibitionRoutes);
 app.use("/api/exhibition", exhibitionRoutes);
 app.use("/api/exhibitiontranslation", exhibitionTranslationRoutes);
 
+app.use("/api/artwork", publicArtworkRoutes);
 app.use("/api/artwork", artworkRoutes);
 app.use("/api/artworktranslation", artworkTranslationRoutes);
+
+app.use("/api/artist", publicArtistRoutes);
 app.use("/api/artist", artistRoutes);
 app.use("/api/artisttranslation", artistTranslationRoutes);
-app.use("/api/metartwork", metArtworkRoutes);
+
 app.use("/api/ai", aiRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/media", mediaRoutes);
