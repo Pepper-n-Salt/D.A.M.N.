@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import { useAuth } from "../context/AuthContext";
+
 import ArtworkCarousel from "../components/ArtworkCarousel";
 import DeletedArtworks from "../components/DeletedArtworks";
 
@@ -11,6 +13,9 @@ import Borderbutton from "../components/ui/buttons/Borderbutton";
 
 export default function ArtworksPage() {
   const { t } = useTranslation("artworks");
+  const { user } = useAuth();
+
+  const isSuperUser = user?.role === "super";
 
   return (
     <section className="space-y-20 py-8">
@@ -40,13 +45,15 @@ export default function ArtworksPage() {
         </Link>
       </section>
 
-      {/* DELETED */}
+      {/* DELETED - NUR SUPERUSER */}
 
-      <section className="space-y-12 border-t border-neutral-200 pt-12">
-        <H2>{t("deleted.title")}</H2>
+      {isSuperUser && (
+        <section className="space-y-12 border-t border-neutral-200 pt-12">
+          <H2>{t("deleted.title")}</H2>
 
-        <DeletedArtworks />
-      </section>
+          <DeletedArtworks />
+        </section>
+      )}
     </section>
   );
 }

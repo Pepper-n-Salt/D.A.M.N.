@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
-
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
 import DeletedExhibitions from "../components/DeletedExhibition";
 import ArchivedExhibitions from "../components/ArchivedExhibitions";
 import ExhibitionCarousel from "../components/ExhibitionCarousel";
@@ -11,6 +12,10 @@ import Borderbutton from "../components/ui/buttons/Borderbutton";
 
 export default function ExhibitionsPage() {
   const { t } = useTranslation("exhibitions");
+  const { user } = useAuth();
+
+  const isSuperUser = user?.role === "super";
+
   return (
     <section className="space-y-20 py-8">
       <div className="space-y-8">
@@ -37,11 +42,13 @@ export default function ExhibitionsPage() {
         <ArchivedExhibitions />
       </section>
 
-      <section className="border-t border-neutral-200 pt-12 space-y-12">
-        <H2>{t("deleted.title")}</H2>
+      {isSuperUser && (
+        <section className="border-t border-neutral-200 pt-12 space-y-12">
+          <H2>{t("deleted.title")}</H2>
 
-        <DeletedExhibitions />
-      </section>
+          <DeletedExhibitions />
+        </section>
+      )}
     </section>
   );
 }

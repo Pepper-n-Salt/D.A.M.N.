@@ -19,6 +19,11 @@ type UserListItem = {
   organisationId?: string;
 };
 
+type Organisation = {
+  id: string;
+  name: string;
+};
+
 export default function User() {
   const { t } = useTranslation("user");
   const navigate = useNavigate();
@@ -28,66 +33,190 @@ export default function User() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [organisationName, setOrganisationName] = useState("");
+
+  const [organisationId, setOrganisationId] = useState("");
+
+  const [organisations, setOrganisations] = useState<Organisation[]>([]);
+  const [loadingOrganisations, setLoadingOrganisations] = useState(false);
+
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
   const [users, setUsers] = useState<UserListItem[] | null>(null);
   const [loadingUsers, setLoadingUsers] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      setFirstName(user.firstName || "");
-      setLastName(user.lastName || "");
-      setEmail(user.email || "");
-      setOrganisationName("");
-    }
-  }, [user]);
+  const currentRole = user?.role || "user";
+
+  const isAdmin = currentRole === "admin" || currentRole === "super";
+  const isSuper = currentRole === "super";
+
+  /*
+  |--------------------------------------------------------------------------
+  | Eigene Userdaten laden
+  |--------------------------------------------------------------------------
+  */
 
   useEffect(() => {
-    const loadUsers = async () => {
-      const currentRole = user?.role;
-      if (currentRole !== "admin" && currentRole !== "super") return;
-      setLoadingUsers(true);
+    if (!user) {
+      return;
+    }
+
+    setFirstName(user.firstName || "");
+    setLastName(user.lastName || "");
+    setEmail(user.email || "");
+    setOrganisationId(user.organisationId || "");
+  }, [user]);
+
+  /*
+  |--------------------------------------------------------------------------
+  | Organisationen laden
+  |--------------------------------------------------------------------------
+  |
+  | NUR Superuser laden die komplette Organisationsliste.
+  |
+  | Dieser Endpoint bleibt bewusst:
+  | /api/organisation
+  |
+  */
+
+  useEffect(() => {
+    if (!isSuper) {
+      return;
+    }
+
+    const loadOrganisations = async () => {
+      setLoadingOrganisations(true);
+
       try {
-        const res = await fetch("/api/user", { credentials: "include" });
-        const data = await res.json();
-        if (!res.ok)
+        const response = await fetch("/api/organisation", {
+          credentials: "include",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.msg || t("account.form.organisationLoadError"));
+        }
+
+        setOrganisations(data.organisations || []);
+      } catch (err: unknown) {
+        console.error("Organisationen konnten nicht geladen werden:", err);
+
+        setError(
+          err instanceof Error
+            ? err.message
+            : t("account.form.organisationLoadError")
+        );
+      } finally {
+        setLoadingOrganisations(false);
+      }
+    };
+
+    loadOrganisations();
+  }, [isSuper, t]);
+
+  /*
+  |--------------------------------------------------------------------------
+  | User laden
+  |--------------------------------------------------------------------------
+  |
+  | Admin:
+  |   Backend liefert User der eigenen Organisation.
+  |
+  | Super:
+  |   Backend liefert ALLE User.
+  |
+  | User:
+  |   Kein Laden notwendig.
+  |
+  */
+
+  useEffect(() => {
+    if (!isAdmin) {
+      setUsers(null);
+      return;
+    }
+
+    const loadUsers = async () => {
+      setLoadingUsers(true);
+      setError(null);
+
+      try {
+        const response = await fetch("/api/user", {
+          credentials: "include",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
           throw new Error(data.msg || t("management.loadUsersError"));
+        }
+
         setUsers(data.users || []);
-      } catch (err: any) {
-        setError(err.message || t("management.loadUsersError"));
+      } catch (err: unknown) {
+        console.error("User konnten nicht geladen werden:", err);
+
+        setError(
+          err instanceof Error ? err.message : t("management.loadUsersError")
+        );
       } finally {
         setLoadingUsers(false);
       }
     };
 
     loadUsers();
-  }, [user]);
+  }, [isAdmin, t]);
+
+  /*
+  |--------------------------------------------------------------------------
+  | User löschen
+  |--------------------------------------------------------------------------
+  */
 
   const handleDelete = async (userIdToDelete: string) => {
-    if (!confirm(t("management.confirmDelete"))) return;
+    if (!confirm(t("management.confirmDelete"))) {
+      return;
+    }
+
     setError(null);
+    setMessage(null);
+
     try {
-      const res = await fetch(`/api/user/${userIdToDelete}`, {
+      const response = await fetch(`/api/user/${userIdToDelete}`, {
         method: "DELETE",
         credentials: "include",
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.msg || t("management.deleteError"));
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.msg || t("management.deleteError"));
+      }
+
       setUsers((prev) =>
         prev ? prev.filter((u) => u.id !== userIdToDelete) : prev
       );
+
       setMessage(data.msg || t("management.deleteSuccess"));
-    } catch (err: any) {
-      setError(err.message || t("management.deleteError"));
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : t("management.deleteError")
+      );
     }
   };
 
-  const currentRole = user?.role || "user";
+  /*
+  |--------------------------------------------------------------------------
+  | Account aktualisieren
+  |--------------------------------------------------------------------------
+  */
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!user) return;
+
+    if (!user) {
+      return;
+    }
 
     setError(null);
     setMessage(null);
@@ -102,48 +231,73 @@ export default function User() {
       body.password = password;
     }
 
-    if (currentRole === "admin" || currentRole === "super") {
-      body.organisationName = organisationName;
+    /*
+      NUR Superuser darf die Organisation ändern.
+    */
+
+    if (isSuper && organisationId) {
+      body.organisationId = organisationId;
     }
 
-    const response = await fetch(`/api/user/${user.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(body),
-    });
+    try {
+      const response = await fetch(`/api/user/${user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
 
-    const data = await response.json();
-    if (!response.ok) {
-      setError(data.msg || t("account.form.error"));
-      return;
-    }
+      const data = await response.json();
 
-    setMessage(t("account.form.success"));
-    if (data.user) {
-      login(data.user);
-      navigate("/landingpage/user");
+      if (!response.ok) {
+        setError(data.msg || t("account.form.error"));
+        return;
+      }
+
+      setMessage(t("account.form.success"));
+
+      if (data.user) {
+        login(data.user);
+        setPassword("");
+
+        navigate("/landingpage/user");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(t("account.form.error"));
     }
   };
 
   return (
     <section className="space-y-20">
+      {/* ---------------------------------------------------------------- */}
+      {/* Hero */}
+      {/* ---------------------------------------------------------------- */}
+
       <section className="space-y-12">
         <H1>{t("hero.title")}</H1>
 
         <P>{t("hero.subtitle")}</P>
       </section>
 
+      {/* ---------------------------------------------------------------- */}
+      {/* Account */}
+      {/* ---------------------------------------------------------------- */}
+
       <section className="border-t border-neutral-200 pt-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <H2>{t("account.title")}</H2>
           </div>
 
           <form
-            className="lg:col-span-8 max-w-md flex flex-col gap-8"
+            className="flex max-w-md flex-col gap-8 lg:col-span-8"
             onSubmit={handleSubmit}
           >
+            {/* First name */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="firstname"
@@ -151,6 +305,7 @@ export default function User() {
               >
                 {t("account.form.firstName")}
               </label>
+
               <input
                 value={firstName}
                 onChange={(event) => setFirstName(event.target.value)}
@@ -161,6 +316,8 @@ export default function User() {
               />
             </div>
 
+            {/* Last name */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="lastname"
@@ -168,6 +325,7 @@ export default function User() {
               >
                 {t("account.form.lastName")}
               </label>
+
               <input
                 value={lastName}
                 onChange={(event) => setLastName(event.target.value)}
@@ -178,6 +336,8 @@ export default function User() {
               />
             </div>
 
+            {/* Email */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="email"
@@ -185,6 +345,7 @@ export default function User() {
               >
                 {t("account.form.email")}
               </label>
+
               <input
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
@@ -195,24 +356,50 @@ export default function User() {
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="organisationName"
-                className="text-sm uppercase tracking-[0.2em]"
-              >
-                {t("account.form.organisation")}
-              </label>
-              <input
-                value={organisationName}
-                onChange={(event) => setOrganisationName(event.target.value)}
-                type="text"
-                id="organisationName"
-                name="organisationName"
-                disabled={!(currentRole === "admin" || currentRole === "super")}
-                placeholder={t("account.form.organisation")}
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
-              />
-            </div>
+            {/* ---------------------------------------------------------- */}
+            {/* Organisation                                               */}
+            {/* ---------------------------------------------------------- */}
+            {/*                                                             */}
+            {/* WICHTIG:                                                     */}
+            {/*                                                             */}
+            {/* Super = sichtbar                                            */}
+            {/* Admin = überhaupt nicht gerendert                           */}
+            {/* User  = überhaupt nicht gerendert                           */}
+            {/* ---------------------------------------------------------- */}
+
+            {isSuper && (
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="organisation"
+                  className="text-sm uppercase tracking-[0.2em]"
+                >
+                  {t("account.form.organisation")}
+                </label>
+
+                <select
+                  id="organisation"
+                  name="organisation"
+                  value={organisationId}
+                  onChange={(event) => setOrganisationId(event.target.value)}
+                  disabled={loadingOrganisations}
+                  className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2 disabled:opacity-40"
+                >
+                  <option value="">
+                    {loadingOrganisations
+                      ? t("account.form.organisationLoading")
+                      : t("account.form.organisationSelect")}
+                  </option>
+
+                  {organisations.map((organisation) => (
+                    <option key={organisation.id} value={organisation.id}>
+                      {organisation.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Password */}
 
             <div className="flex flex-col gap-2">
               <label
@@ -221,6 +408,7 @@ export default function User() {
               >
                 {t("account.form.password")}
               </label>
+
               <input
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
@@ -231,6 +419,8 @@ export default function User() {
               />
             </div>
 
+            {/* Role */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="role"
@@ -238,20 +428,26 @@ export default function User() {
               >
                 {t("account.form.role")}
               </label>
+
               <input
                 id="role"
                 value={currentRole}
                 disabled
-                className="border-b border-neutral-900 bg-neutral-100 py-3 outline-none focus:border-b-2"
+                className="border-b border-neutral-900 bg-neutral-100 py-3 outline-none"
               />
             </div>
 
-            {error ? <P></P> : null}
-            {message ? <P>{message}</P> : null}
+            {/* Messages */}
+
+            {error && <P>{error}</P>}
+
+            {message && <P>{message}</P>}
+
+            {/* Submit */}
 
             <button
               type="submit"
-              className="self-start mt-4 border border-black px-8 py-2.5 uppercase tracking-[0.25em] transition-colors duration-300 hover:bg-black hover:text-white"
+              className="mt-4 self-start border border-black px-8 py-2.5 uppercase tracking-[0.25em] transition-colors duration-300 hover:bg-black hover:text-white"
             >
               {t("account.form.submit")}
             </button>
@@ -259,59 +455,89 @@ export default function User() {
         </div>
       </section>
 
-      <section className="border-t border-neutral-200 pt-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          <div className="lg:col-span-4">
-            <H2>{t("management.title")}</H2>
-          </div>
+      {/* ---------------------------------------------------------------- */}
+      {/* User Management                                                  */}
+      {/* ---------------------------------------------------------------- */}
+      {/*                                                                 */}
+      {/* NUR ADMIN UND SUPER                                             */}
+      {/* User bekommt diesen kompletten Abschnitt NICHT.                 */}
+      {/* ---------------------------------------------------------------- */}
 
-          <div className="lg:col-span-8">
-            <H3>{t("management.heading")}</H3>
-            <br />
-            <P>{t("management.description")}</P>
-            <br />
-            <br />
-            {currentRole === "admin" || currentRole === "super" ? (
+      {isAdmin && (
+        <section className="border-t border-neutral-200 pt-12">
+          <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
+            <div className="lg:col-span-4">
+              <H2>{t("management.title")}</H2>
+            </div>
+
+            <div className="lg:col-span-8">
+              <H3>{t("management.heading")}</H3>
+
+              <br />
+
+              <P>{t("management.description")}</P>
+
+              <br />
+              <br />
+
+              {/* Create User */}
+
               <Borderbutton onClick={() => navigate("/landingpage/user/new")}>
                 {t("management.button")}
               </Borderbutton>
-            ) : (
-              <P>{t("management.noPermission")}</P>
-            )}
-            {(currentRole === "admin" || currentRole === "super") && (
+
+              {/* -------------------------------------------------------- */}
+              {/* User list                                                 */}
+              {/* -------------------------------------------------------- */}
+
               <div className="mt-8 space-y-4">
                 <H3>{t("management.usersListTitle")}</H3>
+
                 {loadingUsers ? (
                   <P>{t("management.loading")}</P>
-                ) : error ? (
-                  <P>{error}</P>
                 ) : users && users.length > 0 ? (
                   <div className="flex flex-col gap-3">
                     {users.map((u) => (
                       <div
                         key={u.id}
-                        className="flex items-center justify-between border p-3 rounded"
+                        className="flex items-center justify-between border border-neutral-900 p-4"
                       >
                         <div>
                           <div className="font-medium">
                             {u.firstName} {u.lastName}
                           </div>
+
                           <div className="text-sm text-neutral-600">
                             {u.email}
                           </div>
-                          <div className="text-xs uppercase tracking-[0.15em] mt-1">
+
+                          <div className="mt-1 text-xs uppercase tracking-[0.15em]">
                             {u.role}
                           </div>
+
+                          {/* ------------------------------------------------ */}
+                          {/* Organisation ID                                  */}
+                          {/* ------------------------------------------------ */}
+                          {/* Nur Superuser darf sie sehen.                   */}
+                          {/* Admin bekommt keinerlei Organisationsinfo.      */}
+                          {/* ------------------------------------------------ */}
+
+                          {isSuper && u.organisationId && (
+                            <div className="mt-2 text-xs text-neutral-500">
+                              Organisation: {u.organisationId}
+                            </div>
+                          )}
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleDelete(u.id)}
-                            className="px-3 py-1 bg-red-600 text-white rounded"
-                          >
-                            {t("management.delete")}
-                          </button>
-                        </div>
+                        {/* Delete */}
+
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(u.id)}
+                          className="border border-red-600 px-4 py-2 text-sm uppercase tracking-[0.15em] text-red-600 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                        >
+                          {t("management.delete")}
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -319,10 +545,10 @@ export default function User() {
                   <P>{t("management.noUsers")}</P>
                 )}
               </div>
-            )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </section>
   );
 }

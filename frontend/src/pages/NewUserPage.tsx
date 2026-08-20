@@ -19,11 +19,16 @@ export default function NewUserPage() {
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [role, setRole] = useState("user");
+
+  // Nur Superadmins dürfen eine Organisation festlegen.
+  // Es wird der Name eingegeben, nicht die ID.
   const [organisationName, setOrganisationName] = useState("");
+
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const currentRole = user?.role;
+
   const allowedRoles =
     currentRole === "super"
       ? ["admin", "user"]
@@ -33,11 +38,26 @@ export default function NewUserPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     setError(null);
     setSuccess(null);
 
     if (password !== repeatPassword) {
       setError(t("newUser.form.passwordMismatch"));
+      return;
+    }
+
+    /*
+     * Superadmin:
+     * - darf admin oder user erstellen
+     * - muss eine Organisation angeben
+     *
+     * Admin:
+     * - darf nur user erstellen
+     * - Organisation wird automatisch vom Backend übernommen
+     */
+    if (currentRole === "super" && !organisationName.trim()) {
+      setError(t("newUser.form.organisationRequired"));
       return;
     }
 
@@ -49,27 +69,48 @@ export default function NewUserPage() {
       userRole: role,
     };
 
-    if (currentRole === "super" && organisationName) {
-      body.organisationName = organisationName;
+    /*
+     * Nur der Superadmin sendet den Organisationsnamen.
+     *
+     * Der Admin sendet KEINE organisationId.
+     * Das Backend nimmt automatisch die organisationId
+     * des eingeloggten Admins.
+     */
+    if (currentRole === "super") {
+      body.organisationName = organisationName.trim();
     }
 
-    const response = await fetch("/api/user", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(body),
-    });
+    try {
+      const response = await fetch("/api/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
 
-    const data = await response.json();
-    if (!response.ok) {
-      setError(data.msg || t("newUser.form.error"));
-      return;
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.msg || t("newUser.form.error"));
+        return;
+      }
+
+      setSuccess(t("newUser.form.success"));
+
+      setTimeout(() => {
+        navigate("/landingpage/user");
+      }, 800);
+    } catch (err) {
+      console.error(err);
+      setError(t("newUser.form.error"));
     }
-
-    setSuccess(t("newUser.form.success"));
-    setTimeout(() => navigate("/landingpage/user"), 800);
   };
 
+  /*
+   * User dürfen diese Seite nicht zum Anlegen von Usern verwenden.
+   */
   if (allowedRoles.length === 0) {
     return (
       <section className="space-y-20 py-8">
@@ -83,21 +124,32 @@ export default function NewUserPage() {
 
   return (
     <section className="space-y-20 py-8">
+      {/* --------------------------------------------------------------- */}
+      {/* Hero */}
+      {/* --------------------------------------------------------------- */}
+
       <section className="space-y-8">
         <H1>{t("newUser.title")}</H1>
+
         <P>{t("newUser.paragraph")}</P>
       </section>
 
+      {/* --------------------------------------------------------------- */}
+      {/* User information */}
+      {/* --------------------------------------------------------------- */}
+
       <section className="border-t border-neutral-200 pt-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <H2>{t("newUser.userInformation")}</H2>
           </div>
 
           <form
-            className="lg:col-span-8 max-w-md flex flex-col gap-8"
+            className="flex max-w-md flex-col gap-8 lg:col-span-8"
             onSubmit={handleSubmit}
           >
+            {/* First name */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="firstname"
@@ -105,15 +157,20 @@ export default function NewUserPage() {
               >
                 {t("newUser.form.firstName")}
               </label>
+
               <input
                 value={firstName}
                 onChange={(event) => setFirstName(event.target.value)}
                 type="text"
                 id="firstname"
                 name="firstname"
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none"
+                required
+                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
               />
             </div>
+
+            {/* Last name */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="lastname"
@@ -121,15 +178,20 @@ export default function NewUserPage() {
               >
                 {t("newUser.form.lastName")}
               </label>
+
               <input
                 value={lastName}
                 onChange={(event) => setLastName(event.target.value)}
                 type="text"
                 id="lastname"
                 name="lastname"
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none"
+                required
+                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
               />
             </div>
+
+            {/* Email */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="email"
@@ -137,15 +199,20 @@ export default function NewUserPage() {
               >
                 {t("newUser.form.email")}
               </label>
+
               <input
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 type="email"
                 id="email"
                 name="email"
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none"
+                required
+                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
               />
             </div>
+
+            {/* Password */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="password"
@@ -153,15 +220,20 @@ export default function NewUserPage() {
               >
                 {t("newUser.form.password")}
               </label>
+
               <input
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 type="password"
                 id="password"
                 name="password"
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none"
+                required
+                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
               />
             </div>
+
+            {/* Repeat password */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="repeat-password"
@@ -169,15 +241,20 @@ export default function NewUserPage() {
               >
                 {t("newUser.form.repeatPassword")}
               </label>
+
               <input
                 value={repeatPassword}
                 onChange={(event) => setRepeatPassword(event.target.value)}
                 type="password"
                 id="repeat-password"
                 name="repeat-password"
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none"
+                required
+                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
               />
             </div>
+
+            {/* Role */}
+
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="role"
@@ -185,11 +262,13 @@ export default function NewUserPage() {
               >
                 {t("newUser.form.role")}
               </label>
+
               <select
                 id="role"
+                name="role"
                 value={role}
                 onChange={(event) => setRole(event.target.value)}
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none"
+                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
               >
                 {allowedRoles.map((option) => (
                   <option key={option} value={option}>
@@ -198,6 +277,8 @@ export default function NewUserPage() {
                 ))}
               </select>
             </div>
+
+            {/* Organisation */}
             {currentRole === "super" ? (
               <div className="flex flex-col gap-2">
                 <label
@@ -206,22 +287,33 @@ export default function NewUserPage() {
                 >
                   {t("newUser.form.organisation")}
                 </label>
+
                 <input
                   value={organisationName}
                   onChange={(event) => setOrganisationName(event.target.value)}
                   type="text"
                   id="organisationName"
                   name="organisationName"
-                  className="border-b border-neutral-900 bg-transparent py-3 outline-none"
+                  required
+                  className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
                   placeholder={t("newUser.form.organisation")}
                 />
+
+                <P>{t("newUser.form.organisationHint")}</P>
               </div>
             ) : null}
+
+            {/* Messages */}
+
             {error ? <P>{error}</P> : null}
+
             {success ? <P>{success}</P> : null}
+
+            {/* Submit */}
+
             <button
               type="submit"
-              className="self-start mt-4 border border-black px-8 py-3 uppercase tracking-[0.25em] text-sm transition-colors duration-300 hover:bg-black hover:text-white"
+              className="mt-4 self-start border border-black px-8 py-3 text-sm uppercase tracking-[0.25em] transition-colors duration-300 hover:bg-black hover:text-white"
             >
               {t("newUser.form.submit")}
             </button>
