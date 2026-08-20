@@ -36,6 +36,24 @@
   box-sizing: border-box;
 }
 
+:where(
+  a,
+  button,
+  input[type="button"],
+  input[type="checkbox"],
+  input[type="file"],
+  input[type="image"],
+  input[type="radio"],
+  input[type="reset"],
+  input[type="submit"],
+  select,
+  summary,
+  [onclick],
+  [role="button"]
+) {
+  cursor: pointer;
+}
+
 html,
 body,
 #root {
