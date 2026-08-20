@@ -1,12 +1,8 @@
-// import { useEffect, useState } from "react";
 import { useState } from "react";
-// import { useTranslation } from "react-i18next";
 
 import ArtworkCard from "./ArtworkCard";
 import Carouselbutton from "./ui/buttons/Carouselbutton";
 import P from "./ui/typography/P";
-
-// import { getArtworks, type ArtworkResponse } from "../api/artworkApi";
 
 import type { ArtworkResponse } from "../api/artworkApi";
 
@@ -19,60 +15,8 @@ export default function ArtworkCarousel({
   artworks,
   onDeleted,
 }: ArtworkCarouselProps) {
-  // const { i18n } = useTranslation("artworks");
-
-  // const [artworks, setArtworks] = useState<ArtworkResponse[]>([]);
-
   const [startIndex, setStartIndex] = useState(0);
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
 
-  // const languageCode = i18n.language.startsWith("en") ? "en" : "de";
-
-  // Artworks laden
-  // useEffect(() => {
-  //   const loadArtworks = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       setError(null);
-
-  //       const result = await getArtworks(languageCode);
-
-  //       setArtworks(result);
-  //       setStartIndex(0);
-  //     } catch (error) {
-  //       console.error(error);
-
-  //       setError(
-  //         error instanceof Error
-  //           ? error.message
-  //           : "Die Artworks konnten nicht geladen werden."
-  //       );
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   loadArtworks();
-  // }, [languageCode]);
-
-  // Artwork löschen
-  // const handleDeleted = (id: string) => {
-  //   setArtworks((previous) => {
-  //     const updatedArtworks = previous.filter((artwork) => artwork.id !== id);
-
-  //     setStartIndex((currentStartIndex) => {
-  //       const maxStartIndex = Math.max(
-  //         Math.floor((updatedArtworks.length - 1) / 3) * 3,
-  //         0
-  //       );
-
-  //       return Math.min(currentStartIndex, maxStartIndex);
-  //     });
-
-  //     return updatedArtworks;
-  //   });
-  // };
   const handleDeleted = (artwork: ArtworkResponse) => {
     onDeleted(artwork);
 
@@ -120,21 +64,6 @@ export default function ArtworkCarousel({
       return newIndex;
     });
   };
-
-  // Loading
-  // if (isLoading) {
-  //   return <p className="text-sm uppercase tracking-[0.2em]">Loading...</p>;
-  // }
-
-  /*
-   * ------------------------------------------------------------------------
-   * Fehler
-   * ------------------------------------------------------------------------
-   */
-
-  // if (error) {
-  //   return <p className="text-red-600">{error}</p>;
-  // }
 
   // Keine Artworks
   if (artworks.length === 0) {

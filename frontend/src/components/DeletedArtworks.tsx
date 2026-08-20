@@ -1,13 +1,8 @@
-// import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import P from "./ui/typography/P";
 
-import {
-  // getDeletedArtworks,
-  restoreArtwork,
-  type ArtworkResponse,
-} from "../api/artworkApi";
+import { restoreArtwork, type ArtworkResponse } from "../api/artworkApi";
 
 interface DeletedArtworksProps {
   artworks: ArtworkResponse[];
@@ -20,34 +15,6 @@ export default function DeletedArtworks({
 }: DeletedArtworksProps) {
   const { t } = useTranslation("artworks");
 
-  // const [artworks, setArtworks] = useState<ArtworkResponse[]>([]);
-
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
-
-  // const languageCode = i18n.language.startsWith("en") ? "en" : "de";
-
-  // useEffect(() => {
-  //   const loadDeletedArtworks = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       setError(null);
-
-  //       const result = await getDeletedArtworks(languageCode);
-
-  //       setArtworks(result);
-  //     } catch (error) {
-  //       console.error(error);
-
-  //       setError(error instanceof Error ? error.message : t("deleted.error"));
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   loadDeletedArtworks();
-  // }, [languageCode, t]);
-
   const handleRestore = async (artworkId: string) => {
     const confirmed = window.confirm(t("deleted.restoreConfirm"));
 
@@ -56,9 +23,6 @@ export default function DeletedArtworks({
     try {
       await restoreArtwork(artworkId);
 
-      // setArtworks((currentArtworks) =>
-      //   currentArtworks.filter((artwork) => artwork.id !== artworkId)
-      // );
       onRestore(artworkId);
     } catch (error) {
       console.error(error);
@@ -66,18 +30,6 @@ export default function DeletedArtworks({
       alert(error instanceof Error ? error.message : t("deleted.restoreError"));
     }
   };
-
-  // if (isLoading) {
-  //   return (
-  //     <p className="text-sm uppercase tracking-[0.2em]">
-  //       {t("deleted.loading")}
-  //     </p>
-  //   );
-  // }
-
-  // if (error) {
-  //   return <p className="text-red-600">{error}</p>;
-  // }
 
   if (artworks.length === 0) {
     return <P>{t("deleted.notfound")}</P>;
