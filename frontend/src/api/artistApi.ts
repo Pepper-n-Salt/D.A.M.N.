@@ -226,3 +226,45 @@ export async function restoreArtist(artistId: string): Promise<void> {
     );
   }
 }
+
+// einen Artist als Screen markieren
+export async function setArtistScreen(
+  artistId: string,
+  languageCode: "de" | "en"
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/artist/${artistId}/${languageCode}/screen`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.msg || "Der Artist konnte nicht als Screen markiert werden."
+    );
+  }
+}
+
+// einen Artist von Screens entfernen
+export async function removeArtistScreen(
+  artistId: string,
+  languageCode: "de" | "en"
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/artist/${artistId}/${languageCode}/unscreen`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.msg || "Der Screen konnte nicht entfernt werden.");
+  }
+}
