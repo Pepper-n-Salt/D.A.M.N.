@@ -26,6 +26,7 @@
         "show": "Künstler:in auswählen",
         "empty": "Keine Künstler:innen vorhanden."
       }
-    }
+    },
+    "createPuzzleScreen": "Puzzle Screen erstellen"
   }
 }

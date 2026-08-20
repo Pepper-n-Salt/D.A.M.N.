@@ -23,7 +23,8 @@ import LandingPage from "./pages/LandingPage";
 import ExhibitionScreenStatic from "./pages/ExhibitionScreenStatic";
 import ArtworkScreenStatic from "./pages/ArtworkScreenStatic";
 import ArtistScreenStatic from "./pages/ArtistScreenStatic";
-
+import ArtworkScreenPuzzle from "./pages/ArtworkScreenPuzzle";
+import ExhibitionScreenChat from "./pages/ExhibitionScreenChat";
 import ArtistsPage from "./pages/ArtistsPage";
 import NewArtistPage from "./pages/NewArtistPage";
 
@@ -206,6 +207,15 @@ function App() {
         <Route
           path="/display/static/artist/:id"
           element={<ArtistScreenStatic />}
+        />
+
+        <Route
+          path="/display/dynamic/puzzle/artwork/:id"
+          element={<ArtworkScreenPuzzle />}
+        />
+        <Route
+          path="/display/dynamic/chat/exhibition/:id"
+          element={<ExhibitionScreenChat />}
         />
 
         {/* =====================================================

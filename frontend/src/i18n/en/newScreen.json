@@ -26,6 +26,7 @@
         "show": "Select artist",
         "empty": "No artists available."
       }
-    }
+    },
+    "createPuzzleScreen": "create puzzle screen"
   }
 }

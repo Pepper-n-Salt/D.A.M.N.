@@ -111,8 +111,24 @@ export default function NewScreenPage() {
     } catch (e) {
       console.error(e);
 
-      setError(e instanceof Error ? e.message : t("newScreen.error")); // evtl. noch in i18n aufnehmen
+      setError(e instanceof Error ? e.message : t("newScreen.error"));
     }
+  };
+
+  const handleCreatePuzzleScreen = () => {
+    if (!selectedObjectId || selectedType !== "artwork") {
+      return;
+    }
+
+    navigate(`/display/dynamic/puzzle/artwork/${selectedObjectId}`);
+  };
+
+  const handleCreateChatScreen = () => {
+    if (!selectedObjectId || selectedType !== "exhibition") {
+      return;
+    }
+
+    navigate(`/display/dynamic/chat/exhibition/${selectedObjectId}`);
   };
 
   return (
@@ -241,13 +257,13 @@ export default function NewScreenPage() {
                         type="button"
                         onClick={() => setSelectedObjectId(exhibition.id)}
                         className={`
-                            w-full py-6 text-left transition
-                            ${
-                              isSelected
-                                ? "bg-neutral-100 px-6"
-                                : "hover:bg-neutral-50"
-                            }
-                          `}
+                          w-full py-6 text-left transition
+                          ${
+                            isSelected
+                              ? "bg-neutral-100 px-6"
+                              : "hover:bg-neutral-50"
+                          }
+                        `}
                       >
                         <p className="text-xl font-light">{exhibition.title}</p>
 
@@ -283,13 +299,13 @@ export default function NewScreenPage() {
                         type="button"
                         onClick={() => setSelectedObjectId(artwork.id)}
                         className={`
-                            w-full py-6 text-left transition
-                            ${
-                              isSelected
-                                ? "bg-neutral-100 px-6"
-                                : "hover:bg-neutral-50"
-                            }
-                          `}
+                          w-full py-6 text-left transition
+                          ${
+                            isSelected
+                              ? "bg-neutral-100 px-6"
+                              : "hover:bg-neutral-50"
+                          }
+                        `}
                       >
                         <p className="text-xl font-light">{artwork.title}</p>
 
@@ -327,13 +343,13 @@ export default function NewScreenPage() {
                         type="button"
                         onClick={() => setSelectedObjectId(artist.id)}
                         className={`
-                            w-full py-6 text-left transition
-                            ${
-                              isSelected
-                                ? "bg-neutral-100 px-6"
-                                : "hover:bg-neutral-50"
-                            }
-                          `}
+                          w-full py-6 text-left transition
+                          ${
+                            isSelected
+                              ? "bg-neutral-100 px-6"
+                              : "hover:bg-neutral-50"
+                          }
+                        `}
                       >
                         <p className="text-xl font-light">
                           {artist.firstName} {artist.lastName}
@@ -365,7 +381,7 @@ export default function NewScreenPage() {
             )}
 
             {selectedObjectId && (
-              <div className="border-t border-neutral-200 pt-8">
+              <div className="flex flex-wrap gap-4 border-t border-neutral-200 pt-8">
                 <button
                   type="button"
                   onClick={handleCreateStaticScreen}
@@ -373,6 +389,26 @@ export default function NewScreenPage() {
                 >
                   {t("newScreen.createStaticScreen")}
                 </button>
+
+                {selectedType === "artwork" && (
+                  <button
+                    type="button"
+                    onClick={handleCreatePuzzleScreen}
+                    className="border border-black px-6 py-3 text-sm uppercase tracking-[0.15em] transition-colors duration-300 hover:bg-black hover:text-white"
+                  >
+                    {t("newScreen.createPuzzleScreen")}
+                  </button>
+                )}
+
+                {selectedType === "exhibition" && (
+                  <button
+                    type="button"
+                    onClick={handleCreateChatScreen}
+                    className="border border-black px-6 py-3 text-sm uppercase tracking-[0.15em] transition-colors duration-300 hover:bg-black hover:text-white"
+                  >
+                    {t("newScreen.createChatScreen")}
+                  </button>
+                )}
               </div>
             )}
           </div>

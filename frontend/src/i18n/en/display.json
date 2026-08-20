@@ -1,20 +1,41 @@
 {
+  "loading": "Loading...",
+
+  "error": "An error occurred while loading.",
+
   "artwork": {
     "title": "The Starry Night",
     "subtitle": "De sterrennacht",
     "artist": "Vincent van Gogh",
     "by": "by",
     "yearLocation": "{{year}} in {{land}}",
-    "description": "Painted during Van Gogh's stay at the Saint-Paul-de-Mausole asylum in Saint-Rémy, this work depicts a dreamlike view from his window before sunrise."
+    "description": "Painted during Van Gogh's stay at the Saint-Paul-de-Mausole clinic in Saint-Rémy, this work shows a dreamlike view from his window before sunrise."
   },
+
   "artist": {
     "notFound": "Artist not found.",
-    "biography": "Vincent van Gogh was a Dutch Post-Impressionist painter whose expressive brushwork and vibrant colors transformed modern art."
+    "biography": "Vincent van Gogh was a Dutch Post-Impressionist painter whose expressive use of color and brushwork had a lasting influence on modern art."
   },
+
   "exhibition": {
     "title": "Van Gogh",
     "subtitle": "Light and Color",
-    "period": "15 April – 30 August 2026",
-    "description": "This exhibition presents a selection of works that highlight the evolution of Vincent van Gogh's artistic language."
+    "period": "April 15 – August 30, 2026",
+    "description": "This exhibition presents a selection of works highlighting the development of Vincent van Gogh's artistic language."
+  },
+
+  "puzzle": {
+    "solved": "Puzzle solved!",
+    "instruction": "Click on a puzzle piece and swap it with another piece to put everything in the right order."
+  },
+
+  "chat": {
+    "title": "Exhibition Chat",
+    "subtitle": "Share your thoughts about this exhibition with other visitors.",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "empty": "No messages yet. Start the conversation!",
+    "placeholder": "Write a message...",
+    "send": "Send"
   }
 }
