@@ -1023,3 +1023,105 @@ export const restoreArtwork = async (
     });
   }
 };
+
+// Artwork als Screen markieren
+export const setArtworkScreen = async (
+  req: Request<{ artworkId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { artworkId, languageCode } = req.params;
+
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const artwork = await findAccessibleArtwork(artworkId, req.user);
+
+    if (!artwork) {
+      return res.status(404).json({
+        msg: "Das Artwork wurde nicht gefunden oder du hast keinen Zugriff.",
+      });
+    }
+
+    const translation = await ArtworkTranslation.findOne({
+      where: {
+        artworkId,
+        languageCode,
+      },
+    });
+
+    if (!translation) {
+      return res.status(404).json({
+        message: "Die Artwork Translation wurde nicht gefunden.",
+      });
+    }
+
+    await translation.update({
+      isScreen: true,
+    });
+
+    return res.status(200).json({
+      msg: "Das Artwork wurde als Screen markiert.",
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Dieses Artwork konnte nicht als Screen markiert werden.",
+    });
+  }
+};
+
+// Artwork aus Screens entfernen
+export const removeArtworkScreen = async (
+  req: Request<{ artworkId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { artworkId, languageCode } = req.params;
+
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const artwork = await findAccessibleArtwork(artworkId, req.user);
+
+    if (!artwork) {
+      return res.status(404).json({
+        msg: "Das Artwork wurde nicht gefunden oder du hast keinen Zugriff.",
+      });
+    }
+
+    const translation = await ArtworkTranslation.findOne({
+      where: {
+        artworkId,
+        languageCode,
+      },
+    });
+
+    if (!translation) {
+      return res.status(404).json({
+        message: "Die Artwork Translation wurde nicht gefunden.",
+      });
+    }
+
+    await translation.update({
+      isScreen: false,
+    });
+
+    return res.status(200).json({
+      msg: "Das Artwork konnte vom Screen entfernt werden.",
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Das Artwork konnte nicht als Screen entfernt werden.",
+    });
+  }
+};
