@@ -33,8 +33,8 @@
     "material": "Material",
     "dimensions": "Dimensions",
     "description": "Description",
-    "image": "Upload Image",
-    "chooseImage": "Choose image",
+    "image": "Image",
+    "chooseImage": "Upload image",
     "thumbnail": "Thumbnail"
   },
   "actions": {

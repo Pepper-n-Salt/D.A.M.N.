@@ -66,9 +66,9 @@ export default function ArtworkCard({ artwork, onDeleted }: ArtworkCardProps) {
 
         {artwork.artists?.length > 0 && (
           <div className="space-y-1">
-            <p className="text-sm uppercase tracking-[0.15em]">
+            {/* <p className="text-sm uppercase tracking-[0.15em]">
               {t("card.artists")}
-            </p>
+            </p> */}
 
             {artwork.artists.map((artist) => (
               <P key={artist.id}>
