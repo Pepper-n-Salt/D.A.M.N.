@@ -1,92 +1,41 @@
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 import ArtworkCard from "./ArtworkCard";
 import Carouselbutton from "./ui/buttons/Carouselbutton";
 import P from "./ui/typography/P";
 
-import { getArtworks, type ArtworkResponse } from "../api/artworkApi";
+import type { ArtworkResponse } from "../api/artworkApi";
 
-export default function ArtworkCarousel() {
-  const { i18n } = useTranslation("artworks");
+interface ArtworkCarouselProps {
+  artworks: ArtworkResponse[];
+  onDeleted: (artwork: ArtworkResponse) => void;
+}
 
-  const [artworks, setArtworks] = useState<ArtworkResponse[]>([]);
-
+export default function ArtworkCarousel({
+  artworks,
+  onDeleted,
+}: ArtworkCarouselProps) {
   const [startIndex, setStartIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const languageCode = i18n.language.startsWith("en") ? "en" : "de";
+  const handleDeleted = (artwork: ArtworkResponse) => {
+    onDeleted(artwork);
 
-  /*
-   * ------------------------------------------------------------------------
-   * Artworks laden
-   * ------------------------------------------------------------------------
-   */
+    setStartIndex((currentStartIndex) => {
+      const remainingCount = artworks.length - 1;
 
-  useEffect(() => {
-    const loadArtworks = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+      const maxStartIndex = Math.max(
+        Math.floor((remainingCount - 1) / 3) * 3,
+        0
+      );
 
-        const result = await getArtworks(languageCode);
-
-        setArtworks(result);
-        setStartIndex(0);
-      } catch (error) {
-        console.error(error);
-
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Die Artworks konnten nicht geladen werden."
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadArtworks();
-  }, [languageCode]);
-
-  /*
-   * ------------------------------------------------------------------------
-   * Artwork löschen
-   * ------------------------------------------------------------------------
-   */
-
-  const handleDeleted = (id: string) => {
-    setArtworks((previous) => {
-      const updatedArtworks = previous.filter((artwork) => artwork.id !== id);
-
-      setStartIndex((currentStartIndex) => {
-        const maxStartIndex = Math.max(
-          Math.floor((updatedArtworks.length - 1) / 3) * 3,
-          0
-        );
-
-        return Math.min(currentStartIndex, maxStartIndex);
-      });
-
-      return updatedArtworks;
+      return Math.min(currentStartIndex, maxStartIndex);
     });
   };
 
-  /*
-   * ------------------------------------------------------------------------
-   * Sichtbare Artworks
-   * ------------------------------------------------------------------------
-   */
-
+  // Sichtbare Artworks
   const visibleArtworks = artworks.slice(startIndex, startIndex + 3);
 
-  /*
-   * ------------------------------------------------------------------------
-   * Scroll
-   * ------------------------------------------------------------------------
-   */
-
+  // Scroll
   const scrollToCurrentArtworks = () => {
     document.getElementById("current-artworks")?.scrollIntoView({
       behavior: "smooth",
@@ -94,12 +43,7 @@ export default function ArtworkCarousel() {
     });
   };
 
-  /*
-   * ------------------------------------------------------------------------
-   * Previous
-   * ------------------------------------------------------------------------
-   */
-
+  // Previous
   const handlePrevious = () => {
     setStartIndex((previous) => {
       const newIndex = Math.max(previous - 3, 0);
@@ -110,12 +54,7 @@ export default function ArtworkCarousel() {
     });
   };
 
-  /*
-   * ------------------------------------------------------------------------
-   * Next
-   * ------------------------------------------------------------------------
-   */
-
+  // Next
   const handleNext = () => {
     setStartIndex((previous) => {
       const newIndex = Math.min(previous + 3, Math.max(artworks.length - 3, 0));
@@ -126,42 +65,12 @@ export default function ArtworkCarousel() {
     });
   };
 
-  /*
-   * ------------------------------------------------------------------------
-   * Loading
-   * ------------------------------------------------------------------------
-   */
-
-  if (isLoading) {
-    return <p className="text-sm uppercase tracking-[0.2em]">Loading...</p>;
-  }
-
-  /*
-   * ------------------------------------------------------------------------
-   * Fehler
-   * ------------------------------------------------------------------------
-   */
-
-  if (error) {
-    return <p className="text-red-600">{error}</p>;
-  }
-
-  /*
-   * ------------------------------------------------------------------------
-   * Keine Artworks
-   * ------------------------------------------------------------------------
-   */
-
+  // Keine Artworks
   if (artworks.length === 0) {
     return <P>Keine Artworks gefunden.</P>;
   }
 
-  /*
-   * ------------------------------------------------------------------------
-   * Pagination
-   * ------------------------------------------------------------------------
-   */
-
+  // Pagination
   const currentPage = Math.floor(startIndex / 3) + 1;
   const totalPages = Math.ceil(artworks.length / 3);
 
@@ -172,7 +81,7 @@ export default function ArtworkCarousel() {
           <ArtworkCard
             key={artwork.id}
             artwork={artwork}
-            onDeleted={handleDeleted}
+            onDeleted={() => handleDeleted(artwork)}
           />
         ))}
       </div>
