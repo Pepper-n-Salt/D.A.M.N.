@@ -51,9 +51,7 @@ export type ArtworkResponse = {
   material: string | null;
   description: string | null;
 
-  /*
-   * Artists, die diesem Artwork zugeordnet sind
-   */
+  // Artists, die diesem Artwork zugeordnet sind
   artists: ArtworkArtist[];
   // artists: string[];
 
@@ -64,12 +62,7 @@ const languageToCode = (language: Language): "de" | "en" => {
   return language === "german" ? "de" : "en";
 };
 
-/*
- * --------------------------------------------------------------------------
- * Artwork erstellen
- * --------------------------------------------------------------------------
- */
-
+// Artwork erstellen
 export async function createArtwork(
   formData: ArtworkFormData,
   language: Language
@@ -115,12 +108,7 @@ export async function createArtwork(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Alle Artworks laden
- * --------------------------------------------------------------------------
- */
-
+// Alle Artworks laden
 export async function getArtworks(
   languageCode: "de" | "en"
 ): Promise<ArtworkResponse[]> {
@@ -138,12 +126,7 @@ export async function getArtworks(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Ein Artwork laden
- * --------------------------------------------------------------------------
- */
-
+// Ein Artwork laden
 export async function getArtwork(
   artworkId: string,
   language: Language
@@ -188,12 +171,7 @@ export async function getPublicArtwork(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Artwork aktualisieren
- * --------------------------------------------------------------------------
- */
-
+// Artwork aktualisieren
 export async function updateArtwork(
   artworkId: string,
   language: Language,
@@ -242,12 +220,7 @@ export async function updateArtwork(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Artwork löschen
- * --------------------------------------------------------------------------
- */
-
+// Artwork löschen
 export async function deleteArtwork(artworkId: string): Promise<void> {
   const response = await fetch(`${API_URL}/artwork/${artworkId}/delete`, {
     method: "PATCH",
@@ -261,12 +234,7 @@ export async function deleteArtwork(artworkId: string): Promise<void> {
   }
 }
 
-/*
- * --------------------------------------------------------------------------
- * Gelöschte Artworks laden
- * --------------------------------------------------------------------------
- */
-
+// Gelöschte Artworks laden
 export async function getDeletedArtworks(
   languageCode: "de" | "en"
 ): Promise<ArtworkResponse[]> {
@@ -286,12 +254,7 @@ export async function getDeletedArtworks(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Artwork wiederherstellen
- * --------------------------------------------------------------------------
- */
-
+// Artwork wiederherstellen
 export async function restoreArtwork(artworkId: string): Promise<void> {
   const response = await fetch(`${API_URL}/artwork/${artworkId}/restore`, {
     method: "PATCH",
