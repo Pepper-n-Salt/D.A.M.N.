@@ -19,7 +19,6 @@ import {
 } from "../api/artistApi";
 
 export default function ArtistsPage() {
- 
   const { user } = useAuth();
 
   const isSuperUser = user?.role === "super";
@@ -42,13 +41,17 @@ export default function ArtistsPage() {
         setIsLoading(true);
         setError(null);
 
-        const [current, deleted] = await Promise.all([
-          getArtists(languageCode),
-          getDeletedArtists(languageCode),
-        ]);
+        const current = await getArtists(languageCode);
 
         setArtists(current);
-        setDeletedArtists(deleted);
+
+        // Gelöschte Artists dürfen ausschließlich Superuser laden.
+        if (isSuperUser) {
+          const deleted = await getDeletedArtists(languageCode);
+          setDeletedArtists(deleted);
+        } else {
+          setDeletedArtists([]);
+        }
       } catch (error) {
         console.error(error);
 
@@ -63,7 +66,7 @@ export default function ArtistsPage() {
     };
 
     loadArtists();
-  }, [languageCode]);
+  }, [languageCode, isSuperUser]);
 
   const handleDeleted = (artist: CreateArtistResponse) => {
     setArtists((current) => current.filter((item) => item.id !== artist.id));
@@ -140,10 +143,9 @@ export default function ArtistsPage() {
         <section className="space-y-12 border-t border-neutral-200 pt-12">
           <H2>{t("deleted.title")}</H2>
 
-     
-
-        <DeletedArtists artists={deletedArtists} onRestore={handleRestore} />
-      </section>
+          <DeletedArtists artists={deletedArtists} onRestore={handleRestore} />
+        </section>
+      )}
     </section>
   );
 }

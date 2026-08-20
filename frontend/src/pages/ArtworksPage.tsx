@@ -19,7 +19,6 @@ import {
 } from "../api/artworkApi";
 
 export default function ArtworksPage() {
-  
   const { user } = useAuth();
 
   const isSuperUser = user?.role === "super";
@@ -39,13 +38,17 @@ export default function ArtworksPage() {
         setIsLoading(true);
         setError(null);
 
-        const [current, deleted] = await Promise.all([
-          getArtworks(languageCode),
-          getDeletedArtworks(languageCode),
-        ]);
+        const current = await getArtworks(languageCode);
 
         setArtworks(current);
-        setDeletedArtworks(deleted);
+
+        // Gelöschte Artworks dürfen ausschließlich Superuser laden.
+        if (isSuperUser) {
+          const deleted = await getDeletedArtworks(languageCode);
+          setDeletedArtworks(deleted);
+        } else {
+          setDeletedArtworks([]);
+        }
       } catch (error) {
         console.error(error);
 
@@ -60,7 +63,7 @@ export default function ArtworksPage() {
     };
 
     loadArtworks();
-  }, [languageCode]);
+  }, [languageCode, isSuperUser]);
 
   const handleDeleted = (artwork: ArtworkResponse) => {
     setArtworks((current) => current.filter((item) => item.id !== artwork.id));
@@ -136,9 +139,12 @@ export default function ArtworksPage() {
         <section className="space-y-12 border-t border-neutral-200 pt-12">
           <H2>{t("deleted.title")}</H2>
 
-
-        <DeletedArtworks artworks={deletedArtworks} onRestore={handleRestore} />
-      </section>
+          <DeletedArtworks
+            artworks={deletedArtworks}
+            onRestore={handleRestore}
+          />
+        </section>
+      )}
     </section>
   );
 }

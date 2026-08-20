@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+
 import { useAuth } from "../context/AuthContext";
 
 import DeletedExhibitions from "../components/DeletedExhibition";
@@ -19,7 +20,6 @@ import {
 } from "../api/exhibitionApi";
 
 export default function ExhibitionsPage() {
- 
   const { user } = useAuth();
 
   const isSuperUser = user?.role === "super";
@@ -44,13 +44,17 @@ export default function ExhibitionsPage() {
         setIsLoading(true);
         setError(null);
 
-        const [current, deleted] = await Promise.all([
-          getExhibitions(languageCode),
-          getDeletedExhibitions(languageCode),
-        ]);
+        const current = await getExhibitions(languageCode);
 
         setExhibitions(current);
-        setDeletedExhibitions(deleted);
+
+        // Gelöschte Exhibitions dürfen ausschließlich Superuser laden.
+        if (isSuperUser) {
+          const deleted = await getDeletedExhibitions(languageCode);
+          setDeletedExhibitions(deleted);
+        } else {
+          setDeletedExhibitions([]);
+        }
       } catch (error) {
         console.error(error);
 
@@ -65,7 +69,7 @@ export default function ExhibitionsPage() {
     };
 
     loadExhibitions();
-  }, [languageCode]);
+  }, [languageCode, isSuperUser]);
 
   const handleDeleted = (exhibition: CreateExhibitionResponse) => {
     setExhibitions((current) =>
@@ -149,12 +153,12 @@ export default function ExhibitionsPage() {
         <section className="border-t border-neutral-200 pt-12 space-y-12">
           <H2>{t("deleted.title")}</H2>
 
-       
-        <DeletedExhibitions
-          exhibitions={deletedExhibitions}
-          onRestore={handleRestore}
-        />
-      </section>
+          <DeletedExhibitions
+            exhibitions={deletedExhibitions}
+            onRestore={handleRestore}
+          />
+        </section>
+      )}
     </section>
   );
 }
