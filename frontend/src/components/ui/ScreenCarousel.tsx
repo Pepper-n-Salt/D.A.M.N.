@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import ScreenPreviewCard from "../ScreenPreviewCard";
 import Carouselbutton from "./buttons/Carouselbutton";
 import P from "./typography/P";
 
@@ -40,13 +41,11 @@ export default function ScreenCarousel({ items }: CarouselProps) {
       <div className="space-y-8">
         <div className="grid gap-4 lg:grid-cols-3">
           {visibleItems.map((item) => (
-            <div key={item.id}>
-              <iframe
-                src={item.uri}
-                title={item.title}
-                className="h-full min-h-[400px] w-full border-0"
-              />
-            </div>
+            <ScreenPreviewCard
+              key={item.id}
+              title={item.title}
+              uri={item.uri}
+            />
           ))}
         </div>
       </div>
