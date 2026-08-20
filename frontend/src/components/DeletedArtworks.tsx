@@ -1,44 +1,52 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import P from "./ui/typography/P";
 
 import {
-  getDeletedArtworks,
+  // getDeletedArtworks,
   restoreArtwork,
   type ArtworkResponse,
 } from "../api/artworkApi";
 
-export default function DeletedArtworks() {
-  const { i18n, t } = useTranslation("artworks");
+interface DeletedArtworksProps {
+  artworks: ArtworkResponse[];
+  onRestore: (artworkId: string) => void;
+}
 
-  const [artworks, setArtworks] = useState<ArtworkResponse[]>([]);
+export default function DeletedArtworks({
+  artworks,
+  onRestore,
+}: DeletedArtworksProps) {
+  const { t } = useTranslation("artworks");
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [artworks, setArtworks] = useState<ArtworkResponse[]>([]);
 
-  const languageCode = i18n.language.startsWith("en") ? "en" : "de";
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadDeletedArtworks = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+  // const languageCode = i18n.language.startsWith("en") ? "en" : "de";
 
-        const result = await getDeletedArtworks(languageCode);
+  // useEffect(() => {
+  //   const loadDeletedArtworks = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       setError(null);
 
-        setArtworks(result);
-      } catch (error) {
-        console.error(error);
+  //       const result = await getDeletedArtworks(languageCode);
 
-        setError(error instanceof Error ? error.message : t("deleted.error"));
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  //       setArtworks(result);
+  //     } catch (error) {
+  //       console.error(error);
 
-    loadDeletedArtworks();
-  }, [languageCode, t]);
+  //       setError(error instanceof Error ? error.message : t("deleted.error"));
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   loadDeletedArtworks();
+  // }, [languageCode, t]);
 
   const handleRestore = async (artworkId: string) => {
     const confirmed = window.confirm(t("deleted.restoreConfirm"));
@@ -48,9 +56,10 @@ export default function DeletedArtworks() {
     try {
       await restoreArtwork(artworkId);
 
-      setArtworks((currentArtworks) =>
-        currentArtworks.filter((artwork) => artwork.id !== artworkId)
-      );
+      // setArtworks((currentArtworks) =>
+      //   currentArtworks.filter((artwork) => artwork.id !== artworkId)
+      // );
+      onRestore(artworkId);
     } catch (error) {
       console.error(error);
 
@@ -58,17 +67,17 @@ export default function DeletedArtworks() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <p className="text-sm uppercase tracking-[0.2em]">
-        {t("deleted.loading")}
-      </p>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <p className="text-sm uppercase tracking-[0.2em]">
+  //       {t("deleted.loading")}
+  //     </p>
+  //   );
+  // }
 
-  if (error) {
-    return <p className="text-red-600">{error}</p>;
-  }
+  // if (error) {
+  //   return <p className="text-red-600">{error}</p>;
+  // }
 
   if (artworks.length === 0) {
     return <P>{t("deleted.notfound")}</P>;
