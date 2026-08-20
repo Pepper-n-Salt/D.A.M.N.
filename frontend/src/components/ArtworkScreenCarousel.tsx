@@ -1,4 +1,4 @@
-import ScreenCarousel from "./ui/ScreenCarousel";
+import ScreenPreviewCarousel from "./ui/ScreenPreviewCarousel";
 import type { ArtworkResponse } from "../api/artworkApi";
 
 interface ArtworkScreenCarouselProps {
@@ -16,5 +16,5 @@ export default function ArtworkScreenCarousel({
     uri: `/display/static/artwork/${artwork.id}`,
   }));
 
-  return <ScreenCarousel items={artworkItems} />;
+  return <ScreenPreviewCarousel items={artworkItems} />;
 }

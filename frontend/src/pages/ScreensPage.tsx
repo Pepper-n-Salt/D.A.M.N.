@@ -2,13 +2,16 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import { getExhibitions } from "../api/exhibitionApi";
-import type { CreateExhibitionResponse } from "../api/exhibitionApi";
-import { getArtworks } from "../api/artworkApi";
-import type { ArtworkResponse } from "../api/artworkApi";
+import {
+  getExhibitions,
+  type CreateExhibitionResponse,
+} from "../api/exhibitionApi";
+import { getArtworks, type ArtworkResponse } from "../api/artworkApi";
+import { getArtists, type CreateArtistResponse } from "../api/artistApi";
 
 import ExhibitionScreenCarousel from "../components/ExhibitionScreenCarousel";
 import ArtworkScreenCarousel from "../components/ArtworkScreenCarousel";
+import ArtistScreenCarousel from "../components/ArtistScreenCarousel";
 
 import Borderbutton from "../components/ui/buttons/Borderbutton";
 import H1 from "../components/ui/typography/H1";
@@ -22,6 +25,7 @@ export default function LandingPageScreens() {
     []
   );
   const [artworks, setArtworks] = useState<ArtworkResponse[]>([]);
+  const [artists, setArtists] = useState<CreateArtistResponse[]>([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +43,9 @@ export default function LandingPageScreens() {
 
         const artworkData = await getArtworks(languageCode);
         setArtworks(artworkData);
+
+        const artistData = await getArtists(languageCode);
+        setArtists(artistData);
       } catch (e) {
         console.error(e);
 
@@ -87,6 +94,13 @@ export default function LandingPageScreens() {
         {loading && <P>Loading ...</P>} {/* noch i18n */}
         {error && <P>{error}</P>}
         <ArtworkScreenCarousel artworks={artworks} />
+      </section>
+
+      <section className="border-t border-neutral-200 pt-12 space-y-12">
+        <H2>{t("current.artists")}</H2>
+        {loading && <P>Loading ...</P>} {/* noch i18n */}
+        {error && <P>{error}</P>}
+        <ArtistScreenCarousel artists={artists} />
       </section>
 
       {/* Create new Screen */}

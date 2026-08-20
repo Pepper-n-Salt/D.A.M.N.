@@ -15,7 +15,7 @@ interface CarouselProps {
   items: CarouselItem[];
 }
 
-export default function ScreenCarousel({ items }: CarouselProps) {
+export default function ScreenPreviewCarousel({ items }: CarouselProps) {
   const { t } = useTranslation();
   const [startIndex, setStartIndex] = useState(0);
 
