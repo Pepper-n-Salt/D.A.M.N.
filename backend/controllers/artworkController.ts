@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import type { Request, Response } from "express";
 
 import {
@@ -16,20 +17,53 @@ import { processArtworkTranslation } from "../services/artworkMistralService.ts"
 
 /*
  * --------------------------------------------------------------------------
- * Hilfsfunktion
+ * Hilfsfunktion:
+ * Artwork anhand der Organisation des Users suchen
  * --------------------------------------------------------------------------
  *
- * Erstellt aus einem Artwork + Translation die Response-Struktur.
+ * SUPER:
+ *   darf alle Artworks sehen.
  *
- * Die Artist-IDs werden aus der N:M-Association übernommen.
- * Dadurch bekommt das Frontend direkt:
- *
- * artists: ["artist-id-1", "artist-id-2"]
- *
- * Zusätzlich wird der Name des Erstellers aus dem geladenen Creator
- * zusammengesetzt:
- *
- * createdByName: "Max Mustermann"
+ * ADMIN / USER:
+ *   darf nur Artworks sehen, deren Creator derselben Organisation
+ *   angehört.
+ */
+
+const findAccessibleArtwork = async (
+  artworkId: string,
+  user: NonNullable<Request["user"]>,
+  transaction?: any
+) => {
+  const isSuper = user.role === "super";
+
+  return Artwork.findOne({
+    where: {
+      id: artworkId,
+      isDeleted: false,
+    },
+
+    include: [
+      {
+        model: User,
+        as: "creator",
+
+        ...(isSuper
+          ? {}
+          : {
+              where: {
+                organisationId: user.organisationId,
+              },
+            }),
+      },
+    ],
+
+    ...(transaction ? { transaction } : {}),
+  });
+};
+
+/*
+ * --------------------------------------------------------------------------
+ * Gemeinsame Response-Funktion
  * --------------------------------------------------------------------------
  */
 
@@ -74,7 +108,7 @@ const createArtworkResponse = (
     material: translation?.material,
     description: translation?.description,
 
-    artists: artists,
+    artists,
 
     isScreen: translation?.isScreen,
   };
@@ -84,6 +118,12 @@ const createArtworkResponse = (
  * --------------------------------------------------------------------------
  * Alle Artworks abrufen
  * --------------------------------------------------------------------------
+ *
+ * SUPER:
+ *   sieht alle Artworks.
+ *
+ * ADMIN / USER:
+ *   sehen nur Artworks der eigenen Organisation.
  */
 
 export const showAllArtworks = async (
@@ -93,15 +133,26 @@ export const showAllArtworks = async (
   try {
     const { languageCode } = req.params;
 
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const isSuper = req.user.role === "super";
+
+    if (!isSuper && !req.user.organisationId) {
+      return res.status(403).json({
+        msg: "Keine Organisation zugeordnet.",
+      });
+    }
+
     const artworks = await Artwork.findAll({
       where: {
         isDeleted: false,
       },
 
       include: [
-        /*
-         * Translation
-         */
         {
           model: ArtworkTranslation,
           where: {
@@ -109,24 +160,26 @@ export const showAllArtworks = async (
           },
         },
 
-        /*
-         * Creator
-         */
         {
           model: User,
           as: "creator",
-          attributes: ["id", "firstName", "lastName"],
+
+          ...(isSuper
+            ? {}
+            : {
+                where: {
+                  organisationId: req.user.organisationId,
+                },
+              }),
+
+          attributes: ["id", "firstName", "lastName", "organisationId"],
         },
+
         {
           model: Media,
           attributes: ["id", "fileUrl"],
         },
 
-        /*
-         * Artists
-         *
-         * Artwork <-> Artist ist eine N:M-Beziehung.
-         */
         {
           model: Artist,
           as: "artists",
@@ -137,6 +190,7 @@ export const showAllArtworks = async (
             isDeleted: false,
           },
           required: false,
+
           include: [
             {
               model: ArtistTranslation,
@@ -153,17 +207,9 @@ export const showAllArtworks = async (
     const result = artworks.map((artwork) => {
       const translation = artwork.ArtworkTranslations?.[0];
 
-      /*
-       * Die über die N:M-Association geladenen Artists auslesen.
-       *
-       * Sequelize hängt sie unter artwork.artists an.
-       */
       const artworkWithArtists = artwork as Artwork & {
         artists?: Artist[];
       };
-
-      // const artistIds =
-      //   artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
 
       const artists = artworkWithArtists.artists ?? [];
 
@@ -203,6 +249,20 @@ export const showOneArtwork = async (
   try {
     const { artworkId, languageCode } = req.params;
 
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const isSuper = req.user.role === "super";
+
+    if (!isSuper && !req.user.organisationId) {
+      return res.status(403).json({
+        msg: "Keine Organisation zugeordnet.",
+      });
+    }
+
     const singleArtwork = await Artwork.findOne({
       where: {
         id: artworkId,
@@ -210,9 +270,6 @@ export const showOneArtwork = async (
       },
 
       include: [
-        /*
-         * Translation
-         */
         {
           model: ArtworkTranslation,
           where: {
@@ -220,22 +277,26 @@ export const showOneArtwork = async (
           },
         },
 
-        /*
-         * Creator
-         */
         {
           model: User,
           as: "creator",
-          attributes: ["id", "firstName", "lastName"],
+
+          ...(isSuper
+            ? {}
+            : {
+                where: {
+                  organisationId: req.user.organisationId,
+                },
+              }),
+
+          attributes: ["id", "firstName", "lastName", "organisationId"],
         },
+
         {
           model: Media,
           attributes: ["id", "fileUrl"],
         },
 
-        /*
-         * Artists
-         */
         {
           model: Artist,
           as: "artists",
@@ -246,6 +307,7 @@ export const showOneArtwork = async (
             isDeleted: false,
           },
           required: false,
+
           include: [
             {
               model: ArtistTranslation,
@@ -261,7 +323,7 @@ export const showOneArtwork = async (
 
     if (!singleArtwork) {
       return res.status(404).json({
-        msg: "Artwork wurde nicht gefunden.",
+        msg: "Artwork wurde nicht gefunden oder du hast keinen Zugriff.",
       });
     }
 
@@ -276,9 +338,6 @@ export const showOneArtwork = async (
     const artworkWithArtists = singleArtwork as Artwork & {
       artists?: Artist[];
     };
-
-    // const artistIds =
-    //   artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
 
     const artists = artworkWithArtists.artists ?? [];
 
@@ -306,24 +365,18 @@ export const showOneArtwork = async (
 
 /*
  * --------------------------------------------------------------------------
- * Neues Artwork inklusive erster Übersetzung und Artists anlegen
- * --------------------------------------------------------------------------
- *
- * Ablauf:
- *
- * 1. Body lesen
- * 2. KI-Übersetzung validieren
- * 3. DB-Transaktion starten
- * 4. Artwork erstellen
- * 5. Translation erstellen
- * 6. Artist-Verknüpfungen erstellen
- * 7. Transaktion committen
- * 8. Artwork inklusive Creator zurückgeben
+ * Neues Artwork erstellen
  * --------------------------------------------------------------------------
  */
 
 export const createArtwork = async (req: Request, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
     const {
       year,
       country,
@@ -337,12 +390,6 @@ export const createArtwork = async (req: Request, res: Response) => {
       description,
       artists = [],
     } = req.body;
-
-    /*
-     * ----------------------------------------------------------------------
-     * KI-Übersetzung prüfen
-     * ----------------------------------------------------------------------
-     */
 
     const aiResult = await processArtworkTranslation({
       sourceLanguage: languageCode,
@@ -371,19 +418,9 @@ export const createArtwork = async (req: Request, res: Response) => {
       });
     }
 
-    /*
-     * ----------------------------------------------------------------------
-     * Transaktion starten
-     * ----------------------------------------------------------------------
-     */
-
     const t = await db.transaction();
 
     try {
-      /*
-       * Artwork erstellen
-       */
-
       const artwork = await Artwork.create(
         {
           id: crypto.randomUUID(),
@@ -392,8 +429,8 @@ export const createArtwork = async (req: Request, res: Response) => {
           dimensions,
           imageId,
 
-          createdBy: req.user!.id,
-          lastEditedBy: req.user!.id,
+          createdBy: req.user.id,
+          lastEditedBy: req.user.id,
 
           isDeleted: false,
         },
@@ -401,10 +438,6 @@ export const createArtwork = async (req: Request, res: Response) => {
           transaction: t,
         }
       );
-
-      /*
-       * Erste Translation erstellen
-       */
 
       const artworkTranslation = await ArtworkTranslation.create(
         {
@@ -427,26 +460,6 @@ export const createArtwork = async (req: Request, res: Response) => {
         }
       );
 
-      /*
-       * Artist-Verknüpfungen erstellen
-       *
-       * Beispiel:
-       *
-       * artists = [
-       *   "artist-uuid-1",
-       *   "artist-uuid-2"
-       * ]
-       *
-       * wird zu:
-       *
-       * artwork_artist_association
-       *
-       * artworkId | artistId
-       * ----------|----------
-       * artwork   | artist-1
-       * artwork   | artist-2
-       */
-
       if (artists.length > 0) {
         await ArtworkArtistAssociation.bulkCreate(
           artists.map((artistId: string) => ({
@@ -460,20 +473,7 @@ export const createArtwork = async (req: Request, res: Response) => {
         );
       }
 
-      /*
-       * Alles erfolgreich
-       */
-
       await t.commit();
-
-      /*
-       * --------------------------------------------------------------------
-       * Artwork inklusive Creator erneut laden
-       * --------------------------------------------------------------------
-       *
-       * Artwork.create() lädt die Association "creator" noch nicht.
-       * Deshalb laden wir das Artwork nach dem Commit erneut.
-       */
 
       const artworkWithCreator = await Artwork.findOne({
         where: {
@@ -484,7 +484,7 @@ export const createArtwork = async (req: Request, res: Response) => {
           {
             model: User,
             as: "creator",
-            attributes: ["id", "firstName", "lastName"],
+            attributes: ["id", "firstName", "lastName", "organisationId"],
           },
         ],
       });
@@ -494,10 +494,6 @@ export const createArtwork = async (req: Request, res: Response) => {
           msg: "Das erstellte Artwork konnte nicht erneut geladen werden.",
         });
       }
-
-      /*
-       * Response
-       */
 
       return res
         .status(201)
@@ -523,30 +519,7 @@ export const createArtwork = async (req: Request, res: Response) => {
 
 /*
  * --------------------------------------------------------------------------
- * Artwork und zugehörige Übersetzung aktualisieren
- * --------------------------------------------------------------------------
- *
- * Aktualisiert:
- *
- * - Artwork
- *   - year
- *   - dimensions
- *   - imageId
- *
- * - Translation
- *   - title
- *   - subtitle
- *   - country
- *   - origin
- *   - material
- *   - description
- *
- * - Artists
- *   - bestehende Verknüpfungen werden entfernt
- *   - neue Verknüpfungen werden angelegt
- *
- * Wenn "artists" nicht im Request vorhanden ist, bleiben die
- * bestehenden Artist-Verknüpfungen unverändert.
+ * Artwork und Übersetzung aktualisieren
  * --------------------------------------------------------------------------
  */
 
@@ -561,6 +534,14 @@ export const updateArtwork = async (
 
   try {
     const { artworkId, languageCode } = req.params;
+
+    if (!req.user) {
+      await t.rollback();
+
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
 
     const {
       year,
@@ -577,34 +558,15 @@ export const updateArtwork = async (
       artists,
     } = req.body;
 
-    /*
-     * ----------------------------------------------------------------------
-     * Artwork suchen
-     * ----------------------------------------------------------------------
-     */
-
-    const artwork = await Artwork.findOne({
-      where: {
-        id: artworkId,
-        isDeleted: false,
-      },
-
-      transaction: t,
-    });
+    const artwork = await findAccessibleArtwork(artworkId, req.user, t);
 
     if (!artwork) {
       await t.rollback();
 
       return res.status(404).json({
-        msg: "Das Artwork wurde nicht gefunden.",
+        msg: "Das Artwork wurde nicht gefunden oder du hast keinen Zugriff.",
       });
     }
-
-    /*
-     * ----------------------------------------------------------------------
-     * Translation suchen
-     * ----------------------------------------------------------------------
-     */
 
     const artworkTranslation = await ArtworkTranslation.findOne({
       where: {
@@ -623,23 +585,13 @@ export const updateArtwork = async (
       });
     }
 
-    /*
-     * ----------------------------------------------------------------------
-     * Artwork aktualisieren
-     * ----------------------------------------------------------------------
-     *
-     * Nur tatsächlich übergebene Werte verändern.
-     *
-     * Das ist besonders wichtig bei PATCH.
-     */
-
     const artworkUpdate: {
       year?: number;
       dimensions?: string | null;
       imageId?: string;
       lastEditedBy: string;
     } = {
-      lastEditedBy: req.user!.id,
+      lastEditedBy: req.user.id,
     };
 
     if (year !== undefined) {
@@ -657,12 +609,6 @@ export const updateArtwork = async (
     await artwork.update(artworkUpdate, {
       transaction: t,
     });
-
-    /*
-     * ----------------------------------------------------------------------
-     * Translation aktualisieren
-     * ----------------------------------------------------------------------
-     */
 
     const translationUpdate: {
       title?: string;
@@ -702,22 +648,11 @@ export const updateArtwork = async (
     });
 
     /*
-     * ----------------------------------------------------------------------
-     * Artists aktualisieren
-     * ----------------------------------------------------------------------
-     *
-     * Nur wenn "artists" tatsächlich im PATCH enthalten ist.
-     *
-     * Ein leeres Array bedeutet bewusst:
-     *
-     * "Alle Artists entfernen."
+     * Artists nur dann verändern, wenn "artists" tatsächlich
+     * im Request enthalten ist.
      */
 
     if (artists !== undefined) {
-      /*
-       * Bestehende Associations entfernen
-       */
-
       await ArtworkArtistAssociation.destroy({
         where: {
           artworkId,
@@ -725,10 +660,6 @@ export const updateArtwork = async (
 
         transaction: t,
       });
-
-      /*
-       * Neue Associations anlegen
-       */
 
       if (artists.length > 0) {
         await ArtworkArtistAssociation.bulkCreate(
@@ -744,25 +675,7 @@ export const updateArtwork = async (
       }
     }
 
-    /*
-     * ----------------------------------------------------------------------
-     * Transaktion committen
-     * ----------------------------------------------------------------------
-     */
-
     await t.commit();
-
-    /*
-     * ----------------------------------------------------------------------
-     * Artist-IDs für Response bestimmen
-     * ----------------------------------------------------------------------
-     *
-     * Wenn artists im Request vorhanden war, können wir diese direkt
-     * zurückgeben.
-     *
-     * Falls artists nicht übergeben wurde, laden wir die aktuellen
-     * Associations aus der DB.
-     */
 
     let artistIds: string[];
 
@@ -778,14 +691,6 @@ export const updateArtwork = async (
       artistIds = associations.map((association) => association.artistId);
     }
 
-    /*
-     * ----------------------------------------------------------------------
-     * Artwork inklusive Creator erneut laden
-     * ----------------------------------------------------------------------
-     *
-     * Dadurch steht createdByName auch nach einem PATCH zur Verfügung.
-     */
-
     const artworkWithCreator = await Artwork.findOne({
       where: {
         id: artworkId,
@@ -796,7 +701,7 @@ export const updateArtwork = async (
         {
           model: User,
           as: "creator",
-          attributes: ["id", "firstName", "lastName"],
+          attributes: ["id", "firstName", "lastName", "organisationId"],
         },
       ],
     });
@@ -806,12 +711,6 @@ export const updateArtwork = async (
         msg: "Das aktualisierte Artwork konnte nicht erneut geladen werden.",
       });
     }
-
-    /*
-     * ----------------------------------------------------------------------
-     * Response
-     * ----------------------------------------------------------------------
-     */
 
     return res
       .status(200)
@@ -831,7 +730,7 @@ export const updateArtwork = async (
 
 /*
  * --------------------------------------------------------------------------
- * Artwork per Soft Delete als gelöscht markieren
+ * Artwork per Soft Delete löschen
  * --------------------------------------------------------------------------
  */
 
@@ -842,22 +741,23 @@ export const deleteArtwork = async (
   try {
     const { artworkId } = req.params;
 
-    const artwork = await Artwork.findOne({
-      where: {
-        id: artworkId,
-        isDeleted: false,
-      },
-    });
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const artwork = await findAccessibleArtwork(artworkId, req.user);
 
     if (!artwork) {
       return res.status(404).json({
-        msg: "Das Artwork konnte nicht gefunden werden.",
+        msg: "Das Artwork konnte nicht gefunden werden oder du hast keinen Zugriff.",
       });
     }
 
     await artwork.update({
       isDeleted: true,
-      lastEditedBy: req.user!.id,
+      lastEditedBy: req.user.id,
     });
 
     return res.status(200).json(artwork);
@@ -872,8 +772,10 @@ export const deleteArtwork = async (
 
 /*
  * --------------------------------------------------------------------------
- * Gelöschte Artworks laden
+ * Gelöschte Artworks anzeigen
  * --------------------------------------------------------------------------
+ *
+ * NUR SUPERUSER
  */
 
 export const showDeletedArtworks = async (
@@ -881,6 +783,18 @@ export const showDeletedArtworks = async (
   res: Response
 ) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    if (req.user.role !== "super") {
+      return res.status(403).json({
+        msg: "Nur Superuser:innen haben Zugriff.",
+      });
+    }
+
     const { languageCode } = req.params;
 
     const artworks = await Artwork.findAll({
@@ -889,9 +803,6 @@ export const showDeletedArtworks = async (
       },
 
       include: [
-        /*
-         * Translation
-         */
         {
           model: ArtworkTranslation,
           where: {
@@ -899,18 +810,17 @@ export const showDeletedArtworks = async (
           },
         },
 
-        /*
-         * Creator
-         */
         {
           model: User,
           as: "creator",
-          attributes: ["id", "firstName", "lastName"],
+          attributes: ["id", "firstName", "lastName", "organisationId"],
         },
 
-        /*
-         * Artists
-         */
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
+        },
+
         {
           model: Artist,
           as: "artists",
@@ -921,6 +831,7 @@ export const showDeletedArtworks = async (
             isDeleted: false,
           },
           required: false,
+
           include: [
             {
               model: ArtistTranslation,
@@ -941,8 +852,6 @@ export const showDeletedArtworks = async (
         artists?: Artist[];
       };
 
-      // const artistIds =
-      //   artworkWithArtists.artists?.map((artist) => artist.id) ?? [];
       const artists = artworkWithArtists.artists ?? [];
 
       const artworkArtists = artists.map((artist) => {
@@ -972,6 +881,8 @@ export const showDeletedArtworks = async (
  * --------------------------------------------------------------------------
  * Artwork wiederherstellen
  * --------------------------------------------------------------------------
+ *
+ * NUR SUPERUSER
  */
 
 export const restoreArtwork = async (
@@ -979,6 +890,18 @@ export const restoreArtwork = async (
   res: Response
 ) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    if (req.user.role !== "super") {
+      return res.status(403).json({
+        msg: "Nur Superuser:innen dürfen Artworks wiederherstellen.",
+      });
+    }
+
     const { artworkId } = req.params;
 
     const artwork = await Artwork.findOne({
@@ -996,7 +919,7 @@ export const restoreArtwork = async (
 
     await artwork.update({
       isDeleted: false,
-      lastEditedBy: req.user!.id,
+      lastEditedBy: req.user.id,
     });
 
     return res.status(200).json(artwork);

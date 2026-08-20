@@ -5,7 +5,6 @@ import type { Request, Response } from "express";
 
 import User from "../models/User.js";
 import Organisation from "../models/Organisation.js";
-import Media from "../models/Media.js";
 
 const safeUserFields = [
   "id",
@@ -27,19 +26,36 @@ const sanitizeUser = (user: User) => {
   );
 };
 
-// getestet: klappt!
+/*
+|--------------------------------------------------------------------------
+| Alle User anzeigen
+|--------------------------------------------------------------------------
+*/
+
 export const showAllUsers = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ msg: "Nicht autorisiert." });
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
     }
+
     const organisationId = req.user.organisationId;
     const role = req.user.role;
 
     if (!organisationId && role !== "super") {
-      return res.status(401).json({ msg: "Nicht autorisiert." });
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
     }
 
+    /*
+     * Superadmin:
+     * sieht alle User aus allen Organisationen.
+     *
+     * Admin:
+     * sieht nur User seiner Organisation.
+     */
     const whereClause = role === "super" ? undefined : { organisationId };
 
     const users = await User.findAll({
@@ -47,14 +63,24 @@ export const showAllUsers = async (req: Request, res: Response) => {
       attributes: safeUserFields,
     });
 
-    return res.json({ users });
+    return res.json({
+      users,
+    });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ msg: "Server-Fehler." });
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
   }
 };
 
-// getestet: klappt!
+/*
+|--------------------------------------------------------------------------
+| Einzelnen User anzeigen
+|--------------------------------------------------------------------------
+*/
+
 export const showUser = async (
   req: Request<{ userId: string }>,
   res: Response
@@ -65,91 +91,180 @@ export const showUser = async (
     const { userId } = req.params;
 
     if (!organisationId && role !== "super") {
-      return res.status(401).json({ msg: "Nicht autorisiert." });
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
     }
 
-    const user = await User.findByPk(userId, { attributes: safeUserFields });
+    const user = await User.findByPk(userId, {
+      attributes: safeUserFields,
+    });
 
     if (!user || (role !== "super" && user.organisationId !== organisationId)) {
-      return res.status(403).json({ msg: "Zugriff verweigert." });
+      return res.status(403).json({
+        msg: "Zugriff verweigert.",
+      });
     }
 
-    return res.json({ user });
+    return res.json({
+      user,
+    });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ msg: "Server-Fehler." });
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
   }
 };
 
-// getestet: klappt
+/*
+|--------------------------------------------------------------------------
+| User erstellen
+|--------------------------------------------------------------------------
+|
+| SUPER:
+|   - darf Admins und User erstellen
+|   - gibt den Organisationsnamen an
+|   - Organisation wird gesucht oder neu angelegt
+|   - ID wird automatisch erzeugt
+|
+| ADMIN:
+|   - darf nur User erstellen
+|   - bekommt automatisch die eigene Organisation
+|
+*/
+
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const organisationId = req.user?.organisationId;
-    const role = req.user?.role;
-    const {
-      email,
-      password,
-      firstName,
-      lastName,
-      userRole,
-      organisationName: requestedOrganisationName,
-    } = req.body;
+    const currentOrganisationId = req.user?.organisationId;
+    const currentRole = req.user?.role;
 
-    if (role !== "admin" && role !== "super") {
-      return res.status(403).json({ msg: "Admin-Rechte erforderlich." });
+    const { email, password, firstName, lastName, userRole, organisationName } =
+      req.body;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Berechtigung
+    |--------------------------------------------------------------------------
+    */
+
+    if (currentRole !== "admin" && currentRole !== "super") {
+      return res.status(403).json({
+        msg: "Admin-Rechte erforderlich.",
+      });
     }
 
-    // übernimmt jetzt zod
-    // if (!email || !password || !firstName || !lastName) {
-    //   return res
-    //     .status(400)
-    //     .json({ msg: "Alle Felder müssen ausgefüllt sein." });
-    // }
+    /*
+    |--------------------------------------------------------------------------
+    | E-Mail prüfen
+    |--------------------------------------------------------------------------
+    */
 
     const existingUser = await User.findOne({
-      where: { email: email.toLowerCase() },
+      where: {
+        email: email.toLowerCase(),
+      },
     });
 
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ msg: "Diese E-Mail ist bereits vergeben." });
+      return res.status(400).json({
+        msg: "Diese E-Mail ist bereits vergeben.",
+      });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    /*
+    |--------------------------------------------------------------------------
+    | Rolle bestimmen
+    |--------------------------------------------------------------------------
+    */
 
-    // Rolle bestimmen
-    // super darf admin oder user erstellen.
-    // admin darf nur user erstellen.
-    const roleToCreate =
-      role === "super" && userRole === "admin" ? "admin" : "user";
+    let roleToCreate: "admin" | "user";
 
-    let createdOrganisationId = organisationId;
+    if (currentRole === "super") {
+      /*
+       * Superadmin darf Admin oder User erstellen.
+       */
+      roleToCreate = userRole === "admin" ? "admin" : "user";
+    } else {
+      /*
+       * Admin darf ausschließlich User erstellen.
+       */
+      roleToCreate = "user";
+    }
 
-    // Superadmin darf einen User für eine neue Organisation anlegen
-    if (role === "super" && requestedOrganisationName?.trim()) {
-      const organisationName = requestedOrganisationName.trim();
-      // create a tiny Media row so logo_id can be non-null (DB may enforce NOT NULL)
+    /*
+    |--------------------------------------------------------------------------
+    | Organisation bestimmen
+    |--------------------------------------------------------------------------
+    */
 
-      // const logoId = crypto.randomUUID();
-      // await Media.create({
-      //   id: logoId,
-      //   fileName: "auto",
-      //   mimeType: "image/png",
-      //   fileUrl: "",
-      // });
+    let createdOrganisationId: string | undefined;
 
+    if (currentRole === "super") {
+      /*
+       * Superadmin muss eine Organisation angeben.
+       */
+      if (!organisationName?.trim()) {
+        return res.status(400).json({
+          msg: "Eine Organisation muss angegeben werden.",
+        });
+      }
+
+      const trimmedOrganisationName = organisationName.trim();
+
+      /*
+       * Existiert die Organisation bereits?
+       *
+       * JA:
+       *   vorhandene Organisation + vorhandene ID verwenden.
+       *
+       * NEIN:
+       *   neue Organisation mit neuer UUID anlegen.
+       */
       const [organisation] = await Organisation.findOrCreate({
-        where: { name: organisationName },
+        where: {
+          name: trimmedOrganisationName,
+        },
         defaults: {
           id: crypto.randomUUID(),
-          name: organisationName,
-          // logoId,
+          name: trimmedOrganisationName,
         },
       });
 
       createdOrganisationId = organisation.id;
+    } else {
+      /*
+       * Admin:
+       *
+       * Die Organisation kommt ausschließlich
+       * aus dem eingeloggten Admin.
+       *
+       * Ein Wert aus dem Frontend wird nicht benötigt
+       * und kann die Organisation nicht verändern.
+       */
+      if (!currentOrganisationId) {
+        return res.status(400).json({
+          msg: "Dem Admin ist keine Organisation zugewiesen.",
+        });
+      }
+
+      createdOrganisationId = currentOrganisationId;
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Passwort
+    |--------------------------------------------------------------------------
+    */
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    /*
+    |--------------------------------------------------------------------------
+    | User erstellen
+    |--------------------------------------------------------------------------
+    */
 
     const newUser = await User.create({
       id: crypto.randomUUID(),
@@ -161,14 +276,24 @@ export const createUser = async (req: Request, res: Response) => {
       role: roleToCreate,
     });
 
-    return res.status(201).json({ user: sanitizeUser(newUser) });
+    return res.status(201).json({
+      user: sanitizeUser(newUser),
+    });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ msg: "Server-Fehler." });
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
   }
 };
 
-// getestet: klappt!
+/*
+|--------------------------------------------------------------------------
+| User aktualisieren
+|--------------------------------------------------------------------------
+*/
+
 export const updateUser = async (
   req: Request<{ userId: string }>,
   res: Response
@@ -180,24 +305,31 @@ export const updateUser = async (
     const { userId } = req.params;
 
     if (!currentUserId) {
-      return res.status(401).json({ msg: "Nicht autorisiert." });
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
     }
 
-    // allow super to operate across organisations
     if (role !== "super" && !organisationId) {
-      return res.status(401).json({ msg: "Nicht autorisiert." });
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
     }
 
     const user = await User.findByPk(userId);
 
     if (!user || (role !== "super" && user.organisationId !== organisationId)) {
-      return res.status(403).json({ msg: "Zugriff verweigert." });
+      return res.status(403).json({
+        msg: "Zugriff verweigert.",
+      });
     }
 
     const isSelf = currentUserId === userId;
 
     if (!isSelf && role !== "admin" && role !== "super") {
-      return res.status(403).json({ msg: "Admin-Rechte erforderlich." });
+      return res.status(403).json({
+        msg: "Admin-Rechte erforderlich.",
+      });
     }
 
     const {
@@ -208,6 +340,12 @@ export const updateUser = async (
       userRole,
       organisationName: requestedOrganisationName,
     } = req.body;
+
+    /*
+    |--------------------------------------------------------------------------
+    | E-Mail
+    |--------------------------------------------------------------------------
+    */
 
     if (email) {
       const normalizedEmail = email.toLowerCase();
@@ -227,65 +365,119 @@ export const updateUser = async (
       user.email = normalizedEmail;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Passwort
+    |--------------------------------------------------------------------------
+    */
+
     if (password) {
       user.password = await bcrypt.hash(password, 12);
     }
 
-    if (firstName) {
+    /*
+    |--------------------------------------------------------------------------
+    | Name
+    |--------------------------------------------------------------------------
+    */
+
+    if (firstName !== undefined) {
       user.firstName = firstName;
     }
 
-    if (lastName) {
+    if (lastName !== undefined) {
       user.lastName = lastName;
     }
 
-    if (requestedOrganisationName && (role === "admin" || role === "super")) {
-      if (isSelf || role === "super") {
-        const organisationName = requestedOrganisationName.trim();
-        const logoId = crypto.randomUUID();
-        await Media.create({
-          id: logoId,
-          fileName: "auto",
-          mimeType: "image/png",
-          fileUrl: "",
-        });
+    /*
+    |--------------------------------------------------------------------------
+    | Organisation
+    |--------------------------------------------------------------------------
+    |
+    | Nur Superadmins dürfen eine Organisation ändern.
+    |
+    | Hier bleibt die bestehende Logik mit dem
+    | Organisationsnamen erhalten.
+    |
+    */
 
-        const [organisation] = await Organisation.findOrCreate({
-          where: { name: organisationName },
-          defaults: {
-            id: crypto.randomUUID(),
-            name: organisationName,
-            logoId,
-          },
+    if (requestedOrganisationName !== undefined) {
+      if (role !== "super") {
+        return res.status(403).json({
+          msg: "Nur Superadmins dürfen die Organisation ändern.",
         });
-        user.organisationId = organisation.id;
       }
+
+      if (!requestedOrganisationName.trim()) {
+        return res.status(400).json({
+          msg: "Eine Organisation muss angegeben werden.",
+        });
+      }
+
+      const trimmedOrganisationName = requestedOrganisationName.trim();
+
+      const [organisation] = await Organisation.findOrCreate({
+        where: {
+          name: trimmedOrganisationName,
+        },
+        defaults: {
+          id: crypto.randomUUID(),
+          name: trimmedOrganisationName,
+        },
+      });
+
+      user.organisationId = organisation.id;
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Rolle
+    |--------------------------------------------------------------------------
+    */
 
     if (userRole) {
       if (isSelf) {
-        return res
-          .status(403)
-          .json({ msg: "Sie können Ihre eigene Rolle nicht ändern." });
+        return res.status(403).json({
+          msg: "Sie können Ihre eigene Rolle nicht ändern.",
+        });
       }
 
       if (role === "super") {
         user.role = userRole === "admin" ? "admin" : "user";
-      } else if (role === "admin" && userRole === "user") {
+      } else if (role === "admin") {
+        /*
+         * Admin darf nur User-Rollen vergeben.
+         */
+        if (userRole !== "user") {
+          return res.status(403).json({
+            msg: "Admins dürfen keine Admin-Rollen vergeben.",
+          });
+        }
+
         user.role = "user";
       }
     }
 
     await user.save();
 
-    return res.json({ user: sanitizeUser(user) });
+    return res.json({
+      user: sanitizeUser(user),
+    });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ msg: "Server-Fehler." });
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
   }
 };
 
-// getestet: klappt
+/*
+|--------------------------------------------------------------------------
+| User löschen
+|--------------------------------------------------------------------------
+*/
+
 export const deleteUser = async (
   req: Request<{ userId: string }>,
   res: Response
@@ -296,20 +488,29 @@ export const deleteUser = async (
     const { userId } = req.params;
 
     if (role !== "admin" && role !== "super") {
-      return res.status(403).json({ msg: "Admin-Rechte erforderlich." });
+      return res.status(403).json({
+        msg: "Admin-Rechte erforderlich.",
+      });
     }
 
     const user = await User.findByPk(userId);
 
     if (!user || (role !== "super" && user.organisationId !== organisationId)) {
-      return res.status(403).json({ msg: "Zugriff verweigert." });
+      return res.status(403).json({
+        msg: "Zugriff verweigert.",
+      });
     }
 
     await user.destroy();
 
-    return res.status(200).json({ msg: "Benutzer:in gelöscht." });
+    return res.status(200).json({
+      msg: "Benutzer:in gelöscht.",
+    });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ msg: "Server-Fehler." });
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
   }
 };

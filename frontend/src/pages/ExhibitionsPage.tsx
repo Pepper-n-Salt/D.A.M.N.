@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 import DeletedExhibitions from "../components/DeletedExhibition";
 import ArchivedExhibitions from "../components/ArchivedExhibitions";
@@ -18,6 +19,10 @@ import {
 } from "../api/exhibitionApi";
 
 export default function ExhibitionsPage() {
+ 
+  const { user } = useAuth();
+
+  const isSuperUser = user?.role === "super";
   const { t, i18n } = useTranslation("exhibitions");
 
   const [exhibitions, setExhibitions] = useState<CreateExhibitionResponse[]>(
@@ -140,9 +145,11 @@ export default function ExhibitionsPage() {
         <ArchivedExhibitions />
       </section>
 
-      <section className="border-t border-neutral-200 pt-12 space-y-12">
-        <H2>{t("deleted.title")}</H2>
+      {isSuperUser && (
+        <section className="border-t border-neutral-200 pt-12 space-y-12">
+          <H2>{t("deleted.title")}</H2>
 
+       
         <DeletedExhibitions
           exhibitions={deletedExhibitions}
           onRestore={handleRestore}

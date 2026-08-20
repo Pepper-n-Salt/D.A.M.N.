@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import { useAuth } from "../context/AuthContext";
+
 import ArtistCarousel from "../components/ArtistsCarousel";
 import DeletedArtists from "../components/DeletedArtists";
 
@@ -17,6 +19,10 @@ import {
 } from "../api/artistApi";
 
 export default function ArtistsPage() {
+ 
+  const { user } = useAuth();
+
+  const isSuperUser = user?.role === "super";
   const { t, i18n } = useTranslation("artists");
 
   const [artists, setArtists] = useState<CreateArtistResponse[]>([]);
@@ -128,8 +134,13 @@ export default function ArtistsPage() {
         </Link>
       </section>
 
-      <section className="space-y-12 border-t border-neutral-200 pt-12">
-        <H2>{t("deleted.title")}</H2>
+      {/* DELETED - NUR SUPERUSER */}
+
+      {isSuperUser && (
+        <section className="space-y-12 border-t border-neutral-200 pt-12">
+          <H2>{t("deleted.title")}</H2>
+
+     
 
         <DeletedArtists artists={deletedArtists} onRestore={handleRestore} />
       </section>

@@ -1,11 +1,69 @@
+import crypto from "node:crypto";
 import type { Request, Response } from "express";
+
 import { Artist, ArtistTranslation, User, Media } from "../models";
 import db from "../lib/db";
 import { processArtistTranslation } from "../services/artistMistralService.ts";
 
-// Alle Artists abrufen
-// Wird z. B. für das Select-/Suchfeld im Artwork-Formular verwendet
-// getestet: klappt!
+/*
+ * --------------------------------------------------------------------------
+ * Hilfsfunktion:
+ * Artist anhand der Organisation des Users suchen
+ * --------------------------------------------------------------------------
+ *
+ * SUPER:
+ *   darf alle Artists sehen.
+ *
+ * ADMIN / USER:
+ *   darf nur Artists sehen, deren Creator derselben Organisation angehört.
+ */
+
+const findAccessibleArtist = async (
+  artistId: string,
+  user: NonNullable<Request["user"]>,
+  transaction?: any
+) => {
+  const isSuper = user.role === "super";
+
+  return Artist.findOne({
+    where: {
+      id: artistId,
+      isDeleted: false,
+    },
+
+    include: [
+      {
+        model: User,
+        as: "creator",
+
+        ...(isSuper
+          ? {}
+          : {
+              where: {
+                organisationId: user.organisationId,
+              },
+            }),
+      },
+    ],
+
+    ...(transaction ? { transaction } : {}),
+  });
+};
+
+/*
+ * --------------------------------------------------------------------------
+ * Alle Artists abrufen
+ * --------------------------------------------------------------------------
+ *
+ * SUPER:
+ *   sieht alle Artists.
+ *
+ * ADMIN / USER:
+ *   sehen nur Artists der eigenen Organisation.
+ *
+ * Wird z. B. für das Select-/Suchfeld im Artwork-Formular verwendet.
+ */
+
 export const showAllArtists = async (
   req: Request<{ languageCode: string }>,
   res: Response
@@ -13,8 +71,25 @@ export const showAllArtists = async (
   try {
     const { languageCode } = req.params;
 
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const isSuper = req.user.role === "super";
+
+    if (!isSuper && !req.user.organisationId) {
+      return res.status(403).json({
+        msg: "Keine Organisation zugeordnet.",
+      });
+    }
+
     const artists = await Artist.findAll({
-      where: { isDeleted: false },
+      where: {
+        isDeleted: false,
+      },
+
       include: [
         {
           model: ArtistTranslation,
@@ -22,11 +97,22 @@ export const showAllArtists = async (
             languageCode,
           },
         },
+
         {
           model: User,
           as: "creator",
-          attributes: ["id", "firstName", "lastName"],
+
+          ...(isSuper
+            ? {}
+            : {
+                where: {
+                  organisationId: req.user.organisationId,
+                },
+              }),
+
+          attributes: ["id", "firstName", "lastName", "organisationId"],
         },
+
         {
           model: Media,
           attributes: ["id", "fileUrl"],
@@ -41,13 +127,18 @@ export const showAllArtists = async (
         id: artist.id,
         imageId: artist.imageId,
         fileUrl: artist.Medium?.fileUrl ?? null,
+
         dateOfBirth: artist.dateOfBirth,
         dateOfDeath: artist.dateOfDeath,
+
         createdBy: artist.createdBy,
+
         createdByName: artist.creator
           ? `${artist.creator.firstName} ${artist.creator.lastName}`
           : null,
+
         lastEditedBy: artist.lastEditedBy,
+
         isDeleted: artist.isDeleted,
 
         languageCode: translation?.languageCode,
@@ -55,7 +146,6 @@ export const showAllArtists = async (
         lastName: translation?.lastName,
         description: translation?.description,
         country: translation?.country,
-        // aiGenerated: translation?.aiGenerated,
         isScreen: translation?.isScreen,
       };
     });
@@ -70,8 +160,12 @@ export const showAllArtists = async (
   }
 };
 
-// Einzelnen nicht gelöschten Artist abrufen
-// getestet: klappt!
+/*
+ * --------------------------------------------------------------------------
+ * Einzelnen nicht gelöschten Artist abrufen
+ * --------------------------------------------------------------------------
+ */
+
 export const showOneArtist = async (
   req: Request<{ artistId: string; languageCode: string }>,
   res: Response
@@ -79,26 +173,59 @@ export const showOneArtist = async (
   try {
     const { artistId, languageCode } = req.params;
 
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const isSuper = req.user.role === "super";
+
+    if (!isSuper && !req.user.organisationId) {
+      return res.status(403).json({
+        msg: "Keine Organisation zugeordnet.",
+      });
+    }
+
     const artist = await Artist.findOne({
       where: {
         id: artistId,
         isDeleted: false,
       },
+
       include: [
         {
           model: ArtistTranslation,
-          where: { languageCode },
+          where: {
+            languageCode,
+          },
         },
+
         {
           model: Media,
           attributes: ["id", "fileUrl"],
+        },
+
+        {
+          model: User,
+          as: "creator",
+
+          ...(isSuper
+            ? {}
+            : {
+                where: {
+                  organisationId: req.user.organisationId,
+                },
+              }),
+
+          attributes: ["id", "firstName", "lastName", "organisationId"],
         },
       ],
     });
 
     if (!artist) {
       return res.status(404).json({
-        msg: "Der Artist wurde nicht gefunden.",
+        msg: "Der Artist wurde nicht gefunden oder du hast keinen Zugriff.",
       });
     }
 
@@ -114,10 +241,13 @@ export const showOneArtist = async (
       id: artist.id,
       imageId: artist.imageId,
       fileUrl: artist.Medium?.fileUrl ?? null,
+
       dateOfBirth: artist.dateOfBirth,
       dateOfDeath: artist.dateOfDeath,
+
       createdBy: artist.createdBy,
       lastEditedBy: artist.lastEditedBy,
+
       isDeleted: artist.isDeleted,
 
       languageCode: translation.languageCode,
@@ -125,7 +255,6 @@ export const showOneArtist = async (
       lastName: translation.lastName,
       country: translation.country,
       description: translation.description,
-      // aiGenerated: translation.aiGenerated,
       isScreen: translation.isScreen,
     });
   } catch (e) {
@@ -137,10 +266,20 @@ export const showOneArtist = async (
   }
 };
 
-// Neuen Artist als kompletten Datensatz, also inklusive der ersten "Translation", anlegen
-// getestet: klappt!
+/*
+ * --------------------------------------------------------------------------
+ * Neuen Artist erstellen
+ * --------------------------------------------------------------------------
+ */
+
 export const createArtist = async (req: Request, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
     const {
       languageCode,
       firstName,
@@ -186,8 +325,8 @@ export const createArtist = async (req: Request, res: Response) => {
           imageId,
           dateOfBirth,
           dateOfDeath,
-          createdBy: req.user!.id,
-          lastEditedBy: req.user!.id,
+          createdBy: req.user.id,
+          lastEditedBy: req.user.id,
           isDeleted: false,
         },
         {
@@ -201,7 +340,6 @@ export const createArtist = async (req: Request, res: Response) => {
           languageCode,
 
           firstName: aiResult.corrected.firstName,
-
           lastName: aiResult.corrected.lastName,
 
           country: aiResult.corrected.country ?? country,
@@ -228,13 +366,9 @@ export const createArtist = async (req: Request, res: Response) => {
         isDeleted: artist.isDeleted,
 
         languageCode: artistTranslation.languageCode,
-
         firstName: artistTranslation.firstName,
-
         lastName: artistTranslation.lastName,
-
         country: artistTranslation.country,
-
         description: artistTranslation.description,
       });
     } catch (e) {
@@ -253,15 +387,28 @@ export const createArtist = async (req: Request, res: Response) => {
   }
 };
 
-// Artist und die dazugehörige Übersetzung aktualisieren
-// getestet: klappt!
+/*
+ * --------------------------------------------------------------------------
+ * Artist aktualisieren
+ * --------------------------------------------------------------------------
+ */
+
 export const updateArtist = async (
   req: Request<{ artistId: string; languageCode: string }>,
   res: Response
 ) => {
   const t = await db.transaction();
+
   try {
     const { artistId, languageCode } = req.params;
+
+    if (!req.user) {
+      await t.rollback();
+
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
 
     const {
       firstName,
@@ -273,23 +420,16 @@ export const updateArtist = async (
       imageId,
     } = req.body;
 
-    const artist = await Artist.findOne({
-      where: {
-        id: artistId,
-        isDeleted: false,
-      },
-      transaction: t,
-    });
+    const artist = await findAccessibleArtist(artistId, req.user, t);
 
     if (!artist) {
       await t.rollback();
 
       return res.status(404).json({
-        msg: "Der Artist wurde nicht gefunden.",
+        msg: "Der Artist wurde nicht gefunden oder du hast keinen Zugriff.",
       });
     }
 
-    // languageCode ist Bestandteil des zusammengesetzten Primary Keys
     const artistTranslation = await ArtistTranslation.findOne({
       where: {
         artistId,
@@ -311,9 +451,11 @@ export const updateArtist = async (
         imageId,
         dateOfBirth,
         dateOfDeath,
-        lastEditedBy: req.user!.id,
+        lastEditedBy: req.user.id,
       },
-      { transaction: t }
+      {
+        transaction: t,
+      }
     );
 
     await artistTranslation.update(
@@ -323,7 +465,9 @@ export const updateArtist = async (
         country,
         description,
       },
-      { transaction: t }
+      {
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -333,8 +477,11 @@ export const updateArtist = async (
       imageId: artist.imageId,
       dateOfBirth: artist.dateOfBirth,
       dateOfDeath: artist.dateOfDeath,
+      createdBy: artist.createdBy,
       lastEditedBy: artist.lastEditedBy,
+      isDeleted: artist.isDeleted,
 
+      languageCode: artistTranslation.languageCode,
       firstName: artistTranslation.firstName,
       lastName: artistTranslation.lastName,
       country: artistTranslation.country,
@@ -351,8 +498,12 @@ export const updateArtist = async (
   }
 };
 
-// Artist per Soft Delete als gelöscht markieren
-// getestet: klappt!
+/*
+ * --------------------------------------------------------------------------
+ * Artist per Soft Delete löschen
+ * --------------------------------------------------------------------------
+ */
+
 export const deleteArtist = async (
   req: Request<{ artistId: string }>,
   res: Response
@@ -360,22 +511,23 @@ export const deleteArtist = async (
   try {
     const { artistId } = req.params;
 
-    const artist = await Artist.findOne({
-      where: {
-        id: artistId,
-        isDeleted: false,
-      },
-    });
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const artist = await findAccessibleArtist(artistId, req.user);
 
     if (!artist) {
       return res.status(404).json({
-        msg: "Der Artist konnte nicht gefunden werden.",
+        msg: "Der Artist konnte nicht gefunden werden oder du hast keinen Zugriff.",
       });
     }
 
     await artist.update({
       isDeleted: true,
-      lastEditedBy: req.user!.id,
+      lastEditedBy: req.user.id,
     });
 
     return res.status(200).json(artist);
@@ -388,15 +540,38 @@ export const deleteArtist = async (
   }
 };
 
+/*
+ * --------------------------------------------------------------------------
+ * Gelöschte Artists anzeigen
+ * --------------------------------------------------------------------------
+ *
+ * NUR SUPERUSER
+ */
+
 export const showDeletedArtists = async (
   req: Request<{ languageCode: string }>,
   res: Response
 ) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    if (req.user.role !== "super") {
+      return res.status(403).json({
+        msg: "Nur Superuser:innen haben Zugriff.",
+      });
+    }
+
     const { languageCode } = req.params;
 
     const artists = await Artist.findAll({
-      where: { isDeleted: true },
+      where: {
+        isDeleted: true,
+      },
+
       include: [
         {
           model: ArtistTranslation,
@@ -404,18 +579,39 @@ export const showDeletedArtists = async (
             languageCode,
           },
         },
+
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "firstName", "lastName", "organisationId"],
+        },
+
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
+        },
       ],
     });
+
     const result = artists.map((artist) => {
       const translation = artist.ArtistTranslations?.[0];
 
       return {
         id: artist.id,
         imageId: artist.imageId,
+        fileUrl: artist.Medium?.fileUrl ?? null,
+
         dateOfBirth: artist.dateOfBirth,
         dateOfDeath: artist.dateOfDeath,
+
         createdBy: artist.createdBy,
+
+        createdByName: artist.creator
+          ? `${artist.creator.firstName} ${artist.creator.lastName}`
+          : null,
+
         lastEditedBy: artist.lastEditedBy,
+
         isDeleted: artist.isDeleted,
 
         languageCode: translation?.languageCode,
@@ -423,7 +619,6 @@ export const showDeletedArtists = async (
         lastName: translation?.lastName,
         description: translation?.description,
         country: translation?.country,
-        // aiGenerated: translation?.aiGenerated,
         isScreen: translation?.isScreen,
       };
     });
@@ -437,11 +632,32 @@ export const showDeletedArtists = async (
     });
   }
 };
+
+/*
+ * --------------------------------------------------------------------------
+ * Artist wiederherstellen
+ * --------------------------------------------------------------------------
+ *
+ * NUR SUPERUSER
+ */
+
 export const restoreArtist = async (
   req: Request<{ artistId: string }>,
   res: Response
 ) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    if (req.user.role !== "super") {
+      return res.status(403).json({
+        msg: "Nur Superuser:innen dürfen Artists wiederherstellen.",
+      });
+    }
+
     const { artistId } = req.params;
 
     const artist = await Artist.findOne({
@@ -459,7 +675,7 @@ export const restoreArtist = async (
 
     await artist.update({
       isDeleted: false,
-      lastEditedBy: req.user!.id,
+      lastEditedBy: req.user.id,
     });
 
     return res.status(200).json(artist);
