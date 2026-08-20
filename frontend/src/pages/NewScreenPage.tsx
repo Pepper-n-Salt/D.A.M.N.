@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import H1 from "../components/ui/typography/H1";
@@ -21,7 +21,7 @@ type ScreenType = "exhibition" | "artwork" | "artist";
 
 export default function NewScreenPage() {
   const { i18n, t } = useTranslation("newScreen");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [selectedType, setSelectedType] = useState<ScreenType | null>(null);
 
@@ -107,7 +107,12 @@ export default function NewScreenPage() {
         await setExhibitionScreen(selectedObjectId, languageCode);
       }
 
-      navigate(`/display/static/${selectedType}/${selectedObjectId}`);
+      // navigate(`/display/static/${selectedType}/${selectedObjectId}`);
+      window.open(
+        `/display/static/${selectedType}/${selectedObjectId}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
     } catch (e) {
       console.error(e);
 

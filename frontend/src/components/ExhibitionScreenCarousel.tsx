@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import ScreenPreviewCard from "./ScreenPreviewCard";
 import Carouselbutton from "./ui/buttons/Carouselbutton";
@@ -12,6 +13,8 @@ interface ExhibitionScreenCarouselProps {
 export default function ExhibitionScreenCarousel({
   exhibitions,
 }: ExhibitionScreenCarouselProps) {
+  const { t } = useTranslation();
+
   const screens = exhibitions.filter((exh) => {
     return exh.isScreen === true;
   });
@@ -35,7 +38,7 @@ export default function ExhibitionScreenCarousel({
   return (
     <>
       <div className="space-y-8">
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-4">
           {visibleScreens.map((exh) => (
             <ScreenPreviewCard
               key={exh.id}
@@ -48,13 +51,13 @@ export default function ExhibitionScreenCarousel({
       {/* {screens.length > 3 && ( */}
       <div className="flex justify-between">
         <Carouselbutton onClick={clickPrevious} disabled={startIndex === 0}>
-          ← Previous
+          ← {t("carousel.previous")}
         </Carouselbutton>
         <Carouselbutton
           onClick={clickNext}
           disabled={startIndex >= screens.length - 3}
         >
-          Next →
+          {t("carousel.next")} →
         </Carouselbutton>
       </div>
       {/* )} */}

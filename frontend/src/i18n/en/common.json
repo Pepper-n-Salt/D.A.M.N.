@@ -20,7 +20,8 @@
   "header": {
     "welcome": "Hello {{name}}!",
     "brandSubtitle": "Digital Artwork Management Network",
-    "goToLandingpage": "Go to landingpage"
+    "goToLandingpage": "Go to landingpage",
+    "goToHomepage": "Go to homepage"
   },
 
   "footer": {
@@ -42,6 +43,11 @@
     "search": "Search",
     "filter": "Filter",
     "reset": "Reset"
+  },
+
+  "carousel": {
+    "previous": "Previous",
+    "next": "Next"
   },
 
   "status": {

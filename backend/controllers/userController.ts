@@ -130,20 +130,21 @@ export const createUser = async (req: Request, res: Response) => {
     if (role === "super" && requestedOrganisationName?.trim()) {
       const organisationName = requestedOrganisationName.trim();
       // create a tiny Media row so logo_id can be non-null (DB may enforce NOT NULL)
-      const logoId = crypto.randomUUID();
-      await Media.create({
-        id: logoId,
-        fileName: "auto",
-        mimeType: "image/png",
-        fileUrl: "",
-      });
+
+      // const logoId = crypto.randomUUID();
+      // await Media.create({
+      //   id: logoId,
+      //   fileName: "auto",
+      //   mimeType: "image/png",
+      //   fileUrl: "",
+      // });
 
       const [organisation] = await Organisation.findOrCreate({
         where: { name: organisationName },
         defaults: {
           id: crypto.randomUUID(),
           name: organisationName,
-          logoId,
+          // logoId,
         },
       });
 
