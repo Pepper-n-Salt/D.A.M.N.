@@ -6,44 +6,48 @@ import { useAuth } from "../context/AuthContext";
 export default function Header() {
   const { t } = useTranslation("common");
   const { pathname } = useLocation();
-  const isLandingPage =
-    pathname === "/landingpage" || pathname.startsWith("/landingpage/");
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // const isLandingPage =
+  //   pathname === "/landingpage" || pathname.startsWith("/landingpage/");
   const isDisplay = pathname === "/display" || pathname.startsWith("/display/");
 
   if (isDisplay) {
     return null;
   }
 
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
 
+  // jetzt vom user abhängig und nicht mehr von "isLandingPage"
+
   return (
     <header className="border-b border-gray-200 px-8 py-6">
       <div className="mb-20">
-        {isLandingPage ? (
-          // landingpage für eingeloggte user:innen
+        {user ? (
+          // eingeloggter User:innen
           <NavLink to="/landingpage" aria-label={t("header.goToLandingpage")}>
             <div className="leading-none">
               <p className="-ml-1.25 text-6xl tracking-[0.02em]">
                 {t("app.name")}
               </p>
+
               <p className="mt-1 origin-left scale-x-[0.972] text-sm leading-loose">
                 {t("header.brandSubtitle")}
               </p>
             </div>
           </NavLink>
         ) : (
-          // landingpage product für alle
+          // nicht eingeloggte User:innen
           <NavLink to="/" aria-label={t("header.goToHomepage")}>
             <div className="leading-none">
               <p className="-ml-1.25 text-6xl tracking-[0.02em]">
                 {t("app.name")}
               </p>
+
               <p className="mt-1 origin-left scale-x-[0.972] text-sm leading-loose">
                 {t("header.brandSubtitle")}
               </p>
@@ -52,46 +56,49 @@ export default function Header() {
         )}
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
+        {/* Navigation */}
         <nav className="flex gap-10 text-sm uppercase tracking-[0.2em]">
-          {isLandingPage ? (
+          {user ? (
             <>
-              {" "}
               <NavLink
                 to="/landingpage/exhibitions"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-black font-semibold border-b border-black"
+                    ? "border-b border-black font-semibold text-black"
                     : "text-black"
                 }
               >
                 {t("navigation.exhibitions")}
               </NavLink>
+
               <NavLink
                 to="/landingpage/artworks"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-black font-semibold border-b border-black"
+                    ? "border-b border-black font-semibold text-black"
                     : "text-black"
                 }
               >
                 {t("navigation.artworks")}
-              </NavLink>{" "}
+              </NavLink>
+
               <NavLink
                 to="/landingpage/artists"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-black font-semibold border-b border-black"
+                    ? "border-b border-black font-semibold text-black"
                     : "text-black"
                 }
               >
                 {t("navigation.artists")}
               </NavLink>
+
               <NavLink
                 to="/landingpage/screens"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-black font-semibold border-b border-black"
+                    ? "border-b border-black font-semibold text-black"
                     : "text-black"
                 }
               >
@@ -104,27 +111,29 @@ export default function Header() {
                 to="/"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-black font-semibold border-b border-black"
+                    ? "border-b border-black font-semibold text-black"
                     : "text-black"
                 }
               >
                 {t("navigation.home")}
               </NavLink>
+
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-black font-semibold border-b border-black"
+                    ? "border-b border-black font-semibold text-black"
                     : "text-black"
                 }
               >
                 {t("navigation.about")}
               </NavLink>
+
               <NavLink
                 to="/contact"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-black font-semibold border-b border-black"
+                    ? "border-b border-black font-semibold text-black"
                     : "text-black"
                 }
               >
@@ -134,21 +143,25 @@ export default function Header() {
           )}
         </nav>
 
-        {isLandingPage ? (
+        {/* User:innen Anzeige */}
+
+        {user ? (
           <div className="flex items-center gap-8 text-sm uppercase tracking-[0.2em]">
             <NavLink
               to="/landingpage/user"
               className={({ isActive }) =>
                 isActive
-                  ? "text-black font-semibold border-b border-black"
+                  ? "border-b border-black font-semibold text-black"
                   : "text-black"
               }
             >
               {t("navigation.user")}
             </NavLink>
 
-            <p className="text-neutral-500 normal-case tracking-normal">
-              {t("header.welcome", { name: user?.firstName || "Superuser" })}
+            <p className="normal-case tracking-normal text-neutral-500">
+              {t("header.welcome", {
+                name: user.firstName || "Superuser",
+              })}
             </p>
 
             <LanguageSwitcher />
@@ -162,7 +175,7 @@ export default function Header() {
             </button>
           </div>
         ) : (
-          <div className="flex items-center uppercase gap-4">
+          <div className="flex items-center gap-4 uppercase">
             <LanguageSwitcher />
 
             <NavLink

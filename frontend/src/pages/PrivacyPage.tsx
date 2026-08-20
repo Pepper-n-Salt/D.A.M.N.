@@ -5,6 +5,8 @@ import H1 from "../components/ui/typography/H1";
 import H2 from "../components/ui/typography/H2";
 
 export default function PrivacyPage() {
+  console.log("PRIVACY PAGE GELADEN");
+
   const { t } = useTranslation("privacy");
 
   return (
