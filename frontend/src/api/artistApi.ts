@@ -34,12 +34,7 @@ const languageToCode = (language: Language): "de" | "en" => {
   return language === "german" ? "de" : "en";
 };
 
-/*
- * --------------------------------------------------------------------------
- * Artist erstellen
- * --------------------------------------------------------------------------
- */
-
+// Artist erstellen
 export async function createArtist(
   formData: ArtistFormData,
   language: Language,
@@ -76,12 +71,7 @@ export async function createArtist(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Alle Artists laden
- * --------------------------------------------------------------------------
- */
-
+// Alle Artists laden
 export async function getArtists(
   languageCode: "de" | "en"
 ): Promise<CreateArtistResponse[]> {
@@ -99,12 +89,7 @@ export async function getArtists(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Einen Artist laden
- * --------------------------------------------------------------------------
- */
-
+// Einen einzelnen Artist laden
 export async function getArtist(
   artistId: string,
   language: Language
@@ -128,12 +113,28 @@ export async function getArtist(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Artist aktualisieren
- * --------------------------------------------------------------------------
- */
+// Artist ohne Auth holen
+export async function getPublicArtist(
+  artistId: string,
+  languageCode: "de" | "en"
+): Promise<CreateArtistResponse> {
+  const response = await fetch(
+    `${API_URL}/artist/public/${artistId}/${languageCode}`,
+    {
+      method: "GET",
+    }
+  );
 
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.msg || "Der Artist konnte nicht geladen werden.");
+  }
+
+  return data;
+}
+
+// Artist aktualisieren
 export async function updateArtist(
   artistId: string,
   language: Language,
@@ -176,12 +177,7 @@ export async function updateArtist(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Artist löschen
- * --------------------------------------------------------------------------
- */
-
+// Artist löschen (soft delete
 export async function deleteArtist(artistId: string): Promise<void> {
   const response = await fetch(`${API_URL}/artist/${artistId}/delete`, {
     method: "PATCH",
@@ -195,12 +191,7 @@ export async function deleteArtist(artistId: string): Promise<void> {
   }
 }
 
-/*
- * --------------------------------------------------------------------------
- * Gelöschte Artists laden
- * --------------------------------------------------------------------------
- */
-
+// gelöschte Artists laden
 export async function getDeletedArtists(
   languageCode: "de" | "en"
 ): Promise<CreateArtistResponse[]> {
@@ -220,6 +211,7 @@ export async function getDeletedArtists(
   return data;
 }
 
+// Artist nach dem Löschen wiederherstellen
 export async function restoreArtist(artistId: string): Promise<void> {
   const response = await fetch(`${API_URL}/artist/${artistId}/restore`, {
     method: "PATCH",

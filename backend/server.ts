@@ -15,12 +15,12 @@ import artworkRoutes from "./routes/artworkRoutes.js";
 import artworkTranslationRoutes from "./routes/artworkTranslationRoutes.js";
 import artistRoutes from "./routes/artistRoutes.js";
 import artistTranslationRoutes from "./routes/artistTranslationRoutes.js";
-import metArtworkRoutes from "./routes/metArtworkRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import mediaRoutes from "./routes/mediaRoutes.js";
 import publicExhibitionRoutes from "./routes/publicExhibitionRoutes.js";
 import publicArtworkRoutes from "./routes/publicArtworkRoutes.js";
+import publicArtistRoutes from "./routes/publicArtistRoutes.js";
 
 import { setupChatWebSocket } from "./websocket/chatServer.js";
 
@@ -40,7 +40,7 @@ app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Route Prefix + Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/history", historyRoutes);
@@ -53,6 +53,7 @@ app.use("/api/artwork", publicArtworkRoutes);
 app.use("/api/artwork", artworkRoutes);
 app.use("/api/artworktranslation", artworkTranslationRoutes);
 
+app.use("/api/artist", publicArtistRoutes);
 app.use("/api/artist", artistRoutes);
 app.use("/api/artisttranslation", artistTranslationRoutes);
 
