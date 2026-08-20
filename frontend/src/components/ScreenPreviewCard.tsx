@@ -13,6 +13,8 @@ export default function ScreenPreviewCard({
   return (
     <Link
       to={uri}
+      target="_blank"
+      rel="noopener noreferrer"
       className="block cursor pointer overflow-hidden border border-black"
     >
       {/* <div className="overflow-hidden border border-black"> */}

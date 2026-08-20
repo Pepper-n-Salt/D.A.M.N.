@@ -11,7 +11,7 @@ export default function CarouselButton({
   return (
     <button
       {...props}
-      className="px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300   disabled:cursor-not-allowed disabled:opacity-30 hover:underline"
+      className="px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-30 hover:underline"
     >
       {children}
     </button>

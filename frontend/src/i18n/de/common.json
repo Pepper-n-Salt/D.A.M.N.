@@ -45,6 +45,11 @@
     "reset": "Zurücksetzen"
   },
 
+  "carousel": {
+    "previous": "Zurück",
+    "next": "Weiter"
+  },
+
   "status": {
     "loading": "Wird geladen ...",
     "success": "Erfolgreich",

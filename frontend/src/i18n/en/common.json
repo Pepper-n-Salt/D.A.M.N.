@@ -45,6 +45,11 @@
     "reset": "Reset"
   },
 
+  "carousel": {
+    "previous": "Previous",
+    "next": "Next"
+  },
+
   "status": {
     "loading": "Loading ...",
     "success": "Success",

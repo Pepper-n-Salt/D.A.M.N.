@@ -54,6 +54,10 @@
   cursor: pointer;
 }
 
+:where(button:disabled) {
+  cursor: not-allowed;
+}
+
 html,
 body,
 #root {
