@@ -27,11 +27,7 @@ const languageToCode = (language: "german" | "english") => {
   return language === "german" ? "de" : "en";
 };
 
-/*
- * --------------------------------------------------------------------------
- * Exhibition erstellen
- * --------------------------------------------------------------------------
- */
+// Eine Exhibition erstellen
 
 export async function createExhibition(
   formData: ExhibitionFormData,
@@ -67,11 +63,7 @@ export async function createExhibition(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Alle Exhibitions laden
- * --------------------------------------------------------------------------
- */
+// Alle Exhibition laden
 
 export async function getExhibitions(
   languageCode: "de" | "en"
@@ -92,11 +84,7 @@ export async function getExhibitions(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Eine Exhibition laden
- * --------------------------------------------------------------------------
- */
+// Eine Exhibition laden
 
 export async function getExhibition(
   exhibitionId: string,
@@ -121,11 +109,7 @@ export async function getExhibition(
   return data;
 }
 
-/*
- * --------------------------------------------------------------------------
- * Bestehende Exhibition aktualisieren
- * --------------------------------------------------------------------------
- */
+// Bestehende Exhibtion akualisieren / editieren
 
 export async function updateExhibition(
   exhibitionId: string,
@@ -165,6 +149,8 @@ export async function updateExhibition(
 
   return data;
 }
+
+// eine Exhibition löschen (nur soft delete)
 export async function deleteExhibition(exhibitionId: string): Promise<void> {
   const response = await fetch(`${API_URL}/exhibition/${exhibitionId}/delete`, {
     method: "PATCH",
@@ -179,6 +165,8 @@ export async function deleteExhibition(exhibitionId: string): Promise<void> {
     );
   }
 }
+
+// die soft gelöschten Exhibitions anzeigen
 export async function getDeletedExhibitions(
   languageCode: "de" | "en"
 ): Promise<CreateExhibitionResponse[]> {
@@ -201,6 +189,7 @@ export async function getDeletedExhibitions(
   return data;
 }
 
+// gelöschte Exhibitions wiederherstellen
 export async function restoreExhibition(exhibitionId: string): Promise<void> {
   const response = await fetch(
     `${API_URL}/exhibition/${exhibitionId}/restore`,
@@ -216,5 +205,43 @@ export async function restoreExhibition(exhibitionId: string): Promise<void> {
     throw new Error(
       data?.msg || "Die Exhibition konnte nicht wiederhergestellt werden."
     );
+  }
+}
+
+// eine Exhibition als Screen markieren
+export async function setExhibitionScreen(
+  exhibitionId: string,
+  languageCode: "de" | "en"
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/exhibition/${exhibitionId}/${languageCode}/screen`,
+    { method: "PATCH", credentials: "include" }
+  );
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.msg || "Die Exhibition konnte nicht als Screen markiert werden."
+    );
+  }
+}
+
+// eine Exhibition von Screens entfernen
+export async function removeExhibitionScreen(
+  exhibitionId: string,
+  languageCode: "de" | "en"
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/exhibition/${exhibitionId}/${languageCode}/unscreen`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.msg || "Der Screen konnte nicht entfernt werden.");
   }
 }
