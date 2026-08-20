@@ -59,8 +59,10 @@ export default function ArtworkCarousel({
 
   // Next
   const handleNext = () => {
-    setStartIndex((previous) => {
-      const newIndex = Math.min(previous + 3, Math.max(artworks.length - 3, 0));
+    setStartIndex((prev) => {
+      const maxStartIndex = Math.floor((artworks.length - 1) / 3) * 3;
+
+      const newIndex = Math.min(prev + 3, maxStartIndex);
 
       requestAnimationFrame(scrollToCurrentArtworks);
 

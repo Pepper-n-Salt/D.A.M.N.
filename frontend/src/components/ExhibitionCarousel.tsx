@@ -60,7 +60,9 @@ export default function ExhibitionCarousel({
   // Next
   const handleNext = () => {
     setStartIndex((prev) => {
-      const newIndex = Math.min(prev + 3, Math.max(exhibitions.length - 3, 0));
+      const maxStartIndex = Math.floor((exhibitions.length - 1) / 3) * 3;
+
+      const newIndex = Math.min(prev + 3, maxStartIndex);
 
       requestAnimationFrame(scrollToCurrentExhibitions);
 

@@ -60,7 +60,9 @@ export default function ArtistCarousel({
   // Next
   const handleNext = () => {
     setStartIndex((prev) => {
-      const newIndex = Math.min(prev + 3, Math.max(artists.length - 3, 0));
+      const maxStartIndex = Math.floor((artists.length - 1) / 3) * 3;
+
+      const newIndex = Math.min(prev + 3, maxStartIndex);
 
       requestAnimationFrame(scrollToCurrentArtists);
 
