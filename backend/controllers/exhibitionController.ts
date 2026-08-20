@@ -216,6 +216,73 @@ export const showOneExhibition = async (
 //   }
 // };
 
+export const showPublicExhibition = async (
+  req: Request<{ exhibitionId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { exhibitionId, languageCode } = req.params;
+
+    const exhibition = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: false,
+      },
+      include: [
+        {
+          model: ExhibitionTranslation,
+          where: {
+            languageCode,
+          },
+        },
+        {
+          model: Media,
+        },
+      ],
+    });
+
+    if (!exhibition) {
+      return res.status(404).json({
+        msg: "Exhibition nicht gefunden.",
+      });
+    }
+
+    const translation = exhibition.ExhibitionTranslations?.[0];
+
+    if (!translation) {
+      return res.status(404).json({
+        msg: "Die Übersetzung der Exhibition wurde nicht gefunden.",
+      });
+    }
+
+    return res.status(200).json({
+      id: exhibition.id,
+      coverImageId: exhibition.coverImageId,
+      fileUrl: exhibition.Medium?.fileUrl ?? null,
+      startDate: exhibition.startDate,
+      endDate: exhibition.endDate,
+      createdBy: exhibition.createdBy,
+      lastEditedBy: exhibition.lastEditedBy,
+      isArchived: exhibition.isArchived,
+      isDeleted: exhibition.isDeleted,
+      backgroundColor: exhibition.backgroundColor,
+
+      languageCode: translation.languageCode,
+      title: translation.title,
+      subtitle: translation.subtitle,
+      location: translation.location,
+      description: translation.description,
+      isScreen: translation.isScreen,
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
+  }
+};
+
 // Neue Exhibition inklusive der ersten Übersetzung erstellen
 export const createExhibition = async (req: Request, res: Response) => {
   try {

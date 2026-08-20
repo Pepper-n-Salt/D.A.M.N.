@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { createServer } from "node:http";
 
 import db from "./lib/db.js";
 import "./models/associations.js";
@@ -18,6 +19,8 @@ import metArtworkRoutes from "./routes/metArtworkRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import mediaRoutes from "./routes/mediaRoutes.js";
+import publicExhibitionRoutes from "./routes/publicExhibitionRoutes.js";
+import { setupChatWebSocket } from "./websocket/chatServer.js";
 
 const PORT = process.env.PORT || 3000;
 const ORIGIN = process.env.ORIGIN;
@@ -27,7 +30,7 @@ const app = express();
 app.use(
   cors({
     origin: ORIGIN,
-    credentials: true, // so werden Cookies wirklich mitgeschickt
+    credentials: true,
   })
 );
 
@@ -39,8 +42,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/history", historyRoutes);
+app.use("/api/exhibition", publicExhibitionRoutes);
 app.use("/api/exhibition", exhibitionRoutes);
 app.use("/api/exhibitiontranslation", exhibitionTranslationRoutes);
+
 app.use("/api/artwork", artworkRoutes);
 app.use("/api/artworktranslation", artworkTranslationRoutes);
 app.use("/api/artist", artistRoutes);
@@ -49,6 +54,7 @@ app.use("/api/metartwork", metArtworkRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/media", mediaRoutes);
+
 app.use((req, res) => {
   res.status(404).json({
     error: "Not Found",
@@ -57,10 +63,15 @@ app.use((req, res) => {
 });
 
 async function startServer() {
-  await db.authenticate(); // prüft die Verbindung von Sequelize zur DB
+  await db.authenticate();
+
   console.log("Database connection has been established successfully.");
 
-  app.listen(PORT, () => {
+  const server = createServer(app);
+
+  setupChatWebSocket(server);
+
+  server.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}.`);
   });
 }

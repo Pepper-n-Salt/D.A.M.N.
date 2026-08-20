@@ -109,6 +109,26 @@ export async function getExhibition(
   return data;
 }
 
+export async function getPublicExhibition(
+  exhibitionId: string,
+  languageCode: "de" | "en"
+): Promise<CreateExhibitionResponse> {
+  const response = await fetch(
+    `${API_URL}/exhibition/public/${exhibitionId}/${languageCode}`,
+    {
+      method: "GET",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.msg || "Die Exhibition konnte nicht geladen werden.");
+  }
+
+  return data;
+}
+
 // Bestehende Exhibtion akualisieren / editieren
 
 export async function updateExhibition(
