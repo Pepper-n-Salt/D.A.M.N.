@@ -1,7 +1,9 @@
 {
   "hero": {
     "title": "Neues Kunstwerk hinzufügen",
-    "paragraph": "Fülle das untenstehende Formular aus, um einen neuen Kunstwerkseintrag für die Plattform zu erstellen."
+    "paragraph": "Fülle das untenstehende Formular aus, um einen neuen Kunstwerkseintrag für die Plattform zu erstellen.",
+    "editTitle": "Kunstwerk bearbeiten",
+    "editParagraph": "Bearbeite die folgenden Angaben, um das bestehende Kunstwerk zu aktualisieren."
   },
   "import": {
     "open": "Kunstwerk importieren",
@@ -15,7 +17,7 @@
     "button": "Importieren"
   },
   "form": {
-    "language": "Formularsprache",
+    "language": "In welcher Sprache möchten Sie das Kunstwerk hinzufügen?",
     "languages": {
       "german": "Deutsch",
       "english": "Englisch"
@@ -31,11 +33,30 @@
     "material": "Material",
     "dimensions": "Maße",
     "description": "Beschreibung",
-    "image": "Bild hochladen"
+    "image": "Bild hochladen",
+    "chooseImage": "Bild auswählen",
+    "thumbnail": "Vorschaubild"
   },
   "actions": {
     "save": "Kunstwerk speichern",
     "translateToEnglish": "Ins Englische übersetzen",
     "translateToGerman": "Ins Deutsche übersetzen"
+  },
+  "messages": {
+    "imageSelected": "Bild ausgewählt.",
+    "savingImage": "Bild wird gespeichert...",
+    "noGermanTranslation": "Keine deutsche Übersetzung gefunden.",
+    "noEnglishTranslation": "Keine englische Übersetzung gefunden.",
+    "loadError": "Das Kunstwerk oder seine Übersetzungen konnten nicht geladen werden.",
+    "loadErrorFallback": "Das Kunstwerk konnte nicht geladen werden.",
+    "noArtworkId": "Keine Artwork-ID vorhanden.",
+    "saveError": "Das Kunstwerk konnte nicht gespeichert werden.",
+    "translateRequiresSave": "Das Kunstwerk muss zuerst gespeichert werden, bevor es übersetzt werden kann.",
+    "translationError": "Die Übersetzung konnte nicht erstellt werden.",
+    "translationRequiresSave": "Das Kunstwerk muss zuerst gespeichert und übersetzt werden.",
+    "translationSaveError": "Die Übersetzung konnte nicht gespeichert werden.",
+    "saving": "Speichern...",
+    "translating": "Übersetzung wird erstellt...",
+    "translationSaved": "Übersetzung gespeichert."
   }
 }

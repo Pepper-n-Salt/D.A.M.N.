@@ -8,7 +8,9 @@ class ExhibitionTranslation extends Model {
   declare subtitle: string | null;
   declare location: string | null;
   declare description: string | null;
-  // declare slug: string;
+  declare openingEvent: string | null;
+  declare specialEvent: string | null;
+  declare closingEvent: string | null;
   declare aiGenerated: boolean;
   declare isScreen: boolean;
 }
@@ -40,6 +42,21 @@ ExhibitionTranslation.init(
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    openingEvent: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      field: "opening_event",
+    },
+    specialEvent: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      field: "special_event",
+    },
+    closingEvent: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      field: "closing_event",
     },
     // slug: {
     //   type: DataTypes.STRING(100),

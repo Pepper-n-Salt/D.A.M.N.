@@ -1,14 +1,21 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../lib/db.js";
+import ArtworkTranslation from "./ArtworkTranslation.js";
+import User from "./User.js";
+import Media from "./Media.js";
 
 class Artwork extends Model {
   declare id: string;
   declare year: number | null;
   declare dimensions: string | null;
-  declare imageId: string;
+  declare imageId: string | null;
   declare createdBy: string;
   declare lastEditedBy: string | null;
   declare isDeleted: boolean;
+
+  declare ArtworkTranslations?: ArtworkTranslation[];
+  declare creator?: User;
+  declare Medium?: Media;
 }
 
 Artwork.init(
@@ -27,7 +34,7 @@ Artwork.init(
     },
     imageId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       field: "image_id",
     },
     createdBy: {

@@ -1,0 +1,30 @@
+import express from "express";
+import multer from "multer"; // middleware für dateiupload in express
+import { checkAuth } from "../middleware/checkAuth.js";
+import {
+  uploadMedia,
+  getMedia,
+  deleteMedia,
+} from "../controllers/mediaController.js";
+import { validateParams } from "../middleware/validate.js";
+import { mediaIdSchema } from "../schemas/mediaSchema.js";
+
+const router = express.Router();
+
+// Dateigröße begrenzen
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // das sind 10 MB
+  },
+});
+
+router.use(checkAuth);
+
+router.post("/uploadImage", upload.single("image"), uploadMedia); // FE muss dann die Datei unter Namen "image" schicken
+
+router.get("/:mediaId", validateParams(mediaIdSchema), getMedia);
+
+router.delete("/:mediaId", validateParams(mediaIdSchema), deleteMedia);
+
+export default router;

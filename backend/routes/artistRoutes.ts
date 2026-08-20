@@ -1,23 +1,115 @@
 import express from "express";
-// an dieser Stelle noch die middleware importieren
+
+import { checkAuth } from "../middleware/checkAuth.js";
+import { requireSuperUser } from "../middleware/requireSuperUser.js";
+import { validateBody, validateParams } from "../middleware/validate.js";
+
 import {
   showOneArtist,
   showAllArtists,
+  showDeletedArtists,
   createArtist,
   updateArtist,
   deleteArtist,
-} from "../controllers/artistController";
+  restoreArtist,
+} from "../controllers/artistController.js";
+
+import {
+  artistIdSchema,
+  artistLanguageSchema,
+  artistIdLanguageParamsSchema,
+  createArtistSchema,
+  updateArtistSchema,
+} from "../schemas/artistSchema.js";
 
 const router = express.Router();
 
-router.get("/", () => {}, showAllArtists);
+/*
+ * Alle Artist-Routen benötigen Authentifizierung.
+ */
+router.use(checkAuth);
 
-router.get("/:artistId", () => {}, showOneArtist);
+/*
+ * --------------------------------------------------------------------------
+ * Alle Artists
+ * GET /artist/:languageCode
+ * --------------------------------------------------------------------------
+ */
 
-router.post("/", () => {}, createArtist);
+router.get(
+  "/:languageCode",
+  validateParams(artistLanguageSchema),
+  showAllArtists
+);
 
-router.patch("/:artistId", () => {}, updateArtist);
+/*
+ * --------------------------------------------------------------------------
+ * Gelöschte Artists
+ * GET /artist/deleted/:languageCode
+ * --------------------------------------------------------------------------
+ */
 
-router.delete("/:artistId", () => {}, deleteArtist);
+router.get(
+  "/deleted/:languageCode",
+  requireSuperUser,
+  validateParams(artistLanguageSchema),
+  showDeletedArtists
+);
+
+/*
+ * --------------------------------------------------------------------------
+ * Einen Artist laden
+ * GET /artist/:artistId/:languageCode
+ * --------------------------------------------------------------------------
+ */
+
+router.get(
+  "/:artistId/:languageCode",
+  validateParams(artistIdLanguageParamsSchema),
+  showOneArtist
+);
+
+/*
+ * --------------------------------------------------------------------------
+ * Artist erstellen
+ * POST /artist
+ * --------------------------------------------------------------------------
+ */
+
+router.post("/", validateBody(createArtistSchema), createArtist);
+
+/*
+ * --------------------------------------------------------------------------
+ * Artist löschen
+ * PATCH /artist/:artistId/delete
+ * --------------------------------------------------------------------------
+ */
+
+router.patch(
+  "/:artistId/delete",
+  requireSuperUser,
+  validateParams(artistIdSchema),
+  deleteArtist
+);
+
+router.patch(
+  "/:artistId/restore",
+  requireSuperUser,
+  validateParams(artistIdSchema),
+  restoreArtist
+);
+
+/*
+ * --------------------------------------------------------------------------
+ * Artist aktualisieren
+ * PATCH /artist/:artistId/:languageCode
+ * --------------------------------------------------------------------------
+ */
+router.patch(
+  "/:artistId/:languageCode",
+  validateParams(artistIdLanguageParamsSchema),
+  validateBody(updateArtistSchema),
+  updateArtist
+);
 
 export default router;

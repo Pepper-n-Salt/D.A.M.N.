@@ -10,12 +10,6 @@ if (!JWT_SECRET) {
   throw new Error("Das JWT_SECRET fehlt!");
 }
 
-interface AuthenticatedRequest extends Request {
-  user?: {
-    userId: string;
-  };
-}
-
 const cookieOptions = {
   httpOnly: true,
   sameSite:
@@ -26,6 +20,8 @@ const cookieOptions = {
   path: "/",
 };
 
+// Registrierung
+// getestet: klappt
 export const register = async (req: Request, res: Response) => {
   try {
     const { email, password, firstName, lastName, organisationId } = req.body;
@@ -75,12 +71,14 @@ export const register = async (req: Request, res: Response) => {
         role: user.role,
       },
     });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
 
+// Login
+// getestet: klappt!
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -122,21 +120,24 @@ export const login = async (req: Request, res: Response) => {
         role: user.role,
       },
     });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
 
+// Logout
+// getestet: klappt!
 export const logout = (req: Request, res: Response) => {
   res.clearCookie("token", cookieOptions);
   return res.status(200).json({ msg: "Logout erfolgreich." });
 };
 
+// Profile, um die:den aktuell eingeloggte:n User:in abzufragen
+// getestet: klappt!
 export const getMe = async (req: Request, res: Response) => {
   try {
-    const authReq = req as AuthenticatedRequest;
-    const userId = authReq.user?.userId;
+    const userId = req.user?.id;
 
     if (!userId) {
       return res.status(401).json({ msg: "Nicht autorisiert." });
@@ -156,8 +157,8 @@ export const getMe = async (req: Request, res: Response) => {
       organisationId: user.organisationId,
       role: user.role,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ msg: "Server-Fehler." });
   }
 };

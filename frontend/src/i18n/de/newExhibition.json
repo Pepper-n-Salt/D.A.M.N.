@@ -1,17 +1,48 @@
 {
-  "newExhibition": {
+  "hero": {
     "title": "Neue Ausstellung hinzufügen",
     "paragraph": "Fülle das untenstehende Formular aus, um einen neuen Ausstellungseintrag zu erstellen.",
+    "editTitle": "Ausstellung bearbeiten",
+    "editParagraph": "Bearbeite die folgenden Angaben, um die bestehende Ausstellung zu aktualisieren."
+  },
 
-    "form": {
-      "title": "Titel",
-      "subtitle": "Untertitel",
-      "startDate": "Startdatum",
-      "endDate": "Enddatum",
-      "location": "Ort",
-      "description": "Beschreibung",
-      "events": "Veranstaltungen",
-      "submit": "Ausstellung speichern"
+  "form": {
+    "language": "In welcher Sprache möchten Sie die Ausstellung erstellen?",
+    "title": "Titel",
+    "subtitle": "Untertitel",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "location": "Ort",
+    "description": "Beschreibung",
+    "events": "Veranstaltungen",
+    "image": "Bild",
+    "thumbnail": "Vorschaubild",
+    "chooseImage": "Bild auswählen",
+    "languages": {
+      "german": "Deutsch",
+      "english": "Englisch"
     }
+  },
+  "actions": {
+    "save": "Ausstellung speichern",
+    "translateToEnglish": "Ins Englische übersetzen",
+    "translateToGerman": "Ins Deutsche übersetzen"
+  },
+  "messages": {
+    "imageSelected": "Bild ausgewählt.",
+    "savingImage": "Bild wird gespeichert ...",
+    "noGermanTranslation": "Keine deutsche Übersetzung gefunden.",
+    "noEnglishTranslation": "Keine englische Übersetzung gefunden.",
+    "loadError": "Die Ausstellung oder ihre Übersetzungen konnten nicht geladen werden.",
+    "loadErrorFallback": "Die Ausstellung konnte nicht geladen werden.",
+    "noExhibitionId": "Keine Ausstellungs-ID vorhanden.",
+    "saveError": "Die Ausstellung konnte nicht gespeichert werden.",
+    "translateRequiresSave": "Die Ausstellung muss zuerst gespeichert werden, bevor sie übersetzt werden kann.",
+    "translationError": "Die Übersetzung konnte nicht erstellt werden.",
+    "translationRequiresSave": "Die Ausstellung muss zuerst gespeichert und übersetzt werden.",
+    "translationSaveError": "Die Übersetzung konnte nicht gespeichert werden.",
+    "saving": "Speichern ...",
+    "translating": "Übersetzung wird erstellt ...",
+    "translationSaved": "Übersetzung gespeichert."
   }
 }

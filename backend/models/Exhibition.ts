@@ -1,14 +1,14 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../lib/db.js";
+import ExhibitionTranslation from "./ExhibitionTranslation.js";
+import User from "./User.js";
+import Media from "./Media.js";
 
 class Exhibition extends Model {
   declare id: string;
   declare coverImageId: string | null;
   declare startDate: Date;
   declare endDate: Date;
-  declare openingEvent: string | null;
-  declare specialEvent: string | null;
-  declare closingEvent: string | null;
   declare createdBy: string;
   declare lastEditedBy: string | null;
   declare isArchived: boolean;
@@ -20,6 +20,10 @@ class Exhibition extends Model {
   declare headlineFont: string | null;
   declare textFont: string | null;
   declare roundness: "none" | "small" | "medium" | "large";
+
+  declare ExhibitionTranslations?: ExhibitionTranslation[];
+  declare creator?: User;
+  declare Medium?: Media;
 }
 
 Exhibition.init(
@@ -42,21 +46,6 @@ Exhibition.init(
       type: DataTypes.DATEONLY,
       allowNull: false,
       field: "end_date",
-    },
-    openingEvent: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      field: "opening_event",
-    },
-    specialEvent: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      field: "special_event",
-    },
-    closingEvent: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      field: "closing_event",
     },
     createdBy: {
       type: DataTypes.UUID,

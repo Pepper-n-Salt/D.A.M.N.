@@ -1,0 +1,51 @@
+{
+  "title": {
+    "required": "Titel ist erforderlich."
+  },
+  "year": {
+    "required": "Jahr ist erforderlich.",
+    "numbersOnly": "Das Jahr darf nur Zahlen enthalten.",
+    "wholeNumber": "Das Jahr muss eine ganze Zahl sein.",
+    "invalid": "Bitte geben Sie ein gültiges Jahr ein."
+  },
+  "country": {
+    "required": "Land ist erforderlich."
+  },
+  "origin": {
+    "required": "Herkunft ist erforderlich."
+  },
+  "material": {
+    "required": "Material ist erforderlich."
+  },
+  "dimensions": {
+    "required": "Maße sind erforderlich."
+  },
+  "description": {
+    "required": "Beschreibung ist erforderlich."
+  },
+  "artists": {
+    "required": "Mindestens ein Künstler ist erforderlich."
+  },
+
+  "firstName": {
+    "required": "Vorname ist erforderlich."
+  },
+  "lastName": {
+    "required": "Nachname ist erforderlich."
+  },
+
+  "dateOfBirth": {
+    "future": "Das Geburtsdatum darf nicht in der Zukunft liegen."
+  },
+  "dateOfDeath": {
+    "future": "Das Sterbedatum darf nicht in der Zukunft liegen.",
+    "beforeBirth": "Das Sterbedatum darf nicht vor dem Geburtsdatum liegen."
+  },
+  "startDate": {
+    "required": "Startdatum ist erforderlich."
+  },
+  "endDate": {
+    "required": "Enddatum ist erforderlich.",
+    "beforeStart": "Das Enddatum darf nicht vor dem Startdatum liegen."
+  }
+}

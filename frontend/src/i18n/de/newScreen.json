@@ -1,59 +1,31 @@
 {
   "newScreen": {
-    "title": "Display erstellen",
-    "paragraph": "Konfiguriere eine digitale Präsentation für deine Ausstellungen, Kunstwerke und die ausgestellten Künstler:innen.",
-
-    "selectType": "Bildschirmtyp auswählen",
+    "title": "Static Screen erstellen",
+    "paragraph": "Wählen Sie zunächst aus, welchen Inhalt Sie auf dem Screen anzeigen möchten.",
+    "selectType": "Inhalt auswählen",
+    "loading": "Laden...",
+    "error": "Die Inhalte konnten nicht geladen werden.",
+    "createStaticScreen": "Static Screen erstellen",
 
     "staticScreens": {
-      "title": "Statische Bildschirme",
-
       "exhibition": {
         "title": "Ausstellung",
-        "description": "Zeigt aktuelle Ausstellungen und zugehörige Informationen an."
+        "description": "Eine Ausstellung als statischen Screen anzeigen.",
+        "show": "Ausstellungen auswählen",
+        "empty": "Keine Ausstellungen vorhanden."
       },
-
       "artwork": {
         "title": "Kunstwerk",
-        "description": "Präsentiert einzelne Kunstwerke mit Metadaten."
+        "description": "Ein Kunstwerk als statischen Screen anzeigen.",
+        "show": "Kunstwerke auswählen",
+        "empty": "Keine Kunstwerke vorhanden."
       },
-
       "artist": {
         "title": "Künstler:in",
-        "description": "Zeigt Informationen über Künstler:innen und ausgewählte Werke."
+        "description": "Eine/n Künstler:in als statischen Screen anzeigen.",
+        "show": "Künstler:in auswählen",
+        "empty": "Keine Künstler:innen vorhanden."
       }
-    },
-
-    "dynamicScreens": {
-      "title": "Dynamische Bildschirme",
-
-      "interactiveArtwork": {
-        "title": "Interaktives Kunstwerk",
-        "description": "Erkunden Sie Kunstwerke durch Zoomen und Interaktion.",
-        "comingSoon": "Demnächst verfügbar"
-      },
-
-      "digitalExperience": {
-        "title": "Digitales Erlebnis",
-        "description": "Erstellen Sie immersive und animierte Präsentationen.",
-        "comingSoon": "Demnächst verfügbar"
-      }
-    },
-
-    "screenInformation": {
-      "title": "Bildschirminformationen",
-
-      "screenName": {
-        "label": "Bildschirmname",
-        "placeholder": "Hauptbildschirm der Galerie"
-      },
-
-      "location": {
-        "label": "Standort",
-        "placeholder": "Eingangshalle"
-      },
-
-      "submit": "Screen erstellen"
     }
   }
 }

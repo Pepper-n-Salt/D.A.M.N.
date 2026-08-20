@@ -1,62 +1,118 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import ExhibitionCard from "./ExhibitionCard";
 import Carouselbutton from "./ui/buttons/Carouselbutton";
 import P from "./ui/typography/P";
-const exhibitions = [
-  {
-    id: 1,
-    image: "https://placehold.co/600x400?text=Exhibition+One",
-    title: "Open Forms",
-    date: "12.08.2026 - 15.10.2026",
-    location: "Berlin",
-    created: "05.07.2026",
-  },
-  {
-    id: 2,
-    image: "https://placehold.co/600x400?text=Exhibition+Two",
-    title: "Material Memory",
-    date: "21.09.2026 - 08.11.2026",
-    location: "München",
-    created: "02.07.2026",
-  },
-  {
-    id: 3,
-    image: "https://placehold.co/600x400?text=Exhibition+Three",
-    title: "Afterglow",
-    date: "01.10.2026 - 22.12.2026",
-    location: "Köln",
-    created: "09.07.2026",
-  },
-  {
-    id: 4,
-    image: "https://placehold.co/600x400?text=Exhibition+Four",
-    title: "Echoes of Light",
-    date: "18.11.2026 - 03.01.2027",
-    location: "Hamburg",
-    created: "11.07.2026",
-  },
-  {
-    id: 5,
-    image: "https://placehold.co/600x400?text=Exhibition+Five",
-    title: "Still Motion",
-    date: "05.12.2026 - 20.02.2027",
-    location: "Dresden",
-    created: "14.07.2026",
-  },
-  {
-    id: 6,
-    image: "https://placehold.co/600x400?text=Exhibition+Six",
-    title: "Shadow Study",
-    date: "09.01.2027 - 25.03.2027",
-    location: "Stuttgart",
-    created: "16.07.2026",
-  },
-];
+
+import { getExhibitions } from "../api/exhibitionApi";
+import type { CreateExhibitionResponse } from "../api/exhibitionApi";
 
 export default function ExhibitionCarousel() {
+  const { i18n } = useTranslation("exhibitions");
+
+  const [exhibitions, setExhibitions] = useState<CreateExhibitionResponse[]>(
+    []
+  );
+
   const [startIndex, setStartIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  /*
+   * Aktuelle Sprache von i18next in den API-Sprachcode übersetzen.
+   *
+   * de / de-DE -> de
+   * en / en-GB / en-US -> en
+   */
+  const languageCode = i18n.language.startsWith("en") ? "en" : "de";
+
+  /*
+   * ------------------------------------------------------------------------
+   * Exhibitions laden
+   * ------------------------------------------------------------------------
+   */
+
+  useEffect(() => {
+    const loadExhibitions = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const result = await getExhibitions(
+          languageCode === "de" ? "de" : "en"
+        );
+
+        console.log("EXHIBITIONS:", result);
+        setExhibitions(result);
+        setStartIndex(0);
+      } catch (error) {
+        console.error(error);
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Die Exhibitions konnten nicht geladen werden."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadExhibitions();
+  }, [languageCode]);
+
+  /*
+   * ------------------------------------------------------------------------
+   * Exhibition löschen
+   * ------------------------------------------------------------------------
+   *
+   * Die eigentliche Löschung passiert in ExhibitionCard.
+   *
+   * Sobald das Backend erfolgreich gelöscht hat, ruft die Card
+   * diese Funktion mit der ID der gelöschten Exhibition auf.
+   *
+   * Wir entfernen sie anschließend aus unserem lokalen State.
+   */
+
+  const handleDeleted = (id: string) => {
+    setExhibitions((previous) => {
+      const updatedExhibitions = previous.filter(
+        (exhibition) => exhibition.id !== id
+      );
+
+      /*
+       * Falls wir gerade auf einer späteren Carousel-Seite waren
+       * und durch das Löschen diese Seite nicht mehr existiert,
+       * gehen wir automatisch auf die letzte mögliche Seite zurück.
+       */
+
+      setStartIndex((currentStartIndex) => {
+        const maxStartIndex = Math.max(
+          Math.floor((updatedExhibitions.length - 1) / 3) * 3,
+          0
+        );
+
+        return Math.min(currentStartIndex, maxStartIndex);
+      });
+
+      return updatedExhibitions;
+    });
+  };
+
+  /*
+   * ------------------------------------------------------------------------
+   * Sichtbare Exhibitions
+   * ------------------------------------------------------------------------
+   */
 
   const visibleExhibitions = exhibitions.slice(startIndex, startIndex + 3);
+
+  /*
+   * ------------------------------------------------------------------------
+   * Scroll
+   * ------------------------------------------------------------------------
+   */
 
   const scrollToCurrentExhibitions = () => {
     document.getElementById("current-exhibitions")?.scrollIntoView({
@@ -65,27 +121,86 @@ export default function ExhibitionCarousel() {
     });
   };
 
+  /*
+   * ------------------------------------------------------------------------
+   * Previous
+   * ------------------------------------------------------------------------
+   */
+
   const handlePrevious = () => {
     setStartIndex((prev) => {
       const newIndex = Math.max(prev - 3, 0);
+
       requestAnimationFrame(scrollToCurrentExhibitions);
+
       return newIndex;
     });
   };
+
+  /*
+   * ------------------------------------------------------------------------
+   * Next
+   * ------------------------------------------------------------------------
+   */
 
   const handleNext = () => {
     setStartIndex((prev) => {
-      const newIndex = Math.min(prev + 3, exhibitions.length - 3);
+      const newIndex = Math.min(prev + 3, Math.max(exhibitions.length - 3, 0));
+
       requestAnimationFrame(scrollToCurrentExhibitions);
+
       return newIndex;
     });
   };
 
+  /*
+   * ------------------------------------------------------------------------
+   * Loading
+   * ------------------------------------------------------------------------
+   */
+
+  if (isLoading) {
+    return <p className="text-sm uppercase tracking-[0.2em]">Loading...</p>;
+  }
+
+  /*
+   * ------------------------------------------------------------------------
+   * Fehler
+   * ------------------------------------------------------------------------
+   */
+
+  if (error) {
+    return <p className="text-red-600">{error}</p>;
+  }
+
+  /*
+   * ------------------------------------------------------------------------
+   * Keine Exhibitions
+   * ------------------------------------------------------------------------
+   */
+
+  if (exhibitions.length === 0) {
+    return <P>Keine Exhibitions gefunden.</P>;
+  }
+
+  /*
+   * ------------------------------------------------------------------------
+   * Pagination
+   * ------------------------------------------------------------------------
+   */
+
+  const currentPage = Math.floor(startIndex / 3) + 1;
+  const totalPages = Math.ceil(exhibitions.length / 3);
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" id="current-exhibitions">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {visibleExhibitions.map((exhibition) => (
-          <ExhibitionCard key={exhibition.id} exhibition={exhibition} />
+          <ExhibitionCard
+            key={exhibition.id}
+            exhibition={exhibition}
+            onDeleted={handleDeleted}
+          />
         ))}
       </div>
 
@@ -93,7 +208,12 @@ export default function ExhibitionCarousel() {
         <Carouselbutton onClick={handlePrevious} disabled={startIndex === 0}>
           ← Previous
         </Carouselbutton>
-        <P>01 / 03</P>
+
+        <P>
+          {String(currentPage).padStart(2, "0")} /{" "}
+          {String(totalPages).padStart(2, "0")}
+        </P>
+
         <Carouselbutton
           onClick={handleNext}
           disabled={startIndex >= exhibitions.length - 3}

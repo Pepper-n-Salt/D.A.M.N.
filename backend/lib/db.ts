@@ -7,6 +7,6 @@ if (!DB_CONNECTION) {
   process.exit(1);
 }
 
-const db = new Sequelize(DB_CONNECTION);
+const db = new Sequelize(DB_CONNECTION, { logging: false }); // hier das Logging generell für Sequelize ausgestellt
 
 export default db;

@@ -1,6 +1,114 @@
 {
   "hero": {
-    "title": "Datenschutz",
-    "paragraph": "Platzhalter-Inhalt für die Datenschutzseite"
+    "title": "Datenschutzerklärung",
+    "paragraph": "Diese Datenschutzerklärung informiert über die Art, den Umfang und den Zweck der Verarbeitung personenbezogener Daten bei der Nutzung von D.A.M.N. (Digital Artwork Management Network)."
+  },
+
+  "responsible": {
+    "title": "Verantwortlicher",
+    "name": "Mela Heß",
+    "address": "Tarostr. 15",
+    "city": "04103 Leipzig, Deutschland",
+    "email": "E-Mail: melaniehe@t-online.de"
+  },
+
+  "general": {
+    "title": "Allgemeine Hinweise",
+    "paragraph": "Der Schutz personenbezogener Daten ist uns wichtig. Personenbezogene Daten werden nur verarbeitet, soweit dies für den Betrieb von D.A.M.N., die Bereitstellung der angebotenen Funktionen oder die Kommunikation mit Interessenten und Nutzern erforderlich ist. D.A.M.N. richtet sich insbesondere an Künstler:innen, Galerien, Museen und Kultureinrichtungen und unterstützt die Verwaltung, Organisation und Präsentation digitaler Kunstwerke."
+  },
+
+  "contact": {
+    "title": "Kontaktaufnahme",
+    "paragraph": "Über die Website besteht die Möglichkeit, über ein Kontaktformular mit uns in Verbindung zu treten. Die dort übermittelten Angaben wie Name, E-Mail-Adresse und Nachricht werden ausschließlich zur Bearbeitung der jeweiligen Anfrage und zur anschließenden Kommunikation verwendet. Eine Kontaktaufnahme führt nicht automatisch zur Erstellung eines Benutzerkontos und die Daten werden nicht automatisch als Benutzerprofil in der Datenbank gespeichert. Erst wenn eine interessierte Person nach vorheriger Kommunikation ausdrücklich entscheidet, D.A.M.N. nutzen zu wollen, kann ein Benutzerkonto eingerichtet werden."
+  },
+
+  "accounts": {
+    "title": "Benutzerkonten",
+    "paragraph": "Ein Benutzerkonto wird erst eingerichtet, wenn eine interessierte Person nach vorheriger Kommunikation ausdrücklich erklärt, D.A.M.N. nutzen zu wollen. Für die Einrichtung und Verwaltung eines Benutzerkontos werden insbesondere Vorname, Nachname, E-Mail-Adresse, ein gehashtes Passwort, Benutzer-ID, Organisationszugehörigkeit und Benutzerrolle verarbeitet. Diese Daten sind erforderlich, um den Zugang zur Plattform bereitzustellen, Benutzer zu authentifizieren und die jeweiligen Zugriffsrechte zu verwalten."
+  },
+
+  "cookies": {
+    "title": "Cookies",
+    "paragraph": "D.A.M.N. verwendet ausschließlich technisch notwendige Cookies beziehungsweise vergleichbare technische Mechanismen, soweit diese für die Authentifizierung und den Betrieb der Plattform erforderlich sind. Es werden keine Cookies zu Werbe-, Analyse- oder Trackingzwecken eingesetzt."
+  },
+
+  "platform": {
+    "title": "Nutzung der Plattform",
+    "paragraph": "Bei der Nutzung von D.A.M.N. werden Daten verarbeitet, die für die jeweiligen Funktionen der Plattform erforderlich sind. Dazu gehören insbesondere Daten zu Benutzerkonten, Organisationen, Kunstwerken, Künstler:innen, Ausstellungen, Sammlungen, digitalen Medien und deren jeweiligen Zuordnungen. Welche Daten konkret verarbeitet werden, hängt von den innerhalb der Plattform genutzten Funktionen und den von den Nutzern eingegebenen Inhalten ab."
+  },
+
+  "media": {
+    "title": "Digitale Medien",
+    "paragraph": "D.A.M.N. ermöglicht die Verwaltung und Präsentation digitaler Kunstwerke und damit das Hochladen und Abrufen digitaler Medien. Dabei können insbesondere Bilddateien und andere Mediendateien verarbeitet und gespeichert werden. Die Verarbeitung erfolgt, um die von den Nutzern angelegten Kunstwerke, Ausstellungen und weiteren Inhalte innerhalb der Plattform bereitzustellen."
+  },
+
+  "cloudinary": {
+    "title": "Cloudinary",
+    "paragraph": "Für die Speicherung, Verarbeitung und Bereitstellung digitaler Mediendateien wird Cloudinary eingesetzt. Dabei können insbesondere hochgeladene Bild- und Mediendateien sowie technisch erforderliche Informationen zu diesen Dateien verarbeitet werden. Je nach verwendeter Dienstleistung und Konfiguration kann eine Verarbeitung personenbezogener Daten auch außerhalb der Europäischen Union stattfinden."
+  },
+
+  "ai": {
+    "title": "KI-Funktionen",
+    "paragraph": "D.A.M.N. bietet KI-gestützte Funktionen an, für die Dienste von Mistral AI verwendet werden. Wenn Nutzer eine entsprechende KI-Funktion verwenden, können die hierfür eingegebenen Inhalte sowie technisch notwendige Informationen an Mistral AI übermittelt werden. Die Übermittlung erfolgt nur, soweit sie für die jeweilige KI-Funktion erforderlich ist. Je nach verwendeter Dienstleistung und Konfiguration kann eine Verarbeitung außerhalb der Europäischen Union stattfinden."
+  },
+
+  "email": {
+    "title": "E-Mail-Kommunikation",
+    "paragraph": "Für die Kommunikation mit Interessenten und gegebenenfalls Nutzern werden E-Mails über einen externen SMTP-Dienst versendet. Bei einer Kontaktaufnahme werden die vom Interessenten übermittelten Angaben, insbesondere Name, E-Mail-Adresse und Nachricht, zur Bearbeitung der Anfrage verarbeitet und per E-Mail weitergeleitet. Die Kontaktaufnahme führt nicht automatisch zur Speicherung der Person als Benutzer in D.A.M.N."
+  },
+
+  "technical": {
+    "title": "Technische Daten",
+    "paragraph": "Beim Betrieb der Website und der API können technisch notwendige Daten verarbeitet werden. Dazu können insbesondere IP-Adresse, Datum und Uhrzeit einer Anfrage, aufgerufene Ressourcen, Browser- und Geräteinformationen sowie technische Fehler- und Verbindungsinformationen gehören. Diese Daten werden verarbeitet, soweit dies für den sicheren und technisch ordnungsgemäßen Betrieb der Website erforderlich ist."
+  },
+
+  "infrastructure": {
+    "title": "Datenbank und technische Infrastruktur",
+    "paragraph": "Für die Speicherung der innerhalb von D.A.M.N. erforderlichen Daten wird eine relationale Datenbank verwendet. Dort können insbesondere Benutzerkontodaten, Organisationsdaten sowie Daten zu Kunstwerken, Künstler:innen, Ausstellungen und Medienzuordnungen gespeichert werden. Der Zugriff auf diese Daten wird durch technische und organisatorische Maßnahmen sowie rollen- und zugriffsbasierte Berechtigungen geschützt."
+  },
+
+  "legalBasis": {
+    "title": "Rechtsgrundlagen",
+    "paragraph": "Die Verarbeitung personenbezogener Daten erfolgt insbesondere auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, soweit die Verarbeitung für die Bereitstellung der vereinbarten Plattformleistungen oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist, sowie auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO, soweit die Verarbeitung zur Wahrung berechtigter Interessen erforderlich ist, insbesondere für den sicheren und technisch ordnungsgemäßen Betrieb der Plattform. Soweit eine Verarbeitung auf einer Einwilligung beruht, erfolgt sie auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO."
+  },
+
+  "recipients": {
+    "title": "Empfänger personenbezogener Daten",
+    "paragraph": "Personenbezogene Daten können im Rahmen des Betriebs von D.A.M.N. an die jeweils eingesetzten technischen Dienstleister übermittelt werden. Dazu gehören insbesondere Hosting- und Infrastrukturanbieter, Datenbank- und Speicheranbieter, Anbieter für die Verarbeitung digitaler Medien, E-Mail- beziehungsweise SMTP-Anbieter sowie Anbieter von KI-Diensten. Eine Weitergabe zu Werbezwecken findet nicht statt."
+  },
+
+  "thirdCountries": {
+    "title": "Übermittlung in Drittländer",
+    "paragraph": "Soweit einzelne eingesetzte externe Dienste personenbezogene Daten außerhalb der Europäischen Union oder des Europäischen Wirtschaftsraums verarbeiten, erfolgt dies unter Beachtung der gesetzlichen Voraussetzungen für Übermittlungen in Drittländer. Abhängig von der jeweiligen Dienstleistung und Konfiguration kann dies insbesondere bei Cloudinary oder Mistral AI relevant sein."
+  },
+
+  "retention": {
+    "title": "Speicherdauer",
+    "paragraph": "Personenbezogene Daten werden grundsätzlich nur so lange gespeichert, wie dies für den jeweiligen Zweck erforderlich ist. Daten eines Benutzerkontos werden grundsätzlich so lange verarbeitet, wie das Konto für die Nutzung von D.A.M.N. benötigt wird oder gesetzliche Aufbewahrungspflichten beziehungsweise berechtigte Interessen eine längere Speicherung erforderlich machen. Daten aus Kontaktanfragen werden nur so lange aufbewahrt, wie dies für die Bearbeitung der Anfrage und die anschließende Kommunikation erforderlich ist, sofern keine weitergehende Speicherung aufgrund einer anschließenden Nutzung von D.A.M.N. oder gesetzlicher Pflichten erforderlich ist."
+  },
+
+  "security": {
+    "title": "Datensicherheit",
+    "paragraph": "Zum Schutz personenbezogener Daten werden angemessene technische und organisatorische Maßnahmen eingesetzt. Dazu gehören insbesondere verschlüsselte Übertragung über HTTPS, sichere Authentifizierungsmechanismen, das Hashing von Passwörtern, rollenbasierte Zugriffskontrollen, serverseitige Validierung von Eingaben sowie beschränkte Zugriffe auf Daten und technische Systeme."
+  },
+
+  "rights": {
+    "title": "Rechte der betroffenen Personen",
+    "paragraph": "Betroffene Personen haben nach Maßgabe der gesetzlichen Voraussetzungen insbesondere das Recht auf Auskunft gemäß Art. 15 DSGVO, Berichtigung gemäß Art. 16 DSGVO, Löschung gemäß Art. 17 DSGVO, Einschränkung der Verarbeitung gemäß Art. 18 DSGVO, Datenübertragbarkeit gemäß Art. 20 DSGVO und Widerspruch gemäß Art. 21 DSGVO. Soweit eine Verarbeitung auf einer Einwilligung beruht, besteht außerdem das Recht, diese Einwilligung jederzeit mit Wirkung für die Zukunft zu widerrufen. Zur Ausübung der Rechte genügt eine Mitteilung an Mela Heß unter melaniehe@t-online.de."
+  },
+
+  "complaint": {
+    "title": "Beschwerderecht",
+    "paragraph": "Betroffene Personen haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung ihrer personenbezogenen Daten zu beschweren. Die zuständige Aufsichtsbehörde kann sich insbesondere nach dem gewöhnlichen Aufenthaltsort, dem Arbeitsplatz oder dem Ort des mutmaßlichen Verstoßes richten."
+  },
+
+  "automatedDecisionMaking": {
+    "title": "Automatisierte Entscheidungsfindung",
+    "paragraph": "Die innerhalb von D.A.M.N. eingesetzten KI-Funktionen dienen der Unterstützung bestimmter Funktionen der Plattform. Eine automatisierte Entscheidungsfindung im Sinne von Art. 22 DSGVO, durch die gegenüber Nutzern rechtliche Wirkung entfaltet oder sie in ähnlicher Weise erheblich beeinträchtigt werden, findet nicht statt."
+  },
+
+  "changes": {
+    "title": "Änderungen dieser Datenschutzerklärung",
+    "paragraph": "Diese Datenschutzerklärung kann angepasst werden, wenn sich die technische Umsetzung, die angebotenen Funktionen oder die rechtlichen Anforderungen ändern. Es gilt jeweils die auf dieser Website veröffentlichte aktuelle Fassung."
   }
 }

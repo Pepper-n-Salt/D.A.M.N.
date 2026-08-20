@@ -1,23 +1,67 @@
 import express from "express";
-// an dieser Stelle noch die middleware importieren
+import { checkAuth } from "../middleware/checkAuth.js";
+import { requireSuperUser } from "../middleware/requireSuperUser.js";
 import {
   showAllArtworks,
   showOneArtwork,
+  showDeletedArtworks,
   createArtwork,
   updateArtwork,
   deleteArtwork,
+  restoreArtwork,
 } from "../controllers/artworkController";
+import { validateBody, validateParams } from "../middleware/validate.js";
+import {
+  artworkIdSchema,
+  artworkLanguageSchema,
+  artworkIdLanguageParamsSchema,
+  createArtworkSchema,
+  updateArtworkSchema,
+} from "../schemas/artworkSchema.js";
 
 const router = express.Router();
 
-router.get("/", () => {}, showAllArtworks);
+router.use(checkAuth);
 
-router.get("/:artworkId", () => {}, showOneArtwork);
+router.get(
+  "/:languageCode",
+  validateParams(artworkLanguageSchema),
+  showAllArtworks
+);
+router.get(
+  "/deleted/:languageCode",
+  requireSuperUser,
+  validateParams(artworkLanguageSchema),
+  showDeletedArtworks
+);
 
-router.post("/", () => {}, createArtwork);
+router.get(
+  "/:artworkId/:languageCode",
+  validateParams(artworkIdLanguageParamsSchema),
+  showOneArtwork
+);
 
-router.patch("/:artworkId", () => {}, updateArtwork);
+router.post("/", validateBody(createArtworkSchema), createArtwork);
 
-router.delete("/:artworkId", () => {}, deleteArtwork);
+router.patch(
+  "/:artworkId/delete",
+  requireSuperUser,
+  validateParams(artworkIdSchema),
+  deleteArtwork
+);
+
+router.patch(
+  "/:artworkId/restore",
+  requireSuperUser,
+  validateParams(artworkIdSchema),
+  restoreArtwork
+);
+
+router.patch(
+  "/:artworkId/:languageCode",
+  validateParams(artworkIdLanguageParamsSchema),
+  validateBody(updateArtworkSchema),
+  updateArtwork
+);
 
 export default router;

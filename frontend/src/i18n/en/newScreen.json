@@ -1,59 +1,31 @@
 {
   "newScreen": {
-    "title": "Create Screen",
-    "paragraph": "Configure a digital presentation for your exhibitions, artworks and presented artists.",
-
-    "selectType": "Select Screen Type",
+    "title": "Create static screen",
+    "paragraph": "First, select which content you want to display on the screen.",
+    "selectType": "Select content",
+    "loading": "Loading...",
+    "error": "The content could not be loaded.",
+    "createStaticScreen": "Create static screen",
 
     "staticScreens": {
-      "title": "Static Screens",
-
       "exhibition": {
         "title": "Exhibition",
-        "description": "Display current exhibitions and related information."
+        "description": "Display an exhibition as a static screen.",
+        "show": "Select exhibition",
+        "empty": "No exhibitions available."
       },
-
       "artwork": {
         "title": "Artwork",
-        "description": "Present individual artworks with metadata."
+        "description": "Display an artwork as a static screen.",
+        "show": "Select artwork",
+        "empty": "No artworks available."
       },
-
       "artist": {
         "title": "Artist",
-        "description": "Show artist information and selected works."
+        "description": "Display an artist as a static screen.",
+        "show": "Select artist",
+        "empty": "No artists available."
       }
-    },
-
-    "dynamicScreens": {
-      "title": "Dynamic Screens",
-
-      "interactiveArtwork": {
-        "title": "Interactive Artwork",
-        "description": "Explore artworks through zoom and interaction.",
-        "comingSoon": "Coming soon"
-      },
-
-      "digitalExperience": {
-        "title": "Digital Experience",
-        "description": "Create immersive and animated presentations.",
-        "comingSoon": "Coming soon"
-      }
-    },
-
-    "screenInformation": {
-      "title": "Screen Information",
-
-      "screenName": {
-        "label": "Screen Name",
-        "placeholder": "Main Gallery Screen"
-      },
-
-      "location": {
-        "label": "Location",
-        "placeholder": "Entrance Hall"
-      },
-
-      "submit": "Create Screen"
     }
   }
 }

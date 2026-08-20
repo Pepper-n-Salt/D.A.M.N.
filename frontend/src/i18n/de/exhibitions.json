@@ -11,9 +11,27 @@
     "button": "Neue Ausstellung hinzufügen →"
   },
   "archived": {
-    "title": "Archivierte Ausstellungen"
+    "title": "Archivierte Ausstellungen",
+    "notfound": "Keine archivierten Exhibitions vorhanden.",
+    "error": "Die archivierten Exhibitions konnten nicht geladen werden."
   },
   "deleted": {
-    "title": "Gelöschte Ausstellungen"
+    "title": "Gelöschte Ausstellungen",
+    "loading": "Laden...",
+    "notfound": "Keine gelöschten Exhibitions gefunden.",
+    "error": "Die gelöschten Exhibitions konnten nicht geladen werden.",
+    "restore": "Wiederherstellen",
+    "restoreConfirm": "Möchtest du diese Exhibition wirklich wiederherstellen?",
+    "restoreError": "Die Exhibition konnte nicht wiederhergestellt werden."
+  },
+  "messages": {
+    "loadError": "Die Ausstellungen konnten nicht geladen werden.",
+    "noItems": "Keine Ausstellungen gefunden."
+  },
+  "card": {
+    "createdBy": "Erstellt von",
+    "delete": "Löschen",
+    "deleteConfirm": "Möchtest du diese Exhibition wirklich löschen? Die deutsche und englische Version werden gemeinsam gelöscht.",
+    "deleteError": "Die Exhibition konnte nicht gelöscht werden."
   }
 }

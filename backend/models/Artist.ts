@@ -1,5 +1,8 @@
 import { DataTypes, Model } from "sequelize";
-import db from "../lib/db.js"; // wird später so zur Laufzeit kompiliert
+import db from "../lib/db.js";
+import ArtistTranslation from "./ArtistTranslation.js";
+import User from "./User.js";
+import Media from "./Media.js";
 
 class Artist extends Model {
   declare id: string;
@@ -9,6 +12,10 @@ class Artist extends Model {
   declare createdBy: string;
   declare lastEditedBy: string | null;
   declare isDeleted: boolean;
+
+  declare ArtistTranslations?: ArtistTranslation[];
+  declare creator?: User;
+  declare Medium?: Media;
 }
 
 Artist.init(

@@ -1,388 +1,586 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 
 import H1 from "../components/ui/typography/H1";
-import H2 from "../components/ui/typography/H2";
-import H3 from "../components/ui/typography/H3";
 import P from "../components/ui/typography/P";
+
+import ArtworkForm, {
+  type ArtworkFormData,
+  type Artist,
+  type Language,
+} from "../components/ArtworkForm";
+
+import { createArtwork, getArtwork, updateArtwork } from "../api/artworkApi";
+
+import {
+  previewArtworkTranslation,
+  createArtworkTranslation,
+  updateArtworkTranslation,
+} from "../api/artworkTranslationApi";
+
+import { getArtists } from "../api/artistApi";
+
+const createEmptyFormData = (): ArtworkFormData => ({
+  title: "",
+  subtitle: "",
+  artists: [],
+  year: "",
+  country: "",
+  origin: "",
+  material: "",
+  dimensions: "",
+  description: "",
+  image: null,
+  imageId: "",
+});
 
 export default function NewArtworkPage() {
   const { t } = useTranslation("newArtwork");
 
-  const [showImport, setShowImport] = useState(false);
-  const [, setSearchResults] = useState<any[]>([]);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [language, setLanguage] = useState("german");
+  const { id } = useParams<{ id: string }>();
+
+  const isEditMode = !!id;
+
+  const [language, setLanguage] = useState<Language>("german");
+
+  const [artworkId, setArtworkId] = useState<string | null>(null);
+
   const [artworkSaved, setArtworkSaved] = useState(false);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    subtitle: "",
-    artists: [] as string[],
-    biography: "",
-    year: "",
-    origin: "",
-    originDescription: "",
-    material: "",
-    dimensions: "",
-    description: "",
-  });
+  const [translationLanguage, setTranslationLanguage] =
+    useState<Language | null>(null);
 
-  const artists = [
-    "Vincent van Gogh",
-    "Pablo Picasso",
-    "Claude Monet",
-    "Leonardo da Vinci",
-    "Frida Kahlo",
-  ];
+  const [translationSaved, setTranslationSaved] = useState(false);
 
-  const artworkResults = [
-    {
-      objectID: "123",
-      title: "The Starry Night 2",
-      artistName: "Vincent van Gogh",
-      year: "1889",
-      material: "Oil on canvas",
-    },
-  ];
+  const [formData, setFormData] = useState<ArtworkFormData>(
+    createEmptyFormData()
+  );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setArtworkSaved(true);
+  const [translationFormData, setTranslationFormData] =
+    useState<ArtworkFormData>(createEmptyFormData());
+
+  const [artists, setArtists] = useState<Artist[]>([]);
+
+  const [translationArtists, setTranslationArtists] = useState<Artist[]>([]);
+
+  const [isSaving, setIsSaving] = useState(false);
+
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  const [error, setError] = useState<string | null>(null);
+
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+  /*
+   * ------------------------------------------------------------------------
+   * Artists laden
+   * ------------------------------------------------------------------------
+   *
+   * getArtists() ruft das Backend auf.
+   *
+   * Die Backend-Logik muss dort anhand des eingeloggten Users entscheiden:
+   *
+   * - normaler User/Admin -> Artists seiner organisationId
+   * - super -> alle Artists
+   *
+   * Die Organisation wird NICHT im Frontend gefiltert.
+   */
+
+  useEffect(() => {
+    const loadArtists = async () => {
+      try {
+        const languageCode = language === "german" ? "de" : "en";
+
+        const result = await getArtists(languageCode);
+
+        setArtists(result as Artist[]);
+      } catch (error) {
+        console.error(error);
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Die Artists konnten nicht geladen werden."
+        );
+      }
+    };
+
+    loadArtists();
+  }, [language]);
+
+  /*
+   * ------------------------------------------------------------------------
+   * Artists für Übersetzung laden
+   * ------------------------------------------------------------------------
+   */
+
+  useEffect(() => {
+    if (!translationLanguage) {
+      setTranslationArtists([]);
+      return;
+    }
+
+    const loadTranslationArtists = async () => {
+      try {
+        const languageCode = translationLanguage === "german" ? "de" : "en";
+
+        const result = await getArtists(languageCode);
+
+        setTranslationArtists(result as Artist[]);
+      } catch (error) {
+        console.error(error);
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Die Artists konnten nicht geladen werden."
+        );
+      }
+    };
+
+    loadTranslationArtists();
+  }, [translationLanguage]);
+
+  /*
+   * ------------------------------------------------------------------------
+   * Bestehendes Artwork laden
+   * ------------------------------------------------------------------------
+   */
+
+  useEffect(() => {
+    if (!id) return;
+
+    const loadArtwork = async () => {
+      try {
+        setError(null);
+
+        let germanResult = null;
+        let englishResult = null;
+
+        try {
+          germanResult = await getArtwork(id, "german");
+        } catch {
+          console.log("Keine deutsche Translation gefunden.");
+        }
+
+        try {
+          englishResult = await getArtwork(id, "english");
+        } catch {
+          console.log("Keine englische Translation gefunden.");
+        }
+
+        if (!germanResult && !englishResult) {
+          throw new Error(
+            "Das Artwork oder seine Übersetzungen konnten nicht geladen werden."
+          );
+        }
+
+        setArtworkId(id);
+
+        /*
+         * Nur Deutsch vorhanden
+         */
+
+        if (germanResult && !englishResult) {
+          setLanguage("german");
+
+          setFormData({
+            title: germanResult.title,
+            subtitle: germanResult.subtitle ?? "",
+            artists: germanResult.artists?.map((artist) => artist.id) ?? [],
+            year: germanResult.year?.toString() ?? "",
+            country: germanResult.country ?? "",
+            origin: germanResult.origin ?? "",
+            material: germanResult.material ?? "",
+            dimensions: germanResult.dimensions ?? "",
+            description: germanResult.description ?? "",
+            image: null,
+            imageId: germanResult.imageId ?? "",
+          });
+
+          setImageUrl(germanResult.fileUrl ?? null);
+
+          setTranslationLanguage(null);
+          setTranslationSaved(false);
+        }
+
+        /*
+         * Nur Englisch vorhanden
+         */
+
+        if (!germanResult && englishResult) {
+          setLanguage("english");
+
+          setFormData({
+            title: englishResult.title,
+            subtitle: englishResult.subtitle ?? "",
+            artists: englishResult.artists?.map((artist) => artist.id) ?? [],
+            year: englishResult.year?.toString() ?? "",
+            country: englishResult.country ?? "",
+            origin: englishResult.origin ?? "",
+            material: englishResult.material ?? "",
+            dimensions: englishResult.dimensions ?? "",
+            description: englishResult.description ?? "",
+            image: null,
+            imageId: englishResult.imageId ?? "",
+          });
+
+          setImageUrl(englishResult.fileUrl ?? null);
+
+          setTranslationLanguage(null);
+          setTranslationSaved(false);
+        }
+
+        /*
+         * Deutsch + Englisch vorhanden
+         */
+
+        if (germanResult && englishResult) {
+          setLanguage("german");
+
+          setFormData({
+            title: germanResult.title,
+            subtitle: germanResult.subtitle ?? "",
+            artists: germanResult.artists?.map((artist) => artist.id) ?? [],
+            year: germanResult.year?.toString() ?? "",
+            country: germanResult.country ?? "",
+            origin: germanResult.origin ?? "",
+            material: germanResult.material ?? "",
+            dimensions: germanResult.dimensions ?? "",
+            description: germanResult.description ?? "",
+            image: null,
+            imageId: germanResult.imageId ?? "",
+          });
+
+          setImageUrl(germanResult.fileUrl ?? null);
+
+          setTranslationLanguage("english");
+
+          setTranslationFormData({
+            title: englishResult.title,
+            subtitle: englishResult.subtitle ?? "",
+            artists: englishResult.artists?.map((artist) => artist.id) ?? [],
+            year: englishResult.year?.toString() ?? "",
+            country: englishResult.country ?? "",
+            origin: englishResult.origin ?? "",
+            material: englishResult.material ?? "",
+            dimensions: englishResult.dimensions ?? "",
+            description: englishResult.description ?? "",
+            image: null,
+            imageId: englishResult.imageId ?? "",
+          });
+
+          setTranslationSaved(true);
+        }
+
+        setArtworkSaved(true);
+      } catch (error) {
+        console.error(error);
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Das Artwork konnte nicht geladen werden."
+        );
+      }
+    };
+
+    loadArtwork();
+  }, [id]);
+
+  /*
+   * ------------------------------------------------------------------------
+   * Artwork speichern / aktualisieren
+   * ------------------------------------------------------------------------
+   */
+
+  const handleSave = async (
+    imageId: string | null,
+    newImageUrl: string | null
+  ) => {
+    if (isSaving) return;
+
+    setImageUrl(newImageUrl);
+
+    setError(null);
+    setIsSaving(true);
+
+    try {
+      /*
+       * NEUES Artwork
+       */
+
+      if (!isEditMode) {
+        if (!imageId) {
+          throw new Error("Für ein neues Artwork wird eine Image-ID benötigt.");
+        }
+
+        const toSend = { ...formData, imageId };
+
+        const result = await createArtwork(toSend, language);
+
+        setArtworkId(result.id);
+        setArtworkSaved(true);
+
+        console.log("Artwork gespeichert:", result);
+
+        return;
+      }
+
+      /*
+       * BESTEHENDES Artwork
+       */
+
+      if (!id) {
+        throw new Error("Keine Artwork-ID vorhanden.");
+      }
+
+      const toSend = { ...formData, ...(imageId ? { imageId } : {}) };
+
+      const result = await updateArtwork(id, language, toSend);
+
+      setArtworkId(result.id);
+      setArtworkSaved(true);
+
+      console.log("Artwork aktualisiert:", result);
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Das Artwork konnte nicht gespeichert werden."
+      );
+
+      setArtworkSaved(false);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleImageSelect = (file: File | null) => {
+    if (!file) {
+      setImagePreviewUrl(null);
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+
+    setImagePreviewUrl(previewUrl);
+  };
+
+  const handleRemoveImage = () => {
+    setImageUrl(null);
+    setImagePreviewUrl(null);
+
+    setFormData((previous) => ({
+      ...previous,
+      image: null,
+    }));
+  };
+
+  /*
+   * ------------------------------------------------------------------------
+   * Übersetzung von Mistral anfordern
+   * ------------------------------------------------------------------------
+   */
+
+  const handleTranslate = async () => {
+    if (!artworkId) {
+      setError(
+        "Das Artwork muss zuerst gespeichert werden, bevor es übersetzt werden kann."
+      );
+
+      return;
+    }
+
+    if (isTranslating) return;
+
+    const newLanguage: Language = language === "german" ? "english" : "german";
+
+    setError(null);
+    setIsTranslating(true);
+
+    try {
+      const result = await previewArtworkTranslation(artworkId, newLanguage);
+
+      setTranslationFormData({
+        title: result.title,
+        subtitle: result.subtitle ?? "",
+        artists: formData.artists,
+        year: formData.year,
+        country: result.country ?? "",
+        origin: result.origin ?? "",
+        material: formData.material,
+        dimensions: formData.dimensions,
+        description: result.description ?? "",
+        image: null,
+        imageId: formData.imageId,
+      });
+
+      setTranslationLanguage(newLanguage);
+
+      setTranslationSaved(result.alreadyExists === true);
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Die Übersetzung konnte nicht erstellt werden."
+      );
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  /*
+   * ------------------------------------------------------------------------
+   * Übersetzung speichern / aktualisieren
+   * ------------------------------------------------------------------------
+   */
+
+  const handleSaveTranslation = async (
+    _imageId?: string | null,
+    _newImageUrl?: string | null
+  ) => {
+    if (!artworkId || !translationLanguage) {
+      setError("Das Artwork muss zuerst gespeichert und übersetzt werden.");
+
+      return;
+    }
+
+    if (isSaving) return;
+
+    setError(null);
+    setIsSaving(true);
+
+    try {
+      /*
+       * Neue Translation
+       */
+
+      if (!translationSaved) {
+        await createArtworkTranslation(
+          artworkId,
+          translationFormData,
+          translationLanguage
+        );
+
+        setTranslationSaved(true);
+
+        console.log("Übersetzung gespeichert.");
+
+        return;
+      }
+
+      /*
+       * Bestehende Translation
+       */
+
+      await updateArtworkTranslation(
+        artworkId,
+        translationLanguage,
+        translationFormData
+      );
+
+      setTranslationSaved(true);
+
+      console.log("Übersetzung aktualisiert.");
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Die Übersetzung konnte nicht gespeichert werden."
+      );
+
+      setTranslationSaved(false);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <section className="space-y-10 py-8">
-      <div className="border-b border-neutral-200 pt-12 space-y-8">
-        <H1>{t("hero.title")}</H1>
-        <P>{t("hero.paragraph")}</P>
-
+      <div className="space-y-8 border-b border-neutral-200 pt-12">
+        <H1> {isEditMode ? t("hero.editTitle") : t("hero.title")} </H1>{" "}
+        <P> {isEditMode ? t("hero.editParagraph") : t("hero.paragraph")} </P>
         <br />
       </div>
 
-      <div className="flex">
-        <div>
-          <div className="items-center gap-6 mb-20 border-b border-neutral-200 pt-12 space-y-8">
-            <button
-              type="button"
-              onClick={() => setShowImport(!showImport)}
-              className="border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white"
-            >
-              {showImport ? t("import.close") : t("import.open")}
-            </button>
-            <br />
-            <br />
-            <P>{t("import.hint")}</P>
-            <br />
-          </div>
+      {error && (
+        <div className="border border-red-600 p-4 text-red-600">{error}</div>
+      )}
 
-          {showImport && (
-            <section>
-              <div>
-                <H2>{t("import.label")}</H2>
-                <br />
-                <H3>{t("import.title")}</H3>
-                <br />
-              </div>
+      <div
+        className={`flex w-full gap-8 ${
+          translationLanguage ? "flex-col lg:flex-row" : "flex-col"
+        }`}
+      >
+        {/* ORIGINAL */}
 
-              <div className="max-w-xl flex gap-8 border-b border-neutral-200 pt-12 space-y-8">
-                <input
-                  type="text"
-                  placeholder={t("import.placeholder")}
-                  className="flex-1 border-b border-black bg-transparent py-3 outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchResults(artworkResults);
-                    setHasSearched(true);
-                  }}
-                  className="border border-black px-6 py-3 uppercase tracking-[0.2em] text-sm hover:bg-black hover:text-white transition-colors"
-                >
-                  {t("import.search")}
-                </button>
-                <br />
-              </div>
+        <div className="w-full">
+          <ArtworkForm
+            language={language}
+            onLanguageChange={setLanguage}
+            formData={formData}
+            setFormData={setFormData}
+            artists={artists}
+            artworkSaved={artworkSaved}
+            onSave={handleSave}
+            imageUrl={imageUrl}
+            imagePreviewUrl={imagePreviewUrl}
+            onImageSelect={handleImageSelect}
+            onRemoveImage={handleRemoveImage}
+            onTranslate={handleTranslate}
+            showTranslateButton={translationLanguage === null}
+            languageDisabled={translationLanguage !== null}
+            isSaving={isSaving}
+            isTranslating={isTranslating}
+          />
 
-              {/* {searchResults.length > 0 && (
-                <div>
-                  <br />
-                  <P>{searchResults.length} {t("import.results")}</P>
-                </div>
-              )} */}
-              <br />
-              <br />
-              {hasSearched && (
-                <div className="divide-y divide-neutral-200">
-                  {artworkResults.map((artwork) => (
-                    <div key={artwork.objectID} className="py-8">
-                      <h3 className="text-xl font-light">{artwork.title}</h3>
-                      <p className="mt-2 text-sm text-neutral-500">
-                        {artwork.artistName} · {artwork.year}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setFormData({
-                            ...formData,
-                            title: artwork.title ?? "",
-                            artists: artwork.artistName
-                              ? [artwork.artistName]
-                              : [],
-                            year: artwork.year ?? "",
-                            material: artwork.material ?? "",
-                          });
-                          setShowImport(false);
-                        }}
-                        className="mt-6 border border-black px-6 py-3 uppercase tracking-[0.2em] text-sm transition-colors duration-300 hover:bg-black hover:text-white"
-                      >
-                        {t("import.button")}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
+          {isSaving && !translationLanguage && (
+            <p className="mt-4 text-sm uppercase tracking-[0.2em]">
+              Speichern...
+            </p>
+          )}
+
+          {isTranslating && (
+            <p className="mt-4 text-sm uppercase tracking-[0.2em]">
+              Übersetzung wird erstellt...
+            </p>
           )}
         </div>
-        <form
-          className="mx-auto flex w-full max-w-3xl flex-col gap-8 rounded-none border border-black p-8"
-          onSubmit={handleSubmit}
-        >
-          <div className="flex flex-col gap-2 mb-10">
-            <label
-              htmlFor="language"
-              className="text-sm uppercase tracking-[0.2em]"
-            >
-              {t("form.language")}
-            </label>
-            <select
-              id="language"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="border-b border-black bg-transparent py-3 outline-none"
-            >
-              <option value="german">{t("form.languages.german")}</option>
-              <option value="english">{t("form.languages.english")}</option>
-            </select>
-          </div>
 
-          <div className="grid gap-8 md:grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="title"
-                className="text-sm uppercase tracking-[0.2em]"
-              >
-                {t("form.title")}
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                className="border-b border-black bg-transparent py-3 outline-none"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="subtitle"
-                className="text-sm uppercase tracking-[0.2em]"
-              >
-                {t("form.subtitle")}
-              </label>
-              <input
-                type="text"
-                id="subtitle"
-                name="subtitle"
-                className="border-b border-black bg-transparent py-3 outline-none"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="artists"
-                className="text-sm uppercase tracking-[0.2em]"
-              >
-                {t("form.artist")}
-              </label>
+        {/* TRANSLATION */}
 
-              <select
-                id="artists"
-                value=""
-                onChange={(e) => {
-                  const selectedArtist = e.target.value;
-
-                  if (
-                    selectedArtist &&
-                    !formData.artists.includes(selectedArtist)
-                  ) {
-                    setFormData({
-                      ...formData,
-                      artists: [...formData.artists, selectedArtist],
-                    });
-                  }
-                }}
-                className="tracking-widest leading-loose
-                border-b
-                border-black
-                bg-transparent
-                py-3
-                outline-none uppercase text-neutral-500"
-              >
-                <option value="">{t("form.selectArtist")}</option>
-
-                {artists.map((artist) => (
-                  <option key={artist} value={artist}>
-                    {artist}
-                  </option>
-                ))}
-              </select>
-
-              {formData.artists.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {formData.artists.map((artist) => (
-                    <div
-                      key={artist}
-                      className="flex items-center gap-2 border border-black px-3 py-2 text-sm tracking-widest leading-looses uppercase"
-                    >
-                      {artist}
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setFormData({
-                            ...formData,
-                            artists: formData.artists.filter(
-                              (a) => a !== artist
-                            ),
-                          })
-                        }
-                        className="text-xs"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="year"
-                className="text-sm uppercase tracking-[0.2em]"
-              >
-                {t("form.year")}
-              </label>
-              <input
-                type="number"
-                id="year"
-                name="year"
-                className="border-b border-black bg-transparent py-3 outline-none"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="land"
-                className="text-sm uppercase tracking-[0.2em]"
-              >
-                {t("form.country")}
-              </label>
-              <input
-                type="text"
-                id="land"
-                name="land"
-                className="border-b border-black bg-transparent py-3 outline-none"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="origin"
-                className="text-sm uppercase tracking-[0.2em]"
-              >
-                {t("form.origin")}
-              </label>
-              <input
-                type="text"
-                id="origin"
-                name="origin"
-                className="border-b border-black bg-transparent py-3 outline-none"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="material"
-                className="text-sm uppercase tracking-[0.2em]"
-              >
-                {t("form.material")}
-              </label>
-              <input
-                type="text"
-                id="material"
-                name="material"
-                className="border-b border-black bg-transparent py-3 outline-none"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="dimensions"
-                className="text-sm uppercase tracking-[0.2em]"
-              >
-                {t("form.dimensions")}
-              </label>
-              <input
-                type="text"
-                id="dimensions"
-                name="dimensions"
-                className="border-b border-black bg-transparent py-3 outline-none"
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="description"
-              className="text-sm uppercase tracking-[0.2em]"
-            >
-              {t("form.description")}
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              rows={6}
-              className="resize-none border-b border-black bg-transparent py-3 outline-none"
+        {translationLanguage !== null && (
+          <div className="w-full">
+            <ArtworkForm
+              language={translationLanguage}
+              onLanguageChange={setTranslationLanguage}
+              formData={translationFormData}
+              setFormData={setTranslationFormData}
+              artists={translationArtists}
+              artworkSaved={translationSaved}
+              onSave={handleSaveTranslation}
+              showTranslateButton={false}
+              languageDisabled={true}
+              isSaving={isSaving}
+              showImage={false}
             />
+
+            {translationSaved && (
+              <p className="mt-4 text-sm uppercase tracking-[0.2em]">
+                Übersetzung gespeichert.
+              </p>
+            )}
           </div>
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="image"
-              className="text-sm uppercase tracking-[0.2em]"
-            >
-              {t("form.image")}
-            </label>
-            <input
-              type="file"
-              id="image"
-              name="image"
-              accept="image/*"
-              className="cursor-pointer border border-black bg-transparent p-3"
-            />
-          </div>
-          <div className="flex flex-wrap gap-4">
-            <button
-              type="submit"
-              className="border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 hover:bg-black hover:text-white"
-            >
-              {t("actions.save")}
-            </button>
-            <button
-              type="button"
-              disabled={!artworkSaved}
-              className={`border px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${artworkSaved ? "border-black hover:bg-black hover:text-white" : "cursor-not-allowed border-gray-300 text-gray-400"}`}
-            >
-              {language === "german"
-                ? t("actions.translateToEnglish")
-                : t("actions.translateToGerman")}
-            </button>
-          </div>
-        </form>
+        )}
       </div>
     </section>
   );

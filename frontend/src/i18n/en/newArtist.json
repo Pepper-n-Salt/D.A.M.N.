@@ -1,25 +1,42 @@
 {
-  "newArtist": {
+  "hero": {
     "title": "Add a New Artist",
     "paragraph": "Create a new artist entry for the platform.",
-    "form": {
-      "language": "Form Language",
-      "languages": {
-        "german": "German",
-        "english": "English"
-      },
-      "firstname": "First Name",
-      "lastname": "Last Name",
-      "dateOfBirth": "Date of Birth",
-      "dateOfDeath": "Date of Death",
-      "country": "Country",
-      "description": "Description",
-      "image": "Upload Image"
+    "editTitle": "Edit Current Artist",
+    "editParagraph": "Edit the details below to update the current artist."
+  },
+  "form": {
+    "language": "In which language would you like to add the artist?",
+    "languages": {
+      "german": "German",
+      "english": "English"
     },
-    "actions": {
-      "save": "Save Artist",
-      "translateToEnglish": "Translate into English",
-      "translateToGerman": "Translate into German"
-    }
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "dateOfBirth": "Date of Birth",
+    "dateOfDeath": "Date of Death",
+    "country": "Country",
+    "description": "Description",
+    "image": "Upload Image"
+  },
+  "messages": {
+    "savingImage": "Saving image...",
+    "imageSelected": "Image selected",
+    "saving": "Saving...",
+    "translationCreating": "Creating translation...",
+    "translationSaved": "Translation saved.",
+    "artistMustBeSaved": "The artist must be saved before it can be translated.",
+    "artistMustBeSavedAndTranslated": "The artist must be saved and translated first.",
+    "artistNotFound": "The artist or its translations could not be loaded.",
+    "loadError": "The artist could not be loaded.",
+    "saveError": "The artist could not be saved.",
+    "translationError": "The translation could not be created.",
+    "translationSaveError": "The translation could not be saved.",
+    "noArtistId": "No artist ID available."
+  },
+  "actions": {
+    "save": "Save Artist",
+    "translateToEnglish": "Translate into English",
+    "translateToGerman": "Translate into German"
   }
 }

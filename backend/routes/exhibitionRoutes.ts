@@ -1,27 +1,101 @@
 import express from "express";
-// an dieser Stelle noch die middleware importieren
+import { checkAuth } from "../middleware/checkAuth.js";
+import { requireSuperUser } from "../middleware/requireSuperUser.js";
+
 import {
   showOneExhibition,
   showAllExhibitions,
+  showDeletedExhibitions,
   createExhibition,
   updateExhibition,
   archiveExhibition,
   deleteExhibition,
-} from "../controllers/exhibitionController";
+  restoreExhibition,
+  setExhibitionScreen,
+  removeExhibitionScreen,
+} from "../controllers/exhibitionController.js";
+
+import { validateBody, validateParams } from "../middleware/validate.js";
+
+import {
+  exhibitionIdSchema,
+  exhibitionLanguageSchema,
+  exhibitionIdLanguageParamsSchema,
+  createExhibitionSchema,
+  updateExhibitionSchema,
+} from "../schemas/exhibitionSchema.js";
 
 const router = express.Router();
 
-router.get("/", showAllExhibitions); // hinterher wieder middleware einfügen
+router.use(checkAuth);
 
-router.get("/:exhibitionId", showOneExhibition); // hier auch nach dem testen wieder middlewae einfügen
+// Alle gelöschten Exhibitions abrufen (geht nur für SuperUser)
+router.get(
+  "/deleted/:languageCode",
+  requireSuperUser,
+  validateParams(exhibitionLanguageSchema),
+  showDeletedExhibitions
+);
 
-router.post("/", createExhibition); // hier auch nach dem testen wieder middlewae einfügen
+// Alle nicht gelöschten Exhibitions abrufen
+router.get(
+  "/:languageCode",
+  validateParams(exhibitionLanguageSchema),
+  showAllExhibitions
+);
 
-router.patch("/:exhibitionId", () => {}, updateExhibition);
-// patch, weil in der Regel wahrscheinlich nur einzelne Felder geändert werden // put wäre den kompletten Datensatz zu ändern
+// Nur eine einzelne Exhibtion abrufen
+router.get(
+  "/:exhibitionId/:languageCode",
+  validateParams(exhibitionIdLanguageParamsSchema),
+  showOneExhibition
+);
 
-router.patch("/:exhibitionId/archive", () => {}, archiveExhibition);
+// Eine neue Exhibtion anlegen
+router.post("/", validateBody(createExhibitionSchema), createExhibition);
 
-router.delete("/:exhibitionId", () => {}, deleteExhibition);
+// Eine Exhibition archivieren
+router.patch(
+  "/:exhibitionId/archive",
+  validateParams(exhibitionIdSchema),
+  archiveExhibition
+);
+
+// Eine Exhibition löschen (Soft Delete)
+router.patch(
+  "/:exhibitionId/delete",
+  validateParams(exhibitionIdSchema),
+  deleteExhibition
+);
+
+// Eine Exhibtion wiederherstellen (geht nur für Superuser)
+router.patch(
+  "/:exhibitionId/restore",
+  requireSuperUser,
+  validateParams(exhibitionIdSchema),
+  restoreExhibition
+);
+
+// Eine Exhibition aktualisieren / editieren
+router.patch(
+  "/:exhibitionId/:languageCode",
+  validateParams(exhibitionIdLanguageParamsSchema),
+  validateBody(updateExhibitionSchema),
+  updateExhibition
+);
+
+// Eine Exhibition als Screen markieren
+router.patch(
+  "/:exhibitionId/:languageCode/screen",
+  validateParams(exhibitionIdLanguageParamsSchema),
+  setExhibitionScreen
+);
+
+// Eine Exhibition wieder als Screen entfernen
+router.patch(
+  "/:exhibitionId/:languageCode/unscreen",
+  validateParams(exhibitionIdLanguageParamsSchema),
+  removeExhibitionScreen
+);
 
 export default router;

@@ -1,25 +1,42 @@
 {
-  "newArtist": {
-    "title": "Neuen Künstler oder eine Künstlerin hinzufügen",
-    "paragraph": "Erstelle einen neuen Eintrag für eine Künstlerin oder einen Künstler auf der Plattform.",
-    "form": {
-      "language": "Formularsprache",
-      "languages": {
-        "german": "Deutsch",
-        "english": "Englisch"
-      },
-      "firstname": "Vorname",
-      "lastname": "Nachname",
-      "dateOfBirth": "Geburtsdatum",
-      "dateOfDeath": "Sterbedatum",
-      "country": "Land",
-      "description": "Beschreibung",
-      "image": "Bild hochladen"
+  "hero": {
+    "title": "Neue:n Künstler:in hinzufügen",
+    "paragraph": "Erstelle einen neuen Eintrag für eine:n Künstler:in auf der Plattform.",
+    "editTitle": "Künstler:in bearbeiten",
+    "editParagraph": "Bearbeite die folgenden Angaben, um bestehende Künstler:innen zu aktualisieren."
+  },
+  "form": {
+    "language": "In welcher Sprache möchten Sie eine:n Künstler:in hinzufügen?",
+    "languages": {
+      "german": "Deutsch",
+      "english": "Englisch"
     },
-    "actions": {
-      "save": "Künstler:in speichern",
-      "translateToEnglish": "Ins Englische übersetzen",
-      "translateToGerman": "Ins Deutsche übersetzen"
-    }
+    "firstname": "Vorname",
+    "lastname": "Nachname",
+    "dateOfBirth": "Geburtsdatum",
+    "dateOfDeath": "Sterbedatum",
+    "country": "Land",
+    "description": "Beschreibung",
+    "image": "Bild hochladen"
+  },
+  "messages": {
+    "savingImage": "Bild wird gespeichert...",
+    "imageSelected": "Bild ausgewählt",
+    "saving": "Speichern...",
+    "translationCreating": "Übersetzung wird erstellt...",
+    "translationSaved": "Übersetzung gespeichert.",
+    "artistMustBeSaved": "Der Artist muss zuerst gespeichert werden, bevor er übersetzt werden kann.",
+    "artistMustBeSavedAndTranslated": "Der Artist muss zuerst gespeichert und übersetzt werden.",
+    "artistNotFound": "Der Artist oder seine Übersetzungen konnten nicht geladen werden.",
+    "loadError": "Der Artist konnte nicht geladen werden.",
+    "saveError": "Der Artist konnte nicht gespeichert werden.",
+    "translationError": "Die Übersetzung konnte nicht erstellt werden.",
+    "translationSaveError": "Die Übersetzung konnte nicht gespeichert werden.",
+    "noArtistId": "Keine Artist-ID vorhanden."
+  },
+  "actions": {
+    "save": "Künstler:in speichern",
+    "translateToEnglish": "Ins Englische übersetzen",
+    "translateToGerman": "Ins Deutsche übersetzen"
   }
 }

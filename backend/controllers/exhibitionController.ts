@@ -1,150 +1,697 @@
 import type { Request, Response } from "express";
-import { Exhibition } from "../models";
-import { ExhibitionTranslation } from "../models";
+import { Exhibition, ExhibitionTranslation, User, Media } from "../models";
+import db from "../lib/db";
+import { processExhibitionTranslation } from "../services/exhibitionMistralService.js";
 
-// funktioniert
-export const showOneExhibition = async (
-  req: Request<{ exhibitionId: string }>,
+// Alle nicht gelöschten Exhibitions abrufen
+// getestet: klappt!
+export const showAllExhibitions = async (
+  req: Request<{ languageCode: string }>,
   res: Response
 ) => {
   try {
-    // Exhibition ID aus der URL holen
-    const { exhibitionId } = req.params;
+    const { languageCode } = req.params;
 
-    // Exhibition über ID in DB suchen
-    const exhibition = await Exhibition.findByPk(exhibitionId);
+    const exhibitions = await Exhibition.findAll({
+      where: { isDeleted: false },
+      include: [
+        {
+          model: ExhibitionTranslation,
+          where: {
+            languageCode,
+          },
+        },
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "firstName", "lastName"],
+        },
+        {
+          model: Media,
+          attributes: ["id", "fileUrl"],
+        },
+      ],
+    });
 
-    // Fehlermeldung, wenn Exhibition nicht gefunden wurde
-    if (!exhibition) {
-      return res.status(404).json({ msg: "Exhibition not found." });
-    }
+    const result = exhibitions.map((exh) => {
+      const translation = exh.ExhibitionTranslations?.[0];
 
-    // Exhibition zurückgeben, wenn efolgreich
-    return res.status(200).json(exhibition);
+      return {
+        id: exh.id,
+        coverImageId: exh.coverImageId,
+        fileUrl: exh.Medium?.fileUrl ?? null,
+        startDate: exh.startDate,
+        endDate: exh.endDate,
+        createdBy: exh.createdBy,
+        createdByName: exh.creator
+          ? `${exh.creator.firstName} ${exh.creator.lastName}`
+          : null,
+        lastEditedBy: exh.lastEditedBy,
+        isArchived: exh.isArchived,
+        isDeleted: exh.isDeleted,
+        backgroundColor: exh.backgroundColor,
+
+        languageCode: translation?.languageCode,
+        title: translation?.title,
+        subtitle: translation?.subtitle,
+        location: translation?.location,
+        description: translation?.description,
+        // aiGenerated: translation?.aiGenerated,
+        isScreen: translation?.isScreen,
+      };
+    });
+
+    return res.status(200).json(result);
   } catch (e) {
-    return res.status(500).json({ msg: "Server error." });
+    console.error(e);
+
+    return res.status(500).json({ msg: "Server-Fehler." });
   }
 };
 
-// geht auch
-export const showAllExhibitions = async (req: Request, res: Response) => {
+// Einzelne, nicht gelöschte Exhibition abrufen
+// getestet: klappt!
+export const showOneExhibition = async (
+  req: Request<{ exhibitionId: string; languageCode: string }>, // für TS: Parameter req mit einem generischen Request-Typ typisiert, dessen Type Argument ein Object Type Literal ist
+  res: Response
+) => {
   try {
-    const exhibitions = await Exhibition.findAll({
-      where: { isDeleted: false },
+    // Exhibition ID und LanguageCode aus der URL holen
+    const { exhibitionId, languageCode } = req.params;
+
+    // nicht gelöschte Exhibition über ID in DB suchen
+    const exhibition = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: false,
+      },
+      include: [
+        {
+          model: ExhibitionTranslation,
+          where: { languageCode },
+        },
+        {
+          model: Media,
+        },
+      ],
     });
 
-    // da findAll() ein Array zurückgibt, über die Länge des Arrays prüfen
-    if (exhibitions.length === 0) {
-      return res.status(404).json({ msg: "Not a single exhibition found." });
+    if (!exhibition) {
+      return res.status(404).json({ msg: "Exhibition nicht gefunden." });
     }
 
-    return res.status(200).json(exhibitions);
-  } catch (e) {
-    return res.status(500).json({ msg: "Server error." });
-  }
-}; // den brauchen wir für das select- oder suchfeld in artwork
+    // console.log("EXHIBITION MEDIA:", exhibition.Medium?.fileUrl);
 
-// mit testdaten überprüft:
-// {
-//   "startDate": "2026-09-01",
-//   "endDate": "2026-10-15",
-//   "openingEvent": "Vernissage",
-//   "specialEvent": "Artist Talk am 20. September",
-//   "closingEvent": "Finissage",
-//   "primaryColor": "#1A1A1A",
-//   "secondaryColor": "#D4AF37",
-//   "backgroundColor": "#F5F2EA",
-//   "textColor": "#1A1A1A",
-//   "headlineFont": "Helvetica",
-//   "textFont": "Arial",
-//   "roundness": "medium",
-//   "languageCode": "de",
-//   "title": "Zwischen Licht und Raum",
-//   "subtitle": "Zeitgenössische Positionen",
-//   "location": "Leipzig",
-//   "description": "Eine Ausstellung mit zeitgenössischen Positionen zur Beziehung zwischen Licht, Raum und Wahrnehmung.",
-//   "slug": "zwischen-licht-und-raum"
-// }
+    const translation = exhibition.ExhibitionTranslations?.[0];
+
+    if (!translation) {
+      return res
+        .status(404)
+        .json({ msg: "Die Übersetzung der Exhibition wurde nicht gefunden." });
+    }
+
+    // Exhibition- und Translation-Felder zurückgeben, wenn erfolgreich
+    return res.status(200).json({
+      id: exhibition.id,
+      coverImageId: exhibition.coverImageId,
+      fileUrl: exhibition.Medium?.fileUrl,
+      startDate: exhibition.startDate,
+      endDate: exhibition.endDate,
+      createdBy: exhibition.createdBy,
+      lastEditedBy: exhibition.lastEditedBy,
+      isArchived: exhibition.isArchived,
+      isDeleted: exhibition.isDeleted,
+      backgroundColor: exhibition.backgroundColor,
+
+      languageCode: translation?.languageCode,
+      title: translation?.title,
+      subtitle: translation?.subtitle,
+      location: translation?.location,
+      description: translation?.description,
+      // aiGenerated: translation?.aiGenerated,
+      isScreen: translation?.isScreen,
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({ msg: "Server-Fehler" });
+  }
+};
+
+// Neue Exhibition inklusive der ersten Übersetzung erstellen
+// getestet: klappt!
+// export const createExhibition = async (req: Request, res: Response) => {
+//   const t = await db.transaction();
+
+//   try {
+//     const {
+//       coverImageId,
+//       startDate,
+//       endDate,
+//       languageCode,
+//       title,
+//       subtitle,
+//       location,
+//       description,
+//     } = req.body;
+
+//     // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
+//     const exhibition = await Exhibition.create(
+//       {
+//         id: crypto.randomUUID(),
+//         coverImageId,
+//         startDate,
+//         endDate,
+//         createdBy: req.user!.id,
+//         lastEditedBy: req.user!.id,
+//         isArchived: false, // Info kommt vom BE
+//         isDeleted: false, // Info kommt vom BE
+//       },
+//       { transaction: t }
+//     );
+
+//     const translation = await ExhibitionTranslation.create(
+//       {
+//         exhibitionId: exhibition.id, // Info kommt vom BE
+//         languageCode,
+//         title,
+//         subtitle,
+//         location,
+//         description,
+//         aiGenerated: false, // Info kommt vom BE
+//         isScreen: false, // Info kommt vom BE
+//       },
+//       { transaction: t }
+//     );
+
+//     await t.commit();
+
+//     return res.status(201).json({
+//       id: exhibition.id,
+//       coverImageId: exhibition.coverImageId,
+//       startDate: exhibition.startDate,
+//       endDate: exhibition.endDate,
+//       createdBy: exhibition.createdBy,
+//       lastEditedBy: exhibition.lastEditedBy,
+//       isArchived: exhibition.isArchived,
+//       isDeleted: exhibition.isDeleted,
+//       backgroundColor: exhibition.backgroundColor,
+
+//       languageCode: translation.languageCode,
+//       title: translation.title,
+//       subtitle: translation.subtitle,
+//       location: translation.location,
+//       description: translation.description,
+//       // aiGenerated: translation.aiGenerated,
+//       isScreen: translation.isScreen,
+//     });
+//   } catch (e) {
+//     await t.rollback();
+
+//     console.error(e);
+
+//     return res.status(500).json({
+//       msg: "Server-Fehler.",
+//     });
+//   }
+// };
+
+// Neue Exhibition inklusive der ersten Übersetzung erstellen
 export const createExhibition = async (req: Request, res: Response) => {
   try {
     const {
       coverImageId,
       startDate,
       endDate,
-      // openingEvent,
-      // specialEvent,
-      // closingEvent,
-      // primaryColor,
-      // secondaryColor,
-      // backgroundColor,
-      // textColor,
-      // headlineFont,
-      // textFont,
-      // roundness,
       languageCode,
       title,
       subtitle,
       location,
       description,
-      // slug,
     } = req.body;
 
-    // aus Exhibition.create() und aus ExhibitionTranslation.create() in einem späteren Schritt eine Transaction machen, also nur wenn beides geklappt hat, dann wird gespeichert!
-    const exhibition = await Exhibition.create({
-      id: crypto.randomUUID(),
-      coverImageId,
-      startDate,
-      endDate,
-      // openingEvent,
-      // specialEvent,
-      // closingEvent,
-      createdBy: "274da430-60da-4903-b6ac-bf37f1d2853d", // testweise user-id imke eingesetzt // hier noch austauschen, sobald auth-middleware implementiert ist // hier später dann wahrscheinlich req.user.id, aber schauen, wie middleware gebaut ist
-      lastEditedBy: null, // Info kommt vom BE
-      isArchived: false, // Info kommt vom BE
-      isDeleted: false, // Info kommt vom BE
-      // primaryColor,
-      // secondaryColor,
-      // backgroundColor,
-      // textColor,
-      // headlineFont,
-      // textFont,
-      // roundness,
-    });
+    /*
+      ----------------------------------------------------------------------
+      1. Mistral prüft den Inhalt VOR dem DB-Save
+      ----------------------------------------------------------------------
 
-    const translation = await ExhibitionTranslation.create({
-      exhibitionId: exhibition.id,
-      languageCode,
+      Der User hat den Datensatz eingegeben.
+
+      Zod hat bereits die technischen Anforderungen geprüft.
+
+      Jetzt prüft Mistral:
+      - Sprache
+      - Rechtschreibung
+      - Grammatik
+      - offensichtliche sprachliche Probleme
+
+      Mistral schreibt hier noch NICHT in die DB.
+    */
+
+    const aiResult = await processExhibitionTranslation({
       title,
       subtitle,
       location,
       description,
-      // slug,
-      aiGenerated: false, // kommt irgendwann vom BE
-      isScreen: false, // hier genauso: Info kommt irgendwann vom BE
     });
 
-    return res.status(201).json({
-      exhibition,
-      translation,
-    });
+    /*
+      ----------------------------------------------------------------------
+      2. Prüfen, ob Mistral die erwartete Ausgangssprache erkannt hat
+      ----------------------------------------------------------------------
+
+      Dein aktuelles System unterstützt nur DE und EN.
+    */
+
+    if (aiResult.sourceLanguage !== languageCode) {
+      return res.status(422).json({
+        msg: "Die erkannte Sprache stimmt nicht mit der angegebenen Sprache überein.",
+
+        aiValidation: {
+          sourceLanguage: aiResult.sourceLanguage,
+          expectedLanguage: languageCode,
+        },
+      });
+    }
+
+    /*
+      ----------------------------------------------------------------------
+      3. DB-Transaktion erst NACH erfolgreicher Mistral-Prüfung
+      ----------------------------------------------------------------------
+    */
+
+    const t = await db.transaction();
+
+    try {
+      const exhibition = await Exhibition.create(
+        {
+          id: crypto.randomUUID(),
+          coverImageId,
+          startDate,
+          endDate,
+          createdBy: req.user!.id,
+          lastEditedBy: req.user!.id,
+          isArchived: false,
+          isDeleted: false,
+        },
+        { transaction: t }
+      );
+
+      const translation = await ExhibitionTranslation.create(
+        {
+          exhibitionId: exhibition.id,
+          languageCode,
+
+          /*
+              Hier verwenden wir die korrigierte Version
+              von Mistral.
+
+              Dadurch wird nicht die möglicherweise fehlerhafte
+              ursprüngliche Eingabe gespeichert.
+            */
+          title: aiResult.corrected.title,
+          subtitle: aiResult.corrected.subtitle,
+          location: aiResult.corrected.location,
+          description: aiResult.corrected.description,
+
+          /*
+              Die Ausgangssprache wurde zwar von Mistral geprüft,
+              aber nicht von Mistral als Übersetzung erzeugt.
+
+              Deshalb bleibt aiGenerated false.
+            */
+          aiGenerated: false,
+
+          isScreen: false,
+        },
+        { transaction: t }
+      );
+
+      await t.commit();
+
+      return res.status(201).json({
+        id: exhibition.id,
+        coverImageId: exhibition.coverImageId,
+        startDate: exhibition.startDate,
+        endDate: exhibition.endDate,
+        createdBy: exhibition.createdBy,
+        lastEditedBy: exhibition.lastEditedBy,
+        isArchived: exhibition.isArchived,
+        isDeleted: exhibition.isDeleted,
+        backgroundColor: exhibition.backgroundColor,
+
+        languageCode: translation.languageCode,
+        title: translation.title,
+        subtitle: translation.subtitle,
+        location: translation.location,
+        description: translation.description,
+        isScreen: translation.isScreen,
+      });
+    } catch (e) {
+      await t.rollback();
+
+      throw e;
+    }
   } catch (e) {
+    console.error(e);
+
     return res.status(500).json({
-      msg: "Server error.",
+      msg: "Die Exhibition konnte nicht gespeichert werden.",
     });
   }
 };
 
-export const updateExhibition = async (req: Request, res: Response) => {
+// Exhibition und die dazugehörige Übersetzung aktualisieren
+// getestet: klappt!
+export const updateExhibition = async (
+  req: Request<{ exhibitionId: string; languageCode: string }>,
+  res: Response
+) => {
+  const t = await db.transaction();
+
   try {
-  } catch (e) {}
+    // Exhibition ID wieder aus der URL holen
+    const { exhibitionId, languageCode } = req.params;
+
+    // Formularfelder aus dem FE holen // hier ggfs. in der Silver-Edition weitere Felder hinzufügen
+    const {
+      coverImageId,
+      startDate,
+      endDate,
+      title,
+      subtitle,
+      location,
+      description,
+    } = req.body;
+
+    // einzelne, nicht gelöschte Exhibition in DB suchen
+    const exhibition = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: false,
+      },
+      transaction: t,
+    });
+
+    if (!exhibition) {
+      await t.rollback();
+
+      return res
+        .status(404)
+        .json({ msg: "Die Exhibition wurde nicht gefunden." });
+    }
+
+    // languageCode ist Bestandteil des zusammengesetzten Primary Keys der Translation.
+    const translation = await ExhibitionTranslation.findOne({
+      where: { exhibitionId, languageCode },
+      transaction: t,
+    });
+
+    if (!translation) {
+      await t.rollback();
+
+      return res.status(404).json({
+        msg: "Die ExhibitionTranslation wurde nicht gefunden.",
+      });
+    }
+
+    await exhibition.update(
+      {
+        coverImageId,
+        startDate,
+        endDate,
+        lastEditedBy: req.user!.id,
+      },
+      { transaction: t }
+    );
+
+    await translation.update(
+      { title, subtitle, location, description },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    return res.status(200).json({
+      id: exhibition.id,
+      coverImageId: exhibition.coverImageId,
+      startDate: exhibition.startDate,
+      endDate: exhibition.endDate,
+      createdBy: exhibition.createdBy,
+      lastEditedBy: exhibition.lastEditedBy,
+      isArchived: exhibition.isArchived,
+      isDeleted: exhibition.isDeleted,
+      backgroundColor: exhibition.backgroundColor,
+
+      languageCode: translation.languageCode,
+      title: translation.title,
+      subtitle: translation.subtitle,
+      location: translation.location,
+      description: translation.description,
+      // aiGenerated: translation.aiGenerated,
+      isScreen: translation.isScreen,
+    });
+  } catch (e) {
+    await t.rollback();
+
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Die Exhibition konnte nicht aktualisiert werden.",
+    });
+  }
 };
 
-export const archiveExhibition = async (req: Request, res: Response) => {
+// noch nicht gelöschte Exhibition archivieren
+// getestet: klappt!
+export const archiveExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
   try {
-  } catch (e) {}
+    const { exhibitionId } = req.params;
+
+    const exhibition = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: false,
+      },
+    });
+
+    if (!exhibition) {
+      return res
+        .status(404)
+        .json({ msg: "Die Exhibition konnte nicht gefunden werden." });
+    }
+
+    await exhibition.update({ isArchived: true, lastEditedBy: req.user!.id });
+
+    return res.status(200).json(exhibition);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Die Exhibition konnte nicht archiviert werden.",
+    });
+  }
 };
 
-export const deleteExhibition = async (req: Request, res: Response) => {
+// Exhibition per Soft Delete als gelöscht markieren
+// getestet: klappt!
+export const deleteExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
   try {
-  } catch (e) {}
+    const { exhibitionId } = req.params;
+
+    const exhibition = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: false,
+      },
+    });
+
+    if (!exhibition) {
+      return res
+        .status(404)
+        .json({ msg: "Die Exhibition konnte nicht gefunden werden." });
+    }
+
+    await exhibition.update({ isDeleted: true, lastEditedBy: req.user!.id });
+
+    return res.status(200).json(exhibition);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Die Exhibition konnte nicht als gelöscht markiert werden.",
+    });
+  }
+};
+
+// die soft deleteten Exhibtions für Superuser:innen anzeigen
+export const showDeletedExhibitions = async (
+  req: Request<{ languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { languageCode } = req.params;
+
+    const exhibitions = await Exhibition.findAll({
+      where: {
+        isDeleted: true,
+      },
+      include: [
+        {
+          model: ExhibitionTranslation,
+          where: {
+            languageCode,
+          },
+        },
+      ],
+    });
+
+    const result = exhibitions.map((exh) => {
+      const translation = exh.ExhibitionTranslations?.[0];
+
+      return {
+        id: exh.id,
+        coverImageId: exh.coverImageId,
+        startDate: exh.startDate,
+        endDate: exh.endDate,
+        createdBy: exh.createdBy,
+        lastEditedBy: exh.lastEditedBy,
+        isArchived: exh.isArchived,
+        isDeleted: exh.isDeleted,
+        backgroundColor: exh.backgroundColor,
+
+        languageCode: translation?.languageCode,
+        title: translation?.title,
+        subtitle: translation?.subtitle,
+        location: translation?.location,
+        description: translation?.description,
+        isScreen: translation?.isScreen,
+      };
+    });
+
+    return res.status(200).json(result);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Server-Fehler.",
+    });
+  }
+};
+
+// eine Exhibition wiederherstellen (können nur Superuser:innen)
+export const restoreExhibition = async (
+  req: Request<{ exhibitionId: string }>,
+  res: Response
+) => {
+  try {
+    const { exhibitionId } = req.params;
+
+    const artist = await Exhibition.findOne({
+      where: {
+        id: exhibitionId,
+        isDeleted: true,
+      },
+    });
+
+    if (!artist) {
+      return res.status(404).json({
+        msg: "Die gelöschte Exhibition konnte nicht gefunden werden.",
+      });
+    }
+
+    await artist.update({
+      isDeleted: false,
+      lastEditedBy: req.user!.id,
+    });
+
+    return res.status(200).json(artist);
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Die Exhibition konnte nicht wiederhergestellt werden.",
+    });
+  }
+};
+
+// Eine Exhibition als Screen markieren
+export const setExhibitionScreen = async (
+  req: Request<{ exhibitionId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { exhibitionId, languageCode } = req.params;
+
+    const translation = await ExhibitionTranslation.findOne({
+      where: {
+        exhibitionId,
+        languageCode,
+        // isScreen: false, // isScreen: true würde sonst auch, es wurde keine Exh. Translation gefunden ergeben. // wenn bereits isScreen: true ist, passiert einfach nichts :)
+      },
+    });
+
+    if (!translation) {
+      return res.status(404).json({
+        message: "Die Exhibition Translation wurde nicht gefunden.",
+      });
+    }
+
+    await translation.update({
+      isScreen: true,
+    });
+
+    return res.status(200).json({
+      msg: "Die Exhibition wurde als Screen markiert.",
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Diese Exhibition konnte nicht als Screen markiert werden.",
+    });
+  }
+};
+
+// Umkehrroute: Exhibition aus Screens wieder entfernen
+export const removeExhibitionScreen = async (
+  req: Request<{ exhibitionId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { exhibitionId, languageCode } = req.params;
+
+    const translation = await ExhibitionTranslation.findOne({
+      where: {
+        exhibitionId,
+        languageCode,
+      },
+    });
+
+    if (!translation) {
+      return res.status(404).json({
+        msg: "Die Exhibition Translation wurde nicht gefunden.",
+      });
+    }
+
+    await translation.update({
+      isScreen: false,
+    });
+
+    return res.status(200).json({
+      msg: "Die Exhibition wurde nicht mehr als Screen markiert.",
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Die Exhibition konnte nicht als Screen entfernt werden.",
+    });
+  }
 };

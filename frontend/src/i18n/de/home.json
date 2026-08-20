@@ -12,7 +12,11 @@
     "previous": "Zurück",
     "next": "Weiter",
     "workflow": "Workflow",
-    "steps": ["Kontakt", "Kunstwerk", "Ausstellung", "Bildschirm"]
+    "steps": [
+      "Kontaktformular abschicken",
+      "Künstler:innen, Kunstwerke und Ausstellungen anlegen",
+      "Bildschirme erstellen"
+    ]
   },
   "landing": {
     "currentCollection": "Aktuelle Sammlung",
