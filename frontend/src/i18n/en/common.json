@@ -68,5 +68,11 @@
     "date": "Date",
     "created": "Created",
     "updated": "Updated"
+  },
+
+  "empty": {
+    "artworks": "No artworks found.",
+    "artists": "No artists found.",
+    "exhibitions": "No exhibitions found."
   }
 }

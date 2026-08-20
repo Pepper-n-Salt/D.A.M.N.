@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import ArtworkCard from "./ArtworkCard";
 import Carouselbutton from "./ui/buttons/Carouselbutton";
@@ -15,6 +16,8 @@ export default function ArtworkCarousel({
   artworks,
   onDeleted,
 }: ArtworkCarouselProps) {
+  const { t } = useTranslation("common");
+
   const [startIndex, setStartIndex] = useState(0);
 
   const handleDeleted = (artwork: ArtworkResponse) => {
@@ -67,7 +70,7 @@ export default function ArtworkCarousel({
 
   // Keine Artworks
   if (artworks.length === 0) {
-    return <P>Keine Artworks gefunden.</P>;
+    return <P>{t("empty.artworks")}</P>;
   }
 
   // Pagination
@@ -88,7 +91,7 @@ export default function ArtworkCarousel({
 
       <div className="flex justify-between">
         <Carouselbutton onClick={handlePrevious} disabled={startIndex === 0}>
-          ← Previous
+          ← {t("carousel.previous")}
         </Carouselbutton>
 
         <P>
@@ -100,7 +103,7 @@ export default function ArtworkCarousel({
           onClick={handleNext}
           disabled={startIndex >= artworks.length - 3}
         >
-          Next →
+          {t("carousel.next")} →
         </Carouselbutton>
       </div>
     </div>
