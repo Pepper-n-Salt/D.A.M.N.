@@ -269,3 +269,45 @@ export async function restoreArtwork(artworkId: string): Promise<void> {
     );
   }
 }
+
+// ein Artwork als Screen markieren
+export async function setArtworkScreen(
+  artworkId: string,
+  languageCode: "de" | "en"
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/artwork/${artworkId}/${languageCode}/screen`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.msg || "Das Artwork konnte nicht als Screen markiert werden."
+    );
+  }
+}
+
+// ein Artwork von Screens entfernen
+export async function removeArtworkScreen(
+  artworkId: string,
+  languageCode: "de" | "en"
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/artwork/${artworkId}/${languageCode}/unscreen`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.msg || "Der Screen konnte nicht entfernt werden.");
+  }
+}
