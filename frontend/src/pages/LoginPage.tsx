@@ -92,7 +92,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="mt-6 self-start border border-black px-8 py-3 uppercase tracking-[0.25em] text-sm transition-colors duration-300 hover:bg-black hover:text-white"
+            className="mt-6 self-start border border-black px-8 py-2.5 uppercase tracking-[0.25em] transition-colors duration-300 hover:bg-black hover:text-white"
           >
             {t("form.submit")}
           </button>

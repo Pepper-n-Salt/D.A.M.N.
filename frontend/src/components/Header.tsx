@@ -154,8 +154,9 @@ export default function Header() {
             <LanguageSwitcher />
 
             <button
+              type="button"
               onClick={handleLogout}
-              className="border border-black px-8 py-2.5 transition-colors duration-300 hover:bg-black hover:text-white"
+              className="border border-black px-8 py-2.5 uppercase tracking-[0.25em] transition-colors duration-300 hover:bg-black hover:text-white"
             >
               {t("navigation.logout")}
             </button>
