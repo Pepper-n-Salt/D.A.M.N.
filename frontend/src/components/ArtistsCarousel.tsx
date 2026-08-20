@@ -1,95 +1,100 @@
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+// import { useEffect, useState } from "react";
+// import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 import ArtistCard from "./ArtistCard";
 import Carouselbutton from "./ui/buttons/Carouselbutton";
 import P from "./ui/typography/P";
 
-import { getArtists, type CreateArtistResponse } from "../api/artistApi";
+// import { getArtists, type CreateArtistResponse } from "../api/artistApi";
+import type { CreateArtistResponse } from "../api/artistApi";
 
-export default function ArtistCarousel() {
-  const { i18n } = useTranslation("artists");
+interface ArtistCarouselProps {
+  artists: CreateArtistResponse[];
+  onDeleted: (artist: CreateArtistResponse) => void;
+}
 
-  const [artists, setArtists] = useState<CreateArtistResponse[]>([]);
+export default function ArtistCarousel({
+  artists,
+  onDeleted,
+}: ArtistCarouselProps) {
+  // const { i18n } = useTranslation("artists");
+
+  // const [artists, setArtists] = useState<CreateArtistResponse[]>([]);
 
   const [startIndex, setStartIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
 
-  const languageCode = i18n.language.startsWith("en") ? "en" : "de";
+  // const languageCode = i18n.language.startsWith("en") ? "en" : "de";
 
-  /*
-   * ------------------------------------------------------------------------
-   * Artists laden
-   * ------------------------------------------------------------------------
-   */
+  // Artists laden
 
-  useEffect(() => {
-    const loadArtists = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+  // useEffect(() => {
+  //   const loadArtists = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       setError(null);
 
-        const result = await getArtists(languageCode);
+  //       const result = await getArtists(languageCode);
 
-        console.log("ARTISTS:", result);
-        console.log("LANGUAGE:", languageCode);
+  //       console.log("ARTISTS:", result);
+  //       console.log("LANGUAGE:", languageCode);
 
-        setArtists(result);
-        setStartIndex(0);
-      } catch (error) {
-        console.error(error);
+  //       setArtists(result);
+  //       setStartIndex(0);
+  //     } catch (error) {
+  //       console.error(error);
 
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Die Artists konnten nicht geladen werden."
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  //       setError(
+  //         error instanceof Error
+  //           ? error.message
+  //           : "Die Artists konnten nicht geladen werden."
+  //       );
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    loadArtists();
-  }, [languageCode]);
+  //   loadArtists();
+  // }, [languageCode]);
 
-  /*
-   * ------------------------------------------------------------------------
-   * Artist löschen
-   * ------------------------------------------------------------------------
-   */
+  // Artist löschen
+  // const handleDeleted = (id: string) => {
+  //   setArtists((previous) => {
+  //     const updatedArtists = previous.filter((artist) => artist.id !== id);
 
-  const handleDeleted = (id: string) => {
-    setArtists((previous) => {
-      const updatedArtists = previous.filter((artist) => artist.id !== id);
+  //     setStartIndex((currentStartIndex) => {
+  //       const maxStartIndex = Math.max(
+  //         Math.floor((updatedArtists.length - 1) / 3) * 3,
+  //         0
+  //       );
 
-      setStartIndex((currentStartIndex) => {
-        const maxStartIndex = Math.max(
-          Math.floor((updatedArtists.length - 1) / 3) * 3,
-          0
-        );
+  //       return Math.min(currentStartIndex, maxStartIndex);
+  //     });
 
-        return Math.min(currentStartIndex, maxStartIndex);
-      });
+  //     return updatedArtists;
+  //   });
+  // };
+  const handleDeleted = (artist: CreateArtistResponse) => {
+    onDeleted(artist);
 
-      return updatedArtists;
+    setStartIndex((currentStartIndex) => {
+      const remainingCount = artists.length - 1;
+
+      const maxStartIndex = Math.max(
+        Math.floor((remainingCount - 1) / 3) * 3,
+        0
+      );
+
+      return Math.min(currentStartIndex, maxStartIndex);
     });
   };
 
-  /*
-   * ------------------------------------------------------------------------
-   * Sichtbare Artists
-   * ------------------------------------------------------------------------
-   */
-
+  // Sichtbare Artists
   const visibleArtists = artists.slice(startIndex, startIndex + 3);
 
-  /*
-   * ------------------------------------------------------------------------
-   * Scroll
-   * ------------------------------------------------------------------------
-   */
-
+  // Scroll
   const scrollToCurrentArtists = () => {
     document.getElementById("current-artists")?.scrollIntoView({
       behavior: "smooth",
@@ -97,12 +102,7 @@ export default function ArtistCarousel() {
     });
   };
 
-  /*
-   * ------------------------------------------------------------------------
-   * Previous
-   * ------------------------------------------------------------------------
-   */
-
+  // Previous
   const handlePrevious = () => {
     setStartIndex((prev) => {
       const newIndex = Math.max(prev - 3, 0);
@@ -113,12 +113,7 @@ export default function ArtistCarousel() {
     });
   };
 
-  /*
-   * ------------------------------------------------------------------------
-   * Next
-   * ------------------------------------------------------------------------
-   */
-
+  // Next
   const handleNext = () => {
     setStartIndex((prev) => {
       const newIndex = Math.min(prev + 3, Math.max(artists.length - 3, 0));
@@ -129,42 +124,20 @@ export default function ArtistCarousel() {
     });
   };
 
-  /*
-   * ------------------------------------------------------------------------
-   * Loading
-   * ------------------------------------------------------------------------
-   */
+  // if (isLoading) {
+  //   return <p className="text-sm uppercase tracking-[0.2em]">Loading...</p>;
+  // }
 
-  if (isLoading) {
-    return <p className="text-sm uppercase tracking-[0.2em]">Loading...</p>;
-  }
+  // if (error) {
+  //   return <p className="text-red-600">{error}</p>;
+  // }
 
-  /*
-   * ------------------------------------------------------------------------
-   * Fehler
-   * ------------------------------------------------------------------------
-   */
-
-  if (error) {
-    return <p className="text-red-600">{error}</p>;
-  }
-
-  /*
-   * ------------------------------------------------------------------------
-   * Keine Artists
-   * ------------------------------------------------------------------------
-   */
-
+  // Keine Artists
   if (artists.length === 0) {
     return <P>Keine Artists gefunden.</P>;
   }
 
-  /*
-   * ------------------------------------------------------------------------
-   * Pagination
-   * ------------------------------------------------------------------------
-   */
-
+  // Pagination
   const currentPage = Math.floor(startIndex / 3) + 1;
   const totalPages = Math.ceil(artists.length / 3);
 
@@ -175,7 +148,7 @@ export default function ArtistCarousel() {
           <ArtistCard
             key={artist.id}
             artist={artist}
-            onDeleted={handleDeleted}
+            onDeleted={() => handleDeleted(artist)}
           />
         ))}
       </div>
