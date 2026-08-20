@@ -366,7 +366,7 @@ export default function User() {
             {/* Admin = überhaupt nicht gerendert                           */}
             {/* User  = überhaupt nicht gerendert                           */}
             {/* ---------------------------------------------------------- */}
-
+            {/* 
             {isSuper && (
               <div className="flex flex-col gap-2">
                 <label
@@ -397,7 +397,7 @@ export default function User() {
                   ))}
                 </select>
               </div>
-            )}
+            )} */}
 
             {/* Password */}
 
@@ -439,9 +439,9 @@ export default function User() {
 
             {/* Messages */}
 
-            {error && <P>{error}</P>}
+            {/* {error && <P>{error}</P>}
 
-            {message && <P>{message}</P>}
+            {message && <P>{message}</P>} */}
 
             {/* Submit */}
 
