@@ -1,13 +1,8 @@
-// import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import P from "./ui/typography/P";
 
-import {
-  // getDeletedArtists,
-  restoreArtist,
-  type CreateArtistResponse,
-} from "../api/artistApi";
+import { restoreArtist, type CreateArtistResponse } from "../api/artistApi";
 
 interface DeletedArtistsProps {
   artists: CreateArtistResponse[];
@@ -20,38 +15,6 @@ export default function DeletedArtists({
 }: DeletedArtistsProps) {
   const { t } = useTranslation("artists");
 
-  // const [artists, setArtists] = useState<CreateArtistResponse[]>([]);
-
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
-
-  // const languageCode = i18n.language.startsWith("en") ? "en" : "de";
-
-  // useEffect(() => {
-  //   const loadDeletedArtists = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       setError(null);
-
-  //       const result = await getDeletedArtists(languageCode);
-
-  //       setArtists(result);
-  //     } catch (error) {
-  //       console.error(error);
-
-  //       setError(
-  //         error instanceof Error
-  //           ? error.message
-  //           : "Die gelöschten Artists konnten nicht geladen werden."
-  //       );
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   loadDeletedArtists();
-  // }, [languageCode]);
-
   const handleRestore = async (artistId: string) => {
     const confirmed = window.confirm(t("deleted.restoreConfirm"));
 
@@ -60,9 +23,6 @@ export default function DeletedArtists({
     try {
       await restoreArtist(artistId);
 
-      // setArtists((currentArtists) =>
-      //   currentArtists.filter((artist) => artist.id !== artistId)
-      // );
       onRestore(artistId);
     } catch (error) {
       console.error(error);
@@ -70,18 +30,6 @@ export default function DeletedArtists({
       alert(error instanceof Error ? error.message : t("deleted.restoreError"));
     }
   };
-
-  // if (isLoading) {
-  //   return (
-  //     <p className="text-sm uppercase tracking-[0.2em]">
-  //       {t("deleted.loading")}
-  //     </p>
-  //   );
-  // }
-
-  // if (error) {
-  //   return <p className="text-red-600">{error}</p>;
-  // }
 
   if (artists.length === 0) {
     return <P>{t("deleted.notfound")}</P>;

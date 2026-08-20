@@ -1,12 +1,9 @@
-// import { useEffect, useState } from "react";
-// import { useTranslation } from "react-i18next";
 import { useState } from "react";
 
 import ArtistCard from "./ArtistCard";
 import Carouselbutton from "./ui/buttons/Carouselbutton";
 import P from "./ui/typography/P";
 
-// import { getArtists, type CreateArtistResponse } from "../api/artistApi";
 import type { CreateArtistResponse } from "../api/artistApi";
 
 interface ArtistCarouselProps {
@@ -18,64 +15,8 @@ export default function ArtistCarousel({
   artists,
   onDeleted,
 }: ArtistCarouselProps) {
-  // const { i18n } = useTranslation("artists");
-
-  // const [artists, setArtists] = useState<CreateArtistResponse[]>([]);
-
   const [startIndex, setStartIndex] = useState(0);
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
 
-  // const languageCode = i18n.language.startsWith("en") ? "en" : "de";
-
-  // Artists laden
-
-  // useEffect(() => {
-  //   const loadArtists = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       setError(null);
-
-  //       const result = await getArtists(languageCode);
-
-  //       console.log("ARTISTS:", result);
-  //       console.log("LANGUAGE:", languageCode);
-
-  //       setArtists(result);
-  //       setStartIndex(0);
-  //     } catch (error) {
-  //       console.error(error);
-
-  //       setError(
-  //         error instanceof Error
-  //           ? error.message
-  //           : "Die Artists konnten nicht geladen werden."
-  //       );
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   loadArtists();
-  // }, [languageCode]);
-
-  // Artist löschen
-  // const handleDeleted = (id: string) => {
-  //   setArtists((previous) => {
-  //     const updatedArtists = previous.filter((artist) => artist.id !== id);
-
-  //     setStartIndex((currentStartIndex) => {
-  //       const maxStartIndex = Math.max(
-  //         Math.floor((updatedArtists.length - 1) / 3) * 3,
-  //         0
-  //       );
-
-  //       return Math.min(currentStartIndex, maxStartIndex);
-  //     });
-
-  //     return updatedArtists;
-  //   });
-  // };
   const handleDeleted = (artist: CreateArtistResponse) => {
     onDeleted(artist);
 
@@ -123,14 +64,6 @@ export default function ArtistCarousel({
       return newIndex;
     });
   };
-
-  // if (isLoading) {
-  //   return <p className="text-sm uppercase tracking-[0.2em]">Loading...</p>;
-  // }
-
-  // if (error) {
-  //   return <p className="text-red-600">{error}</p>;
-  // }
 
   // Keine Artists
   if (artists.length === 0) {
