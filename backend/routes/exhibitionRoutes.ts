@@ -29,7 +29,7 @@ const router = express.Router();
 
 router.use(checkAuth);
 
-// Alle gelöschten Exhibitions abrufen (geht nur für SuperUser)
+// Alle gelöschten Exhibitions abrufen (geht nur für SuperAdmins)
 router.get(
   "/deleted/:languageCode",
   requireSuperUser,
@@ -68,7 +68,7 @@ router.patch(
   deleteExhibition
 );
 
-// Eine Exhibtion wiederherstellen (geht nur für Superuser)
+// Eine Exhibtion wiederherstellen (geht nur für Super Admins)
 router.patch(
   "/:exhibitionId/restore",
   requireSuperUser,
