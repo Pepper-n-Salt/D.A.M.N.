@@ -1,65 +1,89 @@
 {
   "hero": {
-    "title": "A system for collecting, curating and presenting digital art."
+    "title": "A system for collecting, curating, and presenting digital art."
   },
+
   "intro": {
-    "paragraph1": "D.A.M.N. (Digital Artwork Management Network) is a platform designed to simplify the organization and presentation of digital artworks. It brings together artwork data, collections, exhibitions, and display management in one centralized environment, creating a structured workflow from archive to presentation.",
-    "paragraph2": "Whether used by artists, galleries, museums, or cultural institutions, D.A.M.N. supports the entire curatorial process. Artworks can be documented, enriched with metadata, grouped into collections, and prepared for exhibitions without relying on scattered files or disconnected systems.",
-    "paragraph3": "By connecting collections with exhibitions and digital screens, D.A.M.N. creates a seamless link between management and presentation. The platform is built to make digital art easier to curate, maintain, and share, while providing a flexible foundation that can grow with future projects and collaborations."
+    "paragraph1": "D.A.M.N. (Digital Artwork Management Network) is a platform designed to simplify the organisation and presentation of digital artworks. It brings artwork data, collections, exhibitions, and display management together in one central environment, creating a structured workflow from archive to presentation.",
+
+    "paragraph2": "Whether used by artists, galleries, museums, or cultural institutions, D.A.M.N. supports the entire curatorial process. Artworks can be documented, enriched with metadata, organised into collections, and prepared for exhibitions without relying on scattered files or disconnected systems.",
+
+    "paragraph3": "By connecting collections with exhibitions and digital screens, D.A.M.N. creates a seamless link between administration and presentation. The platform is designed to make digital art easier to curate, maintain, and share while providing a flexible foundation for future projects and collaborations."
   },
+
   "showcase": {
-    "placeholder": "Screenshot Dashboard",
-    "previous": "Prev",
+    "placeholder": "Dashboard screenshot",
+    "previous": "Previous",
     "next": "Next",
     "workflow": "Workflow",
     "steps": [
-      "Submit the contact form",
-      "Create Artists, Artworks and  Exhibition",
-      "Create Screens"
+      "Submit contact form",
+      "Create artists, artworks, and exhibitions",
+      "Create screens"
     ]
   },
+
   "landing": {
+    "collectionOverview": "Collection Overview",
+
     "currentCollection": "Current Collection",
-    "preview": "Artwork Preview",
-    "artworkTitle": "Untitled No. 24",
-    "artworkMeta": "Digital Artwork · 2026",
-    "previousArtwork": "Previous artwork",
-    "nextArtwork": "Next artwork",
+    "currentExhibition": "Current Exhibition",
+    "artists": "Artists",
+    "artworks": "Artworks",
+    "exhibitions": "Exhibitions",
+    "screens": "Screens",
+
+    "viewAll": "View all",
+
+    "preview": "Preview",
+
     "previous": "Previous",
     "next": "Next",
-    "collection": "Collection",
-    "artworks": "artworks",
-    "exhibitions": "Exhibitions",
-    "activeProjects": "active projects",
-    "screens": "Screens",
-    "connectedDisplays": "connected displays",
+
+    "previousArtwork": "Previous artwork",
+    "nextArtwork": "Next artwork",
+
+    "previousArtist": "Previous artists",
+    "nextArtist": "Next artists",
+
+    "previousExhibition": "Previous exhibition",
+    "nextExhibition": "Next exhibition",
+
+    "previousScreen": "Previous screen",
+    "nextScreen": "Next screen",
+
+    "noArtworks": "No artworks available yet.",
+    "noArtists": "No artists available yet.",
+    "noExhibition": "No exhibition available.",
+    "noScreens": "No screens available yet.",
+
+    "locationLabel": "Location",
+    "startDateLabel": "Start",
+    "endDateLabel": "End",
+
     "recentActivity": "Recent Activity",
-    "activityArtwork": "New artwork added",
-    "activityArtworkTitle": "Untitled No. 24",
-    "activityExhibition": "Exhibition updated",
-    "activityExhibitionTitle": "Digital Landscapes",
-    "currentExhibition": "Current Exhibition",
-    "exhibitionTitle": "Digital Landscapes",
-    "exhibitionDescription": "A synchronized presentation of digital artworks across connected information screens.",
-    "screensLabel": "Screens",
-    "artworksLabel": "Artworks",
-    "statusLabel": "Status",
-    "statusValue": "Active"
+
+    "activityCreated": "Created:",
+    "activityArtwork": "artwork",
+    "activityArtist": "artist",
+    "activityExhibition": "exhibition"
   },
+
   "overview": {
     "title": "System Overview",
+
     "items": [
       {
         "title": "Archive",
-        "description": "Store, organize and maintain digital artworks with structured information, metadata and documentation."
+        "description": "Store, organise, and manage digital artworks with structured information, metadata, and documentation."
       },
       {
         "title": "Curate",
-        "description": "Build collections, plan exhibitions and create meaningful relationships between artworks and contexts."
+        "description": "Create collections, plan exhibitions, and establish meaningful relationships between artworks and their contexts."
       },
       {
         "title": "Publish",
-        "description": "Connect curated content to digital screens and make artworks accessible across different exhibition environments."
+        "description": "Connect curated content to digital screens and make artworks accessible in different exhibition environments."
       }
     ]
   }
