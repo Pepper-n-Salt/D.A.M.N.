@@ -20,7 +20,8 @@
   "header": {
     "welcome": "Hallo {{name}}!",
     "brandSubtitle": "Digital Artwork Management Network",
-    "goToLandingpage": "Zur Landingpage gehen"
+    "goToLandingpage": "Zur Landingpage gehen",
+    "goToHomepage": "Zur Homepage gehen"
   },
 
   "footer": {

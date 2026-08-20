@@ -11,7 +11,7 @@ export default function ScreenPreviewCard({
 }: ScreenPreviewCardProps) {
   return (
     <div className="overflow-hidden border border-black">
-      <div className="h-[400px] w-full overflow-hidden bg-neutral-100">
+      <div className="h-100 w-full overflow-hidden bg-neutral-100">
         {" "}
         {/* hier lieber doch eine feste Höhe statt "aspect-video" verwendet,  */}
         <iframe src={uri} title={title} className="h-full w-full border-0" />
