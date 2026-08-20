@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { getArtwork, type ArtworkResponse } from "../api/artworkApi";
+import { getPublicArtwork, type ArtworkResponse } from "../api/artworkApi";
 
 export default function ArtworkScreen() {
   const { t, i18n } = useTranslation("display");
@@ -20,14 +20,14 @@ export default function ArtworkScreen() {
       return;
     }
 
-    const language = i18n.language.startsWith("de") ? "german" : "english";
+    const language = i18n.language.startsWith("de") ? "de" : "en";
 
     const loadArtwork = async (artworkId: string) => {
       try {
         setLoading(true);
         setError(false);
 
-        const data = await getArtwork(artworkId, language);
+        const data = await getPublicArtwork(artworkId, language);
 
         setArtwork(data);
       } catch (err) {

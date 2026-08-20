@@ -185,14 +185,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* =====================================================
-            PUBLIC DISPLAY SCREENS
-
-            Kein AuthProvider
-            Kein Header
-            Kein Footer
-            Kein ProtectedRoute
-           ===================================================== */}
+        {/* Public Display Screens */}
 
         <Route
           path="/display/static/exhibition/:id"

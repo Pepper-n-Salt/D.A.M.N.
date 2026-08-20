@@ -167,6 +167,27 @@ export async function getArtwork(
   return data;
 }
 
+// Ein Artwork ohne Auth laden für Screens
+export async function getPublicArtwork(
+  artworkId: string,
+  languageCode: "de" | "en"
+): Promise<ArtworkResponse> {
+  const response = await fetch(
+    `${API_URL}/artwork/public/${artworkId}/${languageCode}`,
+    {
+      method: "GET", // ohne include, weil öffentlich
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.msg || "Das Artwork konnte nicht geladen werden.");
+  }
+
+  return data;
+}
+
 /*
  * --------------------------------------------------------------------------
  * Artwork aktualisieren

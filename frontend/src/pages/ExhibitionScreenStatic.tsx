@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import {
-  getExhibition,
+  getPublicExhibition,
   type CreateExhibitionResponse,
 } from "../api/exhibitionApi";
 
@@ -25,14 +25,14 @@ export default function ExhibitionScreen() {
       return;
     }
 
-    const language = i18n.language.startsWith("de") ? "german" : "english";
+    const language = i18n.language.startsWith("de") ? "de" : "en";
 
     const loadExhibition = async (exhibitionId: string) => {
       try {
         setLoading(true);
         setError(false);
 
-        const data = await getExhibition(exhibitionId, language);
+        const data = await getPublicExhibition(exhibitionId, language);
 
         setExhibition(data);
       } catch (err) {
