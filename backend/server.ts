@@ -73,6 +73,8 @@ async function startServer() {
 
   console.log("Database connection has been established successfully.");
 
+  await db.sync();
+
   const server = createServer(app);
 
   setupChatWebSocket(server);
