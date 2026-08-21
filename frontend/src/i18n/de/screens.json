@@ -4,10 +4,15 @@
     "paragraph": "Verwalte und organisiere digitale Inhalte, die auf der gesamten Ausstellungsfläche präsentiert werden."
   },
   "current": {
-    "title": "Ausstellungsbildschirme"
+    "exhibitions": "Screens Ausstellungen",
+    "artworks": "Screens Kunstwerke",
+    "artists": "Screens Künstler:innen"
   },
   "create": {
     "title": "Neuen Bildschirm hinzufügen",
     "button": "Bildschirm hinzufügen →"
+  },
+  "loading": {
+    "state": "Wird geladen …"
   }
 }

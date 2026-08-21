@@ -15,10 +15,10 @@ export default function ScreenPreviewCard({
       to={uri}
       target="_blank"
       rel="noopener noreferrer"
-      className="block cursor pointer overflow-hidden border border-black"
+      className="block cursor-pointer overflow-hidden border border-black"
     >
       {/* <div className="overflow-hidden border border-black"> */}
-      <div className="h-100 w-full overflow-hidden bg-neutral-100">
+      <div className="h-150 w-full overflow-hidden bg-neutral-100">
         {/* hier lieber doch eine feste Höhe statt "aspect-video" verwendet,  */}
         <iframe
           src={uri}

@@ -759,3 +759,105 @@ export const restoreArtist = async (
     });
   }
 };
+
+// Artist als Screen markieren
+export const setArtistScreen = async (
+  req: Request<{ artistId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { artistId, languageCode } = req.params;
+
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const artist = await findAccessibleArtist(artistId, req.user);
+
+    if (!artist) {
+      return res.status(404).json({
+        msg: "Der Artist wurde nicht gefunden oder du hast keinen Zugriff.",
+      });
+    }
+
+    const translation = await ArtistTranslation.findOne({
+      where: {
+        artistId,
+        languageCode,
+      },
+    });
+
+    if (!translation) {
+      return res.status(404).json({
+        message: "Die Artist Translation wurde nicht gefunden.",
+      });
+    }
+
+    await translation.update({
+      isScreen: true,
+    });
+
+    return res.status(200).json({
+      msg: "Der Artist wurde als Screen markiert.",
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Dieser Artist konnte nicht als Screen markiert werden.",
+    });
+  }
+};
+
+// Artist aus Screens entfernen
+export const removeArtistScreen = async (
+  req: Request<{ artistId: string; languageCode: string }>,
+  res: Response
+) => {
+  try {
+    const { artistId, languageCode } = req.params;
+
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Nicht autorisiert.",
+      });
+    }
+
+    const artist = await findAccessibleArtist(artistId, req.user);
+
+    if (!artist) {
+      return res.status(404).json({
+        msg: "Der Artist wurde nicht gefunden oder du hast keinen Zugriff.",
+      });
+    }
+
+    const translation = await ArtistTranslation.findOne({
+      where: {
+        artistId,
+        languageCode,
+      },
+    });
+
+    if (!translation) {
+      return res.status(404).json({
+        message: "Die Artist Translation wurde nicht gefunden.",
+      });
+    }
+
+    await translation.update({
+      isScreen: false,
+    });
+
+    return res.status(200).json({
+      msg: "Der Artist konnte vom Screen entfernt werden.",
+    });
+  } catch (e) {
+    console.error(e);
+
+    return res.status(500).json({
+      msg: "Der Artist konnte nicht als Screen entfernt werden.",
+    });
+  }
+};

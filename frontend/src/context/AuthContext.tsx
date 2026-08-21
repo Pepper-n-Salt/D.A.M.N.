@@ -30,6 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const res = await fetch("/api/auth/profile", {
           credentials: "include",
         });
+
         if (res.ok) {
           const data = await res.json();
           setUser(data);
@@ -37,6 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setUser(null);
         }
       } catch (e) {
+        console.error(e);
         setUser(null);
       }
       setLoading(false);

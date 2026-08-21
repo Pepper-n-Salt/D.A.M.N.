@@ -356,7 +356,7 @@ export default function ArtistForm({
             htmlFor={`image-${language}`}
             className="inline-block cursor-pointer border border-black px-4 py-3 text-sm uppercase tracking-[0.2em]"
           >
-            {t("form.chooseImage")}
+            {t("form.uploadImage")}
           </label>
 
           {isSavingImage && (

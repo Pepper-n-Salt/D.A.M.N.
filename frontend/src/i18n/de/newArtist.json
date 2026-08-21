@@ -17,7 +17,8 @@
     "dateOfDeath": "Sterbedatum",
     "country": "Land",
     "description": "Beschreibung",
-    "image": "Bild hochladen"
+    "image": "Bild",
+    "uploadImage": "Bild hochladen"
   },
   "messages": {
     "savingImage": "Bild wird gespeichert...",

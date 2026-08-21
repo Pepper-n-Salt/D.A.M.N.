@@ -36,12 +36,7 @@ export default function LandingPage() {
 
   const languageCode = i18n.language.startsWith("en") ? "en" : "de";
 
-  /*
-   * --------------------------------------------------------------------------
-   * Daten laden
-   * --------------------------------------------------------------------------
-   */
-
+  // Daten laden
   useEffect(() => {
     const loadLandingPage = async () => {
       try {
@@ -78,22 +73,12 @@ export default function LandingPage() {
     loadLandingPage();
   }, [languageCode]);
 
-  /*
-   * --------------------------------------------------------------------------
-   * Collection Overview
-   * --------------------------------------------------------------------------
-   */
-
+  // Collection Overview
   const screenExhibitions = useMemo(() => {
     return exhibitions.filter((exhibition) => exhibition.isScreen);
   }, [exhibitions]);
 
-  /*
-   * --------------------------------------------------------------------------
-   * Aktuelle Ausstellungen
-   * --------------------------------------------------------------------------
-   */
-
+  // Aktuelle Ausstellungen
   const currentExhibitions = useMemo(() => {
     const today = new Date();
 
@@ -107,12 +92,7 @@ export default function LandingPage() {
     return active.length > 0 ? active : exhibitions;
   }, [exhibitions]);
 
-  /*
-   * --------------------------------------------------------------------------
-   * Artwork Carousel
-   * --------------------------------------------------------------------------
-   */
-
+  // Artwork Carousel
   const currentArtwork =
     artworks.length > 0 ? artworks[artworkIndex % artworks.length] : null;
 
@@ -134,12 +114,7 @@ export default function LandingPage() {
     setArtworkIndex((current) => (current + 1) % artworks.length);
   };
 
-  /*
-   * --------------------------------------------------------------------------
-   * Artist Carousel
-   * --------------------------------------------------------------------------
-   */
-
+  // Artist Carousel
   const artistsPerPage = 3;
 
   const visibleArtists = useMemo(() => {
@@ -172,12 +147,7 @@ export default function LandingPage() {
     setArtistIndex((current) => (current + 1) % artists.length);
   };
 
-  /*
-   * --------------------------------------------------------------------------
-   * Exhibition Carousel
-   * --------------------------------------------------------------------------
-   */
-
+  // Exhibition Carousel
   const currentExhibition =
     currentExhibitions.length > 0
       ? currentExhibitions[exhibitionIndex % currentExhibitions.length]
@@ -201,12 +171,7 @@ export default function LandingPage() {
     setExhibitionIndex((current) => (current + 1) % currentExhibitions.length);
   };
 
-  /*
-   * --------------------------------------------------------------------------
-   * Screen Carousel
-   * --------------------------------------------------------------------------
-   */
-
+  // Screen Carousel
   const currentScreen =
     screenExhibitions.length > 0
       ? screenExhibitions[screenIndex % screenExhibitions.length]
@@ -230,11 +195,7 @@ export default function LandingPage() {
     setScreenIndex((current) => (current + 1) % screenExhibitions.length);
   };
 
-  /*
-   * --------------------------------------------------------------------------
-   * Datumsformatierung
-   * --------------------------------------------------------------------------
-   */
+  // Datumsformatierung
 
   const formatDate = (date: string) => {
     return new Intl.DateTimeFormat(languageCode === "en" ? "en-GB" : "de-DE", {
@@ -244,11 +205,7 @@ export default function LandingPage() {
     }).format(new Date(date));
   };
 
-  /*
-   * --------------------------------------------------------------------------
-   * Loading / Error
-   * --------------------------------------------------------------------------
-   */
+  // Loading / Error
 
   if (isLoading) {
     return (
@@ -268,9 +225,7 @@ export default function LandingPage() {
 
   return (
     <section className="space-y-20 py-8">
-      {/* ------------------------------------------------------------------ */}
-      {/* HERO                                                               */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Hero                                                               */}
 
       <div className="space-y-8">
         <H1>{t("hero.title")}</H1>
@@ -290,9 +245,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* SYSTEM OVERVIEW                                                    */}
-      {/* ------------------------------------------------------------------ */}
+      {/* System Overview */}
 
       <section className="border-t border-neutral-200 pt-12 space-y-8">
         <H2>{t("overview.title")}</H2>
@@ -314,9 +267,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* COLLECTION OVERVIEW                                                */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Collection Overview */}
 
       <section className="border-t border-neutral-200 pt-12 space-y-8">
         <H2>{t("landing.collectionOverview")}</H2>
@@ -344,9 +295,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* EXHIBITION CAROUSEL                                                */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Exhibition Carousel */}
 
       <section className="border-t border-neutral-200 pt-12 space-y-8">
         <div className="flex justify-between items-end gap-6">
@@ -443,9 +392,7 @@ export default function LandingPage() {
         )}
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* ARTWORK CAROUSEL                                                   */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Artwork Carousel */}
 
       <section className="border-t border-neutral-200 pt-12 space-y-8">
         <div className="flex justify-between items-end gap-6">
@@ -527,9 +474,7 @@ export default function LandingPage() {
         )}
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* ARTIST CAROUSEL                                                    */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Artist Carousel */}
 
       <section className="border-t border-neutral-200 pt-12 space-y-8">
         <div className="flex justify-between items-end gap-6">
@@ -608,9 +553,7 @@ export default function LandingPage() {
         )}
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* RECENT ACTIVITY                                                    */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Recent Activity */}
 
       <section className="border-t border-neutral-200 pt-12">
         <H2>{t("landing.recentActivity")}</H2>
@@ -671,9 +614,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* SCREENS CAROUSEL                                                   */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Screens Carousel */}
 
       <section className="border-t border-neutral-200 pt-12 space-y-8">
         <div className="flex justify-between items-end gap-6">

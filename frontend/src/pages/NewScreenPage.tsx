@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import H1 from "../components/ui/typography/H1";
@@ -13,15 +13,23 @@ import {
   type CreateExhibitionResponse,
 } from "../api/exhibitionApi";
 
-import { getArtworks, type ArtworkResponse } from "../api/artworkApi";
+import {
+  getArtworks,
+  setArtworkScreen,
+  type ArtworkResponse,
+} from "../api/artworkApi";
 
-import { getArtists, type CreateArtistResponse } from "../api/artistApi";
+import {
+  getArtists,
+  setArtistScreen,
+  type CreateArtistResponse,
+} from "../api/artistApi";
 
 type ScreenType = "exhibition" | "artwork" | "artist";
 
 export default function NewScreenPage() {
   const { i18n, t } = useTranslation("newScreen");
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [selectedType, setSelectedType] = useState<ScreenType | null>(null);
 
@@ -105,6 +113,14 @@ export default function NewScreenPage() {
     try {
       if (selectedType === "exhibition") {
         await setExhibitionScreen(selectedObjectId, languageCode);
+      }
+
+      if (selectedType === "artwork") {
+        await setArtworkScreen(selectedObjectId, languageCode);
+      }
+
+      if (selectedType === "artist") {
+        await setArtistScreen(selectedObjectId, languageCode);
       }
 
       // navigate(`/display/static/${selectedType}/${selectedObjectId}`);

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import ExhibitionCard from "./ExhibitionCard";
 import Carouselbutton from "./ui/buttons/Carouselbutton";
@@ -15,6 +16,8 @@ export default function ExhibitionCarousel({
   exhibitions,
   onDeleted,
 }: ExhibitionCarouselProps) {
+  const { t } = useTranslation("common");
+
   const [startIndex, setStartIndex] = useState(0);
 
   // Sichtbare Exhibitions
@@ -57,7 +60,9 @@ export default function ExhibitionCarousel({
   // Next
   const handleNext = () => {
     setStartIndex((prev) => {
-      const newIndex = Math.min(prev + 3, Math.max(exhibitions.length - 3, 0));
+      const maxStartIndex = Math.floor((exhibitions.length - 1) / 3) * 3;
+
+      const newIndex = Math.min(prev + 3, maxStartIndex);
 
       requestAnimationFrame(scrollToCurrentExhibitions);
 
@@ -67,7 +72,7 @@ export default function ExhibitionCarousel({
 
   // Keine Exhibtions
   if (exhibitions.length === 0) {
-    return <P>Keine Exhibitions gefunden.</P>;
+    return <P>{t("empty.exhibitions")}</P>;
   }
 
   // Pagination
@@ -88,7 +93,7 @@ export default function ExhibitionCarousel({
 
       <div className="flex justify-between">
         <Carouselbutton onClick={handlePrevious} disabled={startIndex === 0}>
-          ← Previous
+          ← {t("carousel.previous")}
         </Carouselbutton>
 
         <P>
@@ -100,7 +105,7 @@ export default function ExhibitionCarousel({
           onClick={handleNext}
           disabled={startIndex >= exhibitions.length - 3}
         >
-          Next →
+          {t("carousel.next")} →
         </Carouselbutton>
       </div>
     </div>

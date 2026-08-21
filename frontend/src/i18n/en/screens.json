@@ -4,10 +4,16 @@
     "paragraph": "Manage and curate digital content displayed throughout the exhibition space."
   },
   "current": {
-    "title": "Exhibition Screens"
+    "exhibitions": "Exhibition Screens",
+    "artworks": "Artworks Screens",
+    "artists": "Artists Screens"
   },
   "create": {
     "title": "New Screen",
     "button": "Add new screen →"
+  },
+
+  "loading": {
+    "state": "Loading …"
   }
 }

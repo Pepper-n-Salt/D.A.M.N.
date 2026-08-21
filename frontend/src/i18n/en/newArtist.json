@@ -17,7 +17,8 @@
     "dateOfDeath": "Date of Death",
     "country": "Country",
     "description": "Description",
-    "image": "Upload Image"
+    "image": "Image",
+    "uploadImage": "Upload Image"
   },
   "messages": {
     "savingImage": "Saving image...",

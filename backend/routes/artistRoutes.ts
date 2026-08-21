@@ -12,6 +12,8 @@ import {
   updateArtist,
   deleteArtist,
   restoreArtist,
+  setArtistScreen,
+  removeArtistScreen,
 } from "../controllers/artistController.js";
 
 import {
@@ -24,31 +26,9 @@ import {
 
 const router = express.Router();
 
-/*
- * Alle Artist-Routen benötigen Authentifizierung.
- */
 router.use(checkAuth);
 
-/*
- * --------------------------------------------------------------------------
- * Alle Artists
- * GET /artist/:languageCode
- * --------------------------------------------------------------------------
- */
-
-router.get(
-  "/:languageCode",
-  validateParams(artistLanguageSchema),
-  showAllArtists
-);
-
-/*
- * --------------------------------------------------------------------------
- * Gelöschte Artists
- * GET /artist/deleted/:languageCode
- * --------------------------------------------------------------------------
- */
-
+// Alle gelöschten Artists abrufen (nur für SuperAdmins)
 router.get(
   "/deleted/:languageCode",
   requireSuperUser,
@@ -56,35 +36,24 @@ router.get(
   showDeletedArtists
 );
 
-/*
- * --------------------------------------------------------------------------
- * Einen Artist laden
- * GET /artist/:artistId/:languageCode
- * --------------------------------------------------------------------------
- */
+// Alle Artists abrufen
+router.get(
+  "/:languageCode",
+  validateParams(artistLanguageSchema),
+  showAllArtists
+);
 
+// Einen einzelnen Artist laden
 router.get(
   "/:artistId/:languageCode",
   validateParams(artistIdLanguageParamsSchema),
   showOneArtist
 );
 
-/*
- * --------------------------------------------------------------------------
- * Artist erstellen
- * POST /artist
- * --------------------------------------------------------------------------
- */
-
+// Einen neuen Artist erstellen
 router.post("/", validateBody(createArtistSchema), createArtist);
 
-/*
- * --------------------------------------------------------------------------
- * Artist löschen
- * PATCH /artist/:artistId/delete
- * --------------------------------------------------------------------------
- */
-
+// Einen Artist löschen (Soft Delete)
 router.patch(
   "/:artistId/delete",
   requireSuperUser,
@@ -92,6 +61,7 @@ router.patch(
   deleteArtist
 );
 
+// Einen Artist wiederherstellen (geht nur für Super Admins)
 router.patch(
   "/:artistId/restore",
   requireSuperUser,
@@ -99,17 +69,26 @@ router.patch(
   restoreArtist
 );
 
-/*
- * --------------------------------------------------------------------------
- * Artist aktualisieren
- * PATCH /artist/:artistId/:languageCode
- * --------------------------------------------------------------------------
- */
+// Einen Artist aktualisieren / editieren
 router.patch(
   "/:artistId/:languageCode",
   validateParams(artistIdLanguageParamsSchema),
   validateBody(updateArtistSchema),
   updateArtist
+);
+
+// Einen Artist als Screen markieren
+router.patch(
+  "/:artistId/:languageCode/screen",
+  validateParams(artistIdLanguageParamsSchema),
+  setArtistScreen
+);
+
+// Einen Artist wieder als Screen entfernen
+router.patch(
+  "/:artistId/:languageCode/unscreen",
+  validateParams(artistIdLanguageParamsSchema),
+  removeArtistScreen
 );
 
 export default router;
