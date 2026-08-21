@@ -73,7 +73,7 @@ async function startServer() {
 
   console.log("Database connection has been established successfully.");
 
-  await db.sync();
+  await db.sync({ force: true });
 
   const server = createServer(app);
 
