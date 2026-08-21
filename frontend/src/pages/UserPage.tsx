@@ -19,11 +19,6 @@ type UserListItem = {
   organisationId?: string;
 };
 
-type Organisation = {
-  id: string;
-  name: string;
-};
-
 export default function User() {
   const { t } = useTranslation("user");
   const navigate = useNavigate();
@@ -35,9 +30,6 @@ export default function User() {
   const [password, setPassword] = useState("");
 
   const [organisationId, setOrganisationId] = useState("");
-
-  const [organisations, setOrganisations] = useState<Organisation[]>([]);
-  const [loadingOrganisations, setLoadingOrganisations] = useState(false);
 
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -66,54 +58,6 @@ export default function User() {
     setEmail(user.email || "");
     setOrganisationId(user.organisationId || "");
   }, [user]);
-
-  /*
-  |--------------------------------------------------------------------------
-  | Organisationen laden
-  |--------------------------------------------------------------------------
-  |
-  | NUR Superuser laden die komplette Organisationsliste.
-  |
-  | Dieser Endpoint bleibt bewusst:
-  | /api/organisation
-  |
-  */
-
-  useEffect(() => {
-    if (!isSuper) {
-      return;
-    }
-
-    const loadOrganisations = async () => {
-      setLoadingOrganisations(true);
-
-      try {
-        const response = await fetch("/api/organisation", {
-          credentials: "include",
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.msg || t("account.form.organisationLoadError"));
-        }
-
-        setOrganisations(data.organisations || []);
-      } catch (err: unknown) {
-        console.error("Organisationen konnten nicht geladen werden:", err);
-
-        setError(
-          err instanceof Error
-            ? err.message
-            : t("account.form.organisationLoadError")
-        );
-      } finally {
-        setLoadingOrganisations(false);
-      }
-    };
-
-    loadOrganisations();
-  }, [isSuper, t]);
 
   /*
   |--------------------------------------------------------------------------
@@ -437,11 +381,9 @@ export default function User() {
               />
             </div>
 
-            {/* Messages */}
+            {error && <P>{error}</P>}
 
-            {/* {error && <P>{error}</P>}
-
-            {message && <P>{message}</P>} */}
+            {message && <P>{message}</P>}
 
             {/* Submit */}
 
