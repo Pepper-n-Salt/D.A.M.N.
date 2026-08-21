@@ -82,8 +82,8 @@ export default function LandingPageScreens() {
         id="current-screens"
         className="border-t border-neutral-200 pt-12 space-y-12"
       >
-        <H2>{t("current.title")}</H2>
-        {loading && <P>Loading ...</P>} {/* noch i18n */}
+        <H2>{t("current.exhibitions")}</H2>
+        {loading && <P>{t("loading.state")}</P>}
         {error && <P>{error}</P>}
         <ExhibitionScreenCarousel exhibitions={exhibitions} />
       </section>
@@ -99,14 +99,14 @@ export default function LandingPageScreens() {
 
       <section className="border-t border-neutral-200 pt-12 space-y-12">
         <H2>{t("current.artworks")}</H2>
-        {loading && <P>Loading ...</P>} {/* noch i18n */}
+        {loading && <P>{t("loading.state")}</P>}
         {error && <P>{error}</P>}
         <ArtworkScreenCarousel artworks={artworks} />
       </section>
 
       <section className="border-t border-neutral-200 pt-12 space-y-12">
         <H2>{t("current.artists")}</H2>
-        {loading && <P>Loading ...</P>} {/* noch i18n */}
+        {loading && <P>{t("loading.state")}</P>}
         {error && <P>{error}</P>}
         <ArtistScreenCarousel artists={artists} />
       </section>
