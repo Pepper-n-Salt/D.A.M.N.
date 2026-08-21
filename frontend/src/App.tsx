@@ -183,7 +183,7 @@ import NotFound from "./pages/NotFound";
 //   );
 // }
 
-// function App() {
+// export function App() {
 //   return (
 //     <BrowserRouter>
 //       <Routes>
