@@ -42,12 +42,9 @@ export default function User() {
   const isAdmin = currentRole === "admin" || currentRole === "super";
   const isSuper = currentRole === "super";
 
-  /*
-  |--------------------------------------------------------------------------
-  | Eigene Userdaten laden
-  |--------------------------------------------------------------------------
-  */
+  const API_URL = `${import.meta.env.VITE_API_URL || ""}`;
 
+  // Eigene User:innendaten laden
   useEffect(() => {
     if (!user) {
       return;
@@ -59,21 +56,10 @@ export default function User() {
     setOrganisationId(user.organisationId || "");
   }, [user]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | User laden
-  |--------------------------------------------------------------------------
-  |
-  | Admin:
-  |   Backend liefert User der eigenen Organisation.
-  |
-  | Super:
-  |   Backend liefert ALLE User.
-  |
-  | User:
-  |   Kein Laden notwendig.
-  |
-  */
+  // User:in laden
+  // Admin: Backend liefert User:innen der eigenen Organisation.
+  // Super: Backend liefert ALLE User:innen
+  // User: Kein Laden notwendig.
 
   useEffect(() => {
     if (!isAdmin) {
@@ -86,7 +72,7 @@ export default function User() {
       setError(null);
 
       try {
-        const response = await fetch("/api/user", {
+        const response = await fetch(`${API_URL}/user`, {
           credentials: "include",
         });
 
@@ -111,12 +97,7 @@ export default function User() {
     loadUsers();
   }, [isAdmin, t]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | User löschen
-  |--------------------------------------------------------------------------
-  */
-
+  // User:in löschen
   const handleDelete = async (userIdToDelete: string) => {
     if (!confirm(t("management.confirmDelete"))) {
       return;
@@ -126,7 +107,7 @@ export default function User() {
     setMessage(null);
 
     try {
-      const response = await fetch(`/api/user/${userIdToDelete}`, {
+      const response = await fetch(`${API_URL}/user/${userIdToDelete}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -149,12 +130,7 @@ export default function User() {
     }
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | Account aktualisieren
-  |--------------------------------------------------------------------------
-  */
-
+  // Account aktualisieren
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -175,16 +151,13 @@ export default function User() {
       body.password = password;
     }
 
-    /*
-      NUR Superuser darf die Organisation ändern.
-    */
-
+    // NUR Super Admins dürfen die Organisation ändern
     if (isSuper && organisationId) {
       body.organisationId = organisationId;
     }
 
     try {
-      const response = await fetch(`/api/user/${user.id}`, {
+      const response = await fetch(`${API_URL}/user/${user.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -216,9 +189,7 @@ export default function User() {
 
   return (
     <section className="space-y-20">
-      {/* ---------------------------------------------------------------- */}
       {/* Hero */}
-      {/* ---------------------------------------------------------------- */}
 
       <section className="space-y-12">
         <H1>{t("hero.title")}</H1>
@@ -226,9 +197,7 @@ export default function User() {
         <P>{t("hero.subtitle")}</P>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
       {/* Account */}
-      {/* ---------------------------------------------------------------- */}
 
       <section className="border-t border-neutral-200 pt-12">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
@@ -300,16 +269,9 @@ export default function User() {
               />
             </div>
 
-            {/* ---------------------------------------------------------- */}
-            {/* Organisation                                               */}
-            {/* ---------------------------------------------------------- */}
-            {/*                                                             */}
-            {/* WICHTIG:                                                     */}
-            {/*                                                             */}
-            {/* Super = sichtbar                                            */}
-            {/* Admin = überhaupt nicht gerendert                           */}
-            {/* User  = überhaupt nicht gerendert                           */}
-            {/* ---------------------------------------------------------- */}
+            {/* Organisation */}
+            {/* Super = sichtbar, Admin = überhaupt nicht gerendert, User  = überhaupt nicht gerendert */}
+
             {/* 
             {isSuper && (
               <div className="flex flex-col gap-2">
@@ -397,13 +359,7 @@ export default function User() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* User Management                                                  */}
-      {/* ---------------------------------------------------------------- */}
-      {/*                                                                 */}
-      {/* NUR ADMIN UND SUPER                                             */}
-      {/* User bekommt diesen kompletten Abschnitt NICHT.                 */}
-      {/* ---------------------------------------------------------------- */}
+      {/* User Management: NUR ADMIN UND SUPER (User:innen bekommt diesen kompletten Abschnitt NICHT.) */}
 
       {isAdmin && (
         <section className="border-t border-neutral-200 pt-12">
@@ -428,9 +384,7 @@ export default function User() {
                 {t("management.button")}
               </Borderbutton>
 
-              {/* -------------------------------------------------------- */}
-              {/* User list                                                 */}
-              {/* -------------------------------------------------------- */}
+              {/* User list */}
 
               <div className="mt-8 space-y-4">
                 <H3>{t("management.usersListTitle")}</H3>
@@ -457,12 +411,7 @@ export default function User() {
                             {u.role}
                           </div>
 
-                          {/* ------------------------------------------------ */}
-                          {/* Organisation ID                                  */}
-                          {/* ------------------------------------------------ */}
-                          {/* Nur Superuser darf sie sehen.                   */}
-                          {/* Admin bekommt keinerlei Organisationsinfo.      */}
-                          {/* ------------------------------------------------ */}
+                          {/* Organisation ID (Nur Super Admin darf ID sehen, Admin bekommt keinerlei Organisationsinfo)                                 */}
 
                           {isSuper && u.organisationId && (
                             <div className="mt-2 text-xs text-neutral-500">
