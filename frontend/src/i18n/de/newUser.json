@@ -2,9 +2,7 @@
   "newUser": {
     "title": "Mitglied hinzufügen",
     "paragraph": "Erstelle ein neues Konto für eine weitere Person in deiner Organisation und lege die entsprechende Zugriffsstufe innerhalb von D.A.M.N. fest.",
-
     "userInformation": "Benutzer:inneninformationen",
-
     "form": {
       "firstName": "Vorname",
       "lastName": "Nachname",

@@ -363,12 +363,12 @@ export default function LandingPage() {
         {currentExhibition ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 border border-neutral-300">
-              <div className="aspect-[4/3] md:aspect-auto  overflow-hidden min-h-[280px] flex items-center justify-center">
+              <div className="h-[500px] overflow-hidden flex items-center justify-center">
                 {currentExhibition.fileUrl ? (
                   <img
                     src={currentExhibition.fileUrl}
                     alt={currentExhibition.title}
-                    className="max-w-full max-h-[500px] w-auto h-auto object-contain"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <P>{t("landing.preview")}</P>
@@ -462,12 +462,12 @@ export default function LandingPage() {
         {currentArtwork ? (
           <>
             <div className="border border-neutral-300">
-              <div className="w-full overflow-hidden flex items-center justify-center max-h-500">
+              <div className="w-full h-[500px] overflow-hidden flex items-center justify-center">
                 {currentArtwork.fileUrl ? (
                   <img
                     src={currentArtwork.fileUrl}
                     alt={currentArtwork.title}
-                    className="block w-full h-full max-w-none"
+                    className="block w-full h-full object-cover"
                   />
                 ) : (
                   <P>{t("landing.preview")}</P>
@@ -551,12 +551,12 @@ export default function LandingPage() {
                   key={artist.id}
                   className="border border-neutral-300 overflow-hidden"
                 >
-                  <div className="aspect-[4/3]  overflow-hidden flex items-center justify-center">
+                  <div className="h-[280px] overflow-hidden flex items-center justify-center">
                     {artist.fileUrl ? (
                       <img
                         src={artist.fileUrl}
                         alt={`${artist.firstName} ${artist.lastName}`}
-                        className="max-w-full max-h-[280px] w-auto h-auto object-contain"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       <P>{t("landing.preview")}</P>
@@ -690,12 +690,12 @@ export default function LandingPage() {
         {currentScreen ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 border border-neutral-300">
-              <div className="aspect-[4/3] md:aspect-auto overflow-hidden min-h-[280px] flex items-center justify-center">
+              <div className="h-[500px] overflow-hidden flex items-center justify-center">
                 {currentScreen.fileUrl ? (
                   <img
                     src={currentScreen.fileUrl}
                     alt={currentScreen.title}
-                    className="max-w-full max-h-[500px] w-auto h-auto object-contain"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <P>{t("landing.preview")}</P>
