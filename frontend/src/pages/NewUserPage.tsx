@@ -3,7 +3,10 @@ import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-
+import {
+  useUserValidation,
+  type UserFormErrors,
+} from "../validation/userValidation";
 import H1 from "../components/ui/typography/H1";
 import H2 from "../components/ui/typography/H2";
 import P from "../components/ui/typography/P";
@@ -12,6 +15,7 @@ export default function NewUserPage() {
   const { t } = useTranslation("newUser");
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { validateUserForm } = useUserValidation();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -24,6 +28,7 @@ export default function NewUserPage() {
   // Es wird der Name eingegeben, nicht die ID.
   const [organisationName, setOrganisationName] = useState("");
 
+  const [errors, setErrors] = useState<UserFormErrors>({});
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -42,22 +47,22 @@ export default function NewUserPage() {
     setError(null);
     setSuccess(null);
 
-    if (password !== repeatPassword) {
-      setError(t("newUser.form.passwordMismatch"));
-      return;
-    }
+    const validationErrors = validateUserForm(
+      {
+        firstName,
+        lastName,
+        email,
+        password,
+        repeatPassword,
+        role,
+        organisationName,
+      },
+      currentRole === "super"
+    );
 
-    /*
-     * Superadmin:
-     * - darf admin oder user erstellen
-     * - muss eine Organisation angeben
-     *
-     * Admin:
-     * - darf nur user erstellen
-     * - Organisation wird automatisch vom Backend übernommen
-     */
-    if (currentRole === "super" && !organisationName.trim()) {
-      setError(t("newUser.form.organisationRequired"));
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
       return;
     }
 
@@ -160,13 +165,26 @@ export default function NewUserPage() {
 
               <input
                 value={firstName}
-                onChange={(event) => setFirstName(event.target.value)}
+                onChange={(event) => {
+                  setFirstName(event.target.value);
+                  setErrors((current) => ({
+                    ...current,
+                    firstName: undefined,
+                  }));
+                }}
                 type="text"
                 id="firstname"
                 name="firstname"
                 required
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
+                className={`border-b bg-transparent py-3 outline-none ${
+                  errors.firstName ? "border-red-600" : "border-black"
+                }`}
+                aria-invalid={!!errors.firstName}
               />
+
+              {errors.firstName && (
+                <p className="text-sm text-red-600">{errors.firstName}</p>
+              )}
             </div>
 
             {/* Last name */}
@@ -181,13 +199,26 @@ export default function NewUserPage() {
 
               <input
                 value={lastName}
-                onChange={(event) => setLastName(event.target.value)}
+                onChange={(event) => {
+                  setLastName(event.target.value);
+                  setErrors((current) => ({
+                    ...current,
+                    lastName: undefined,
+                  }));
+                }}
                 type="text"
                 id="lastname"
                 name="lastname"
                 required
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
+                className={`border-b bg-transparent py-3 outline-none ${
+                  errors.lastName ? "border-red-600" : "border-black"
+                }`}
+                aria-invalid={!!errors.lastName}
               />
+
+              {errors.lastName && (
+                <p className="text-sm text-red-600">{errors.lastName}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -202,13 +233,26 @@ export default function NewUserPage() {
 
               <input
                 value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  setErrors((current) => ({
+                    ...current,
+                    email: undefined,
+                  }));
+                }}
                 type="email"
                 id="email"
                 name="email"
                 required
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
+                className={`border-b bg-transparent py-3 outline-none ${
+                  errors.email ? "border-red-600" : "border-black"
+                }`}
+                aria-invalid={!!errors.email}
               />
+
+              {errors.email && (
+                <p className="text-sm text-red-600">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -223,13 +267,26 @@ export default function NewUserPage() {
 
               <input
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                  setErrors((current) => ({
+                    ...current,
+                    password: undefined,
+                  }));
+                }}
                 type="password"
                 id="password"
                 name="password"
                 required
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
+                className={`border-b bg-transparent py-3 outline-none ${
+                  errors.password ? "border-red-600" : "border-black"
+                }`}
+                aria-invalid={!!errors.password}
               />
+
+              {errors.password && (
+                <p className="text-sm text-red-600">{errors.password}</p>
+              )}
             </div>
 
             {/* Repeat password */}
@@ -244,13 +301,26 @@ export default function NewUserPage() {
 
               <input
                 value={repeatPassword}
-                onChange={(event) => setRepeatPassword(event.target.value)}
+                onChange={(event) => {
+                  setRepeatPassword(event.target.value);
+                  setErrors((current) => ({
+                    ...current,
+                    repeatPassword: undefined,
+                  }));
+                }}
                 type="password"
                 id="repeat-password"
                 name="repeat-password"
                 required
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
+                className={`border-b bg-transparent py-3 outline-none ${
+                  errors.repeatPassword ? "border-red-600" : "border-black"
+                }`}
+                aria-invalid={!!errors.repeatPassword}
               />
+
+              {errors.repeatPassword && (
+                <p className="text-sm text-red-600">{errors.repeatPassword}</p>
+              )}
             </div>
 
             {/* Role */}
@@ -267,8 +337,17 @@ export default function NewUserPage() {
                 id="role"
                 name="role"
                 value={role}
-                onChange={(event) => setRole(event.target.value)}
-                className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
+                onChange={(event) => {
+                  setRole(event.target.value);
+                  setErrors((current) => ({
+                    ...current,
+                    role: undefined,
+                  }));
+                }}
+                className={`border-b bg-transparent py-3 outline-none ${
+                  errors.role ? "border-red-600" : "border-black"
+                }`}
+                aria-invalid={!!errors.role}
               >
                 {allowedRoles.map((option) => (
                   <option key={option} value={option}>
@@ -276,9 +355,14 @@ export default function NewUserPage() {
                   </option>
                 ))}
               </select>
+
+              {errors.role && (
+                <p className="text-sm text-red-600">{errors.role}</p>
+              )}
             </div>
 
             {/* Organisation */}
+
             {currentRole === "super" ? (
               <div className="flex flex-col gap-2">
                 <label
@@ -290,16 +374,29 @@ export default function NewUserPage() {
 
                 <input
                   value={organisationName}
-                  onChange={(event) => setOrganisationName(event.target.value)}
+                  onChange={(event) => {
+                    setOrganisationName(event.target.value);
+                    setErrors((current) => ({
+                      ...current,
+                      organisationName: undefined,
+                    }));
+                  }}
                   type="text"
                   id="organisationName"
                   name="organisationName"
                   required
-                  className="border-b border-neutral-900 bg-transparent py-3 outline-none focus:border-b-2"
+                  className={`border-b bg-transparent py-3 outline-none ${
+                    errors.organisationName ? "border-red-600" : "border-black"
+                  }`}
+                  aria-invalid={!!errors.organisationName}
                   placeholder={t("newUser.form.organisation")}
                 />
 
-                {/* <P>{t("newUser.form.organisationHint")}</P> */}
+                {errors.organisationName && (
+                  <p className="text-sm text-red-600">
+                    {errors.organisationName}
+                  </p>
+                )}
               </div>
             ) : null}
 

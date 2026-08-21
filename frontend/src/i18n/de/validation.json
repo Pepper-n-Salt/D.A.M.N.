@@ -2,50 +2,88 @@
   "title": {
     "required": "Titel ist erforderlich."
   },
+
   "year": {
     "required": "Jahr ist erforderlich.",
     "numbersOnly": "Das Jahr darf nur Zahlen enthalten.",
     "wholeNumber": "Das Jahr muss eine ganze Zahl sein.",
     "invalid": "Bitte geben Sie ein gültiges Jahr ein."
   },
+
   "country": {
     "required": "Land ist erforderlich."
   },
+
   "origin": {
     "required": "Herkunft ist erforderlich."
   },
+
   "material": {
     "required": "Material ist erforderlich."
   },
+
   "dimensions": {
     "required": "Maße sind erforderlich."
   },
+
   "description": {
     "required": "Beschreibung ist erforderlich."
   },
+
   "artists": {
     "required": "Mindestens ein Künstler ist erforderlich."
   },
 
   "firstName": {
-    "required": "Vorname ist erforderlich."
+    "required": "Vorname ist erforderlich.",
+    "maxLength": "Der Vorname darf maximal 255 Zeichen lang sein."
   },
+
   "lastName": {
-    "required": "Nachname ist erforderlich."
+    "required": "Nachname ist erforderlich.",
+    "maxLength": "Der Nachname darf maximal 255 Zeichen lang sein."
   },
 
   "dateOfBirth": {
     "future": "Das Geburtsdatum darf nicht in der Zukunft liegen."
   },
+
   "dateOfDeath": {
     "future": "Das Sterbedatum darf nicht in der Zukunft liegen.",
     "beforeBirth": "Das Sterbedatum darf nicht vor dem Geburtsdatum liegen."
   },
+
   "startDate": {
     "required": "Startdatum ist erforderlich."
   },
+
   "endDate": {
     "required": "Enddatum ist erforderlich.",
     "beforeStart": "Das Enddatum darf nicht vor dem Startdatum liegen."
+  },
+
+  "email": {
+    "required": "E-Mail-Adresse ist erforderlich.",
+    "invalid": "Bitte gib eine gültige E-Mail-Adresse ein."
+  },
+
+  "password": {
+    "required": "Passwort ist erforderlich.",
+    "minLength": "Das Passwort muss mindestens 8 Zeichen lang sein."
+  },
+
+  "repeatPassword": {
+    "required": "Bitte wiederhole dein Passwort."
+  },
+
+  "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+
+  "role": {
+    "required": "Bitte wähle eine Rolle aus."
+  },
+
+  "organisation": {
+    "required": "Organisation ist erforderlich.",
+    "maxLength": "Der Organisationsname darf maximal 255 Zeichen lang sein."
   }
 }

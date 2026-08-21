@@ -1,28 +1,29 @@
 {
   "newUser": {
-    "title": "Add Member",
-    "paragraph": "Create a new account for another person in your organization and define the appropriate access level within D.A.M.N.",
+    "title": "Add member",
+    "paragraph": "Create a new account for another person in your organisation and define the appropriate access level within D.A.M.N.",
 
-    "userInformation": "User Information",
+    "userInformation": "User information",
 
     "form": {
-      "firstName": "First Name",
-      "lastName": "Last Name",
-      "email": "E-mail",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
       "password": "Password",
-      "repeatPassword": "Repeat Password",
+      "repeatPassword": "Repeat password",
       "role": "Role",
       "organisation": "Organisation",
       "organisationPlaceholder": "Enter organisation name",
       "submit": "Save",
       "passwordMismatch": "Passwords do not match.",
       "error": "An error occurred while creating the user.",
-      "success": "New user created successfully.",
+      "success": "New user successfully created.",
       "roleOptions": {
         "admin": "Admin",
         "user": "User"
       }
     },
+
     "noPermission": "You do not have permission to create new users."
   }
 }
