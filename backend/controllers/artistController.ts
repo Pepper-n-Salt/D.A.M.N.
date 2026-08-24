@@ -14,8 +14,11 @@ import { processArtistTranslation } from "../services/artistMistralService.ts";
  * SUPER:
  *   darf alle Artists sehen.
  *
- * ADMIN / USER:
- *   darf nur Artists sehen, deren Creator derselben Organisation angehört.
+ * ADMIN:
+ *   darf Artists sehen, deren Creator derselben Organisation angehört.
+ *
+ * USER:
+ *   darf nur selbst erstellte Artists sehen.
  */
 
 const findAccessibleArtist = async (
@@ -24,11 +27,13 @@ const findAccessibleArtist = async (
   transaction?: any
 ) => {
   const isSuper = user.role === "super";
+  const isAdmin = user.role === "admin";
 
   return Artist.findOne({
     where: {
       id: artistId,
       isDeleted: false,
+      ...(!isSuper && !isAdmin ? { createdBy: user.id } : {}),
     },
 
     include: [
@@ -36,7 +41,7 @@ const findAccessibleArtist = async (
         model: User,
         as: "creator",
 
-        ...(isSuper
+        ...(isSuper || !isAdmin
           ? {}
           : {
               where: {

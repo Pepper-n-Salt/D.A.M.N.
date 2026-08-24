@@ -56,7 +56,6 @@ router.post("/", validateBody(createArtistSchema), createArtist);
 // Einen Artist löschen (Soft Delete)
 router.patch(
   "/:artistId/delete",
-  requireSuperUser,
   validateParams(artistIdSchema),
   deleteArtist
 );

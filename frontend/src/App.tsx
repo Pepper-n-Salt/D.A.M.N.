@@ -36,10 +36,10 @@ import NotFound from "./pages/NotFound";
 
 function WebsiteLayout() {
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="flex min-h-screen flex-col bg-white text-black">
       <Header />
 
-      <main className="px-8 py-10">
+      <main className="flex-1 px-8 py-10">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />

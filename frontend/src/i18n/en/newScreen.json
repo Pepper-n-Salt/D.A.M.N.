@@ -6,6 +6,8 @@
     "loading": "Loading...",
     "error": "The content could not be loaded.",
     "createStaticScreen": "Create static screen",
+    "createPuzzleScreen": "create puzzle screen",
+    "createChatScreen": "Create chat screen",
 
     "staticScreens": {
       "exhibition": {
@@ -26,7 +28,6 @@
         "show": "Select artist",
         "empty": "No artists available."
       }
-    },
-    "createPuzzleScreen": "create puzzle screen"
+    }
   }
 }

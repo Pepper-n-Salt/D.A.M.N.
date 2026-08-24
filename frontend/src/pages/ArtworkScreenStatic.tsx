@@ -87,6 +87,14 @@ export default function ArtworkScreen() {
             </p>
           )}
 
+          {(artwork.dimensions || artwork.material) && (
+            <p className="max-w-3xl text-lg leading-relaxed text-white/90 md:text-xl">
+              {artwork.dimensions}
+              {artwork.dimensions && artwork.material && ", "}
+              {artwork.material}
+            </p>
+          )}
+
           <p className="max-w-3xl text-lg leading-relaxed text-white/90 md:text-xl">
             {t("artwork.yearLocation", {
               year: artwork.year,

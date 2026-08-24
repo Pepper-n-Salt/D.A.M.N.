@@ -16,8 +16,8 @@ export type ArtworkFormData = {
   material: string;
   dimensions: string;
   description: string;
-  image: File | null; // die neu ausgwählte datei
-  imageId: string; // die bereits hochgeladene media-id
+  image: File | null;
+  imageId: string;
 };
 
 export type Artist = {
@@ -101,6 +101,10 @@ export default function ArtworkForm({
 
   const [isSavingImage, setIsSavingImage] = useState(false);
 
+  // Verhindert mehrfaches Absenden, bevor React den neuen State
+  // bzw. isSaving/artworkSaved vom Parent übernommen hat.
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   const updateField = <K extends keyof ArtworkFormData>(
@@ -116,11 +120,20 @@ export default function ArtworkForm({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Bereits gespeichert oder gerade im Speichervorgang:
+    // keinen weiteren Submit zulassen.
+    if (isSaving || artworkSaved || hasSubmitted) {
+      return;
+    }
+
     const validationErrors = validateArtworkForm(formData);
 
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
+
+    // Sofort sperren, bevor der asynchrone Vorgang startet.
+    setHasSubmitted(true);
 
     (async () => {
       try {
@@ -129,6 +142,7 @@ export default function ArtworkForm({
 
         if (formData.image) {
           setIsSavingImage(true);
+
           try {
             const form = new FormData();
             form.append("image", formData.image);
@@ -152,8 +166,13 @@ export default function ArtworkForm({
           }
         }
 
+        // Das eigentliche Speichern übernimmt weiterhin der Parent.
         onSave(imageId, imageUrlLocal);
       } catch (error) {
+        // Wenn der Vorgang fehlschlägt, darf der Benutzer
+        // erneut versuchen zu speichern.
+        setHasSubmitted(false);
+
         console.error(error);
       }
     })();
@@ -523,7 +542,10 @@ export default function ArtworkForm({
                 <button
                   type="button"
                   onClick={() => {
-                    if (imageInputRef.current) imageInputRef.current.value = "";
+                    if (imageInputRef.current) {
+                      imageInputRef.current.value = "";
+                    }
+
                     onRemoveImage?.();
                   }}
                   className="absolute right-1 top-1 flex h-6 w-6 cursor-pointer items-center justify-center bg-black text-white hover:bg-gray-800"
@@ -575,14 +597,18 @@ export default function ArtworkForm({
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"
-          disabled={isSaving}
+          disabled={isSaving || artworkSaved || hasSubmitted}
           className={`border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
-            isSaving
+            isSaving || artworkSaved || hasSubmitted
               ? "cursor-not-allowed opacity-50"
               : "hover:bg-black hover:text-white"
           }`}
         >
-          {isSaving ? "..." : t("actions.save")}
+          {isSaving || hasSubmitted
+            ? "..."
+            : artworkSaved
+              ? "Gespeichert"
+              : t("actions.save")}
         </button>
 
         {showTranslateButton && (

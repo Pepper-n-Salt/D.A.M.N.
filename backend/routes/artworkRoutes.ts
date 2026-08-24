@@ -56,7 +56,6 @@ router.post("/", validateBody(createArtworkSchema), createArtwork);
 // Ein Artwork löschen (Soft Delete)
 router.patch(
   "/:artworkId/delete",
-  requireSuperUser,
   validateParams(artworkIdSchema),
   deleteArtwork
 );

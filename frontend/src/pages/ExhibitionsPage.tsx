@@ -46,7 +46,20 @@ export default function ExhibitionsPage() {
 
         const current = await getExhibitions(languageCode);
 
-        setExhibitions(current);
+        // Nur aktuelle Exhibitions anzeigen.
+        // Exhibitions, deren Enddatum vor heute liegt,
+        // werden ausschließlich im Archiv angezeigt.
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const activeExhibitions = current.filter((exhibition) => {
+          const endDate = new Date(exhibition.endDate);
+          endDate.setHours(0, 0, 0, 0);
+
+          return endDate >= today;
+        });
+
+        setExhibitions(activeExhibitions);
 
         // Gelöschte Exhibitions dürfen ausschließlich Superuser laden.
         if (isSuperUser) {
@@ -107,7 +120,7 @@ export default function ExhibitionsPage() {
   if (isLoading) {
     return (
       <section className="space-y-20 py-8">
-        <P>Loading ...</P> {/* noch i18n hinzufügen */}
+        <P>Loading ...</P>
       </section>
     );
   }
@@ -127,7 +140,7 @@ export default function ExhibitionsPage() {
         <P>{t("hero.paragraph")}</P>
       </div>
 
-      <section className="border-t border-neutral-200 pt-12 space-y-8">
+      <section className="space-y-8 border-t border-neutral-200 pt-12">
         <H2>{t("current.title")}</H2>
 
         <ExhibitionCarousel
@@ -136,21 +149,22 @@ export default function ExhibitionsPage() {
         />
       </section>
 
-      <section className="border-t border-neutral-200 pt-12 space-y-12">
+      <section className="space-y-12 border-t border-neutral-200 pt-12">
         <H2>{t("create.title")}</H2>
+
         <Link to="/landingpage/exhibitions/new">
           <Borderbutton>{t("create.button")}</Borderbutton>
         </Link>
       </section>
 
-      <section className="border-t border-neutral-200 pt-12 space-y-12">
+      <section className="space-y-12 border-t border-neutral-200 pt-12">
         <H2>{t("archived.title")}</H2>
 
         <ArchivedExhibitions />
       </section>
 
       {isSuperUser && (
-        <section className="border-t border-neutral-200 pt-12 space-y-12">
+        <section className="space-y-12 border-t border-neutral-200 pt-12">
           <H2>{t("deleted.title")}</H2>
 
           <DeletedExhibitions
