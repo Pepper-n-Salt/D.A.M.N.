@@ -16,7 +16,7 @@ interface CarouselProps {
 }
 
 export default function ScreenPreviewCarousel({ items }: CarouselProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const [startIndex, setStartIndex] = useState(0);
 
   const visibleItems = items.slice(startIndex, startIndex + 2);
@@ -33,7 +33,7 @@ export default function ScreenPreviewCarousel({ items }: CarouselProps) {
   };
 
   if (items.length === 0) {
-    return null;
+    return <P>{t("carousel.noScreens")}</P>;
   }
 
   return (

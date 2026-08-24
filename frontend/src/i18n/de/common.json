@@ -47,7 +47,8 @@
 
   "carousel": {
     "previous": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "noScreens": "Noch keine Screens angelegt."
   },
 
   "status": {
