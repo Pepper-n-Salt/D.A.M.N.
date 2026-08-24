@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import H1 from "../components/ui/typography/H1";
@@ -29,7 +29,7 @@ type ScreenType = "exhibition" | "artwork" | "artist";
 
 export default function NewScreenPage() {
   const { i18n, t } = useTranslation("newScreen");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [selectedType, setSelectedType] = useState<ScreenType | null>(null);
 
@@ -141,7 +141,12 @@ export default function NewScreenPage() {
       return;
     }
 
-    navigate(`/display/dynamic/puzzle/artwork/${selectedObjectId}`);
+    // navigate(`/display/dynamic/puzzle/artwork/${selectedObjectId}`);
+    window.open(
+      `/display/dynamic/puzzle/artwork/${selectedObjectId}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   const handleCreateChatScreen = () => {
@@ -149,7 +154,12 @@ export default function NewScreenPage() {
       return;
     }
 
-    navigate(`/display/dynamic/chat/exhibition/${selectedObjectId}`);
+    // navigate(`/display/dynamic/chat/exhibition/${selectedObjectId}`);
+    window.open(
+      `/display/dynamic/chat/exhibition/${selectedObjectId}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   return (
