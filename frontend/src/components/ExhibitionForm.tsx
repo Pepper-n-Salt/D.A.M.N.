@@ -66,6 +66,10 @@ export default function ExhibitionForm({
 
   const [isSavingImage, setIsSavingImage] = useState(false);
 
+  // Verhindert mehrfaches Absenden, bevor der Parent
+  // isSaving/exhibitionSaved aktualisiert hat.
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   /*
@@ -119,11 +123,23 @@ export default function ExhibitionForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Kein erneutes Absenden erlauben, wenn:
+    // - bereits gespeichert wurde
+    // - gerade gespeichert wird
+    // - bereits ein Submit gestartet wurde
+    if (isSaving || exhibitionSaved || hasSubmitted) {
+      return;
+    }
+
     const validationErrors = validateExhibitionForm(formData);
 
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
+
+    // Sofort sperren, damit auch sehr schnelle Doppelklicks
+    // keinen zweiten Request auslösen.
+    setHasSubmitted(true);
 
     try {
       let imageId: string | null = null;
@@ -132,6 +148,7 @@ export default function ExhibitionForm({
       // Bild hochladen
       if (formData.image) {
         setIsSavingImage(true);
+
         try {
           const uploadedImage = await uploadImage(formData.image);
 
@@ -146,8 +163,12 @@ export default function ExhibitionForm({
 
       console.log(imageId);
 
+      // Das eigentliche Speichern übernimmt der Parent.
       onSave(imageId, imageUrl);
     } catch (error) {
+      // Bei einem Fehler darf erneut gespeichert werden.
+      setHasSubmitted(false);
+
       console.error(error);
     }
   };
@@ -159,6 +180,7 @@ export default function ExhibitionForm({
       noValidate
     >
       {/* LANGUAGE */}
+
       <div className="mb-10 flex flex-col gap-2 border-b border-black">
         <label
           htmlFor={`language-${language}`}
@@ -181,8 +203,10 @@ export default function ExhibitionForm({
       </div>
 
       {/* TITLE / SUBTITLE / DATES / LOCATION */}
+
       <div className="grid gap-12 md:grid-cols-2">
         {/* TITLE */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`title-${language}`}
@@ -214,6 +238,7 @@ export default function ExhibitionForm({
         </div>
 
         {/* SUBTITLE */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`subtitle-${language}`}
@@ -233,6 +258,7 @@ export default function ExhibitionForm({
         </div>
 
         {/* START DATE */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`startDate-${language}`}
@@ -267,6 +293,7 @@ export default function ExhibitionForm({
         </div>
 
         {/* END DATE */}
+
         <div className="flex flex-col gap-2">
           <label
             htmlFor={`endDate-${language}`}
@@ -301,6 +328,7 @@ export default function ExhibitionForm({
         </div>
 
         {/* LOCATION */}
+
         <div className="flex flex-col gap-2 md:col-span-2">
           <label
             htmlFor={`location-${language}`}
@@ -336,6 +364,7 @@ export default function ExhibitionForm({
       </div>
 
       {/* DESCRIPTION */}
+
       <div className="flex flex-col gap-2">
         <label
           htmlFor={`description-${language}`}
@@ -370,6 +399,7 @@ export default function ExhibitionForm({
       </div>
 
       {/* EVENTS */}
+
       {/* <div className="flex flex-col gap-2">
         <label
           htmlFor={`events-${language}`}
@@ -401,6 +431,7 @@ export default function ExhibitionForm({
       </div> */}
 
       {/* IMAGE */}
+
       {showImage && (
         <div className="flex flex-col gap-2">
           <label
@@ -423,18 +454,11 @@ export default function ExhibitionForm({
               onImageSelect(file);
             }}
             className="hidden"
-            // className={`cursor-pointer border bg-transparent p-3 ${
-            //   errors.image ? "border-red-600" : "border-black"
-            // }`}
-            // aria-invalid={!!errors.image}
-            // aria-describedby={
-            //   errors.image ? `image-error-${language}` : undefined
-            // }
           />
 
           <label
             htmlFor={`image-${language}`}
-            className="inline-block text-sm uppercase tracking-[0.2em] cursor-pointer border border-black px-4 py-3"
+            className="inline-block cursor-pointer border border-black px-4 py-3 text-sm uppercase tracking-[0.2em]"
           >
             {t("form.chooseImage")}
           </label>
@@ -453,14 +477,16 @@ export default function ExhibitionForm({
                   alt={t("form.thumbnail")}
                   className="h-32 w-32 object-cover"
                 />
+
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center cursor-pointer bg-black text-white hover:bg-gray-800"
+                  className="absolute right-1 top-1 flex h-6 w-6 cursor-pointer items-center justify-center bg-black text-white hover:bg-gray-800"
                 >
                   ×
                 </button>
               </div>
+
               <p className="mt-2 text-sm uppercase tracking-[0.2em]">
                 {t("messages.imageSelected")}
               </p>
@@ -475,18 +501,31 @@ export default function ExhibitionForm({
         </div>
       )}
 
+      {/* SAVE MESSAGE */}
+
+      {(isSaving || hasSubmitted) && !exhibitionSaved && (
+        <p className="text-sm uppercase tracking-[0.2em]">
+          {t("messages.saving")}
+        </p>
+      )}
+
       {/* ACTIONS */}
+
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"
-          disabled={isSaving}
+          disabled={isSaving || exhibitionSaved || hasSubmitted}
           className={`border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
-            isSaving
+            isSaving || exhibitionSaved || hasSubmitted
               ? "cursor-not-allowed opacity-50"
               : "hover:bg-black hover:text-white"
           }`}
         >
-          {isSaving ? "..." : t("actions.save")}
+          {isSaving || hasSubmitted
+            ? "..."
+            : exhibitionSaved
+              ? "Gespeichert"
+              : t("actions.save")}
         </button>
 
         {showTranslateButton && (
