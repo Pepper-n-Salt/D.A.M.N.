@@ -75,7 +75,8 @@ export default function ArtistScreen() {
 
           {(artist.dateOfBirth || artist.dateOfDeath) && (
             <h2 className="text-3xl font-light text-white/80 md:text-5xl">
-              {artist.dateOfBirth} – {artist.dateOfDeath}
+              {artist.dateOfBirth}
+              {artist.dateOfDeath && ` – ${artist.dateOfDeath}`}
             </h2>
           )}
 

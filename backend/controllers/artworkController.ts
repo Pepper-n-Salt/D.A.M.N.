@@ -24,9 +24,11 @@ import { processArtworkTranslation } from "../services/artworkMistralService.ts"
  * SUPER:
  *   darf alle Artworks sehen.
  *
- * ADMIN / USER:
- *   darf nur Artworks sehen, deren Creator derselben Organisation
- *   angehört.
+ * ADMIN:
+ *   darf Artworks sehen, deren Creator derselben Organisation angehört.
+ *
+ * USER:
+ *   darf nur selbst erstellte Artworks sehen.
  */
 
 const findAccessibleArtwork = async (
@@ -35,11 +37,13 @@ const findAccessibleArtwork = async (
   transaction?: any
 ) => {
   const isSuper = user.role === "super";
+  const isAdmin = user.role === "admin";
 
   return Artwork.findOne({
     where: {
       id: artworkId,
       isDeleted: false,
+      ...(!isSuper && !isAdmin ? { createdBy: user.id } : {}),
     },
 
     include: [
@@ -47,7 +51,7 @@ const findAccessibleArtwork = async (
         model: User,
         as: "creator",
 
-        ...(isSuper
+        ...(isSuper || !isAdmin
           ? {}
           : {
               where: {

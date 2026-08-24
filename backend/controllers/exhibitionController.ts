@@ -11,17 +11,19 @@ const findAccessibleExhibition = async (
   transaction?: any
 ) => {
   const isSuper = user.role === "super";
+  const isAdmin = user.role === "admin";
 
   return Exhibition.findOne({
     where: {
       id: exhibitionId,
       isDeleted: false,
+      ...(!isSuper && !isAdmin ? { createdBy: user.id } : {}),
     },
     include: [
       {
         model: User,
         as: "creator",
-        ...(isSuper
+        ...(isSuper || !isAdmin
           ? {}
           : {
               where: {

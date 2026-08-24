@@ -6,6 +6,8 @@
     "loading": "Laden...",
     "error": "Die Inhalte konnten nicht geladen werden.",
     "createStaticScreen": "Static Screen erstellen",
+    "createPuzzleScreen": "Puzzle Screen erstellen",
+    "createChatScreen": "Chat Screen erstellen",
 
     "staticScreens": {
       "exhibition": {
@@ -26,7 +28,6 @@
         "show": "Künstler:in auswählen",
         "empty": "Keine Künstler:innen vorhanden."
       }
-    },
-    "createPuzzleScreen": "Puzzle Screen erstellen"
+    }
   }
 }
