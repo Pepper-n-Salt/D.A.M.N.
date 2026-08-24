@@ -31,6 +31,7 @@ type ExhibitionFormProps = {
   onTranslate?: () => void;
 
   exhibitionSaved: boolean;
+  isEditMode?: boolean;
   showTranslateButton?: boolean;
   languageDisabled?: boolean;
 
@@ -54,6 +55,7 @@ export default function ExhibitionForm({
   onImageSelect,
   onTranslate,
   exhibitionSaved,
+  isEditMode = false,
   showTranslateButton = true,
   languageDisabled = false,
   isSaving = false,
@@ -127,7 +129,7 @@ export default function ExhibitionForm({
     // - bereits gespeichert wurde
     // - gerade gespeichert wird
     // - bereits ein Submit gestartet wurde
-    if (isSaving || exhibitionSaved || hasSubmitted) {
+    if (isSaving || (!isEditMode && (exhibitionSaved || hasSubmitted))) {
       return;
     }
 
@@ -514,16 +516,16 @@ export default function ExhibitionForm({
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"
-          disabled={isSaving || exhibitionSaved || hasSubmitted}
+          disabled={isSaving || (!isEditMode && (exhibitionSaved || hasSubmitted))}
           className={`border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
-            isSaving || exhibitionSaved || hasSubmitted
+            isSaving || (!isEditMode && (exhibitionSaved || hasSubmitted))
               ? "cursor-not-allowed opacity-50"
               : "hover:bg-black hover:text-white"
           }`}
         >
-          {isSaving || hasSubmitted
+          {isSaving || (!isEditMode && hasSubmitted)
             ? "..."
-            : exhibitionSaved
+            : exhibitionSaved && !isEditMode
               ? "Gespeichert"
               : t("actions.save")}
         </button>

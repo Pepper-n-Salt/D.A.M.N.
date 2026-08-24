@@ -449,6 +449,7 @@ export default function NewExhibitionPage() {
         <div className="w-full">
           <ExhibitionForm
             language={language}
+            isEditMode={isEditMode}
             onLanguageChange={setLanguage}
             formData={formData}
             setFormData={setFormData}
@@ -483,6 +484,7 @@ export default function NewExhibitionPage() {
           <div className="w-full">
             <ExhibitionForm
               language={translationLanguage}
+              isEditMode={isEditMode}
               onLanguageChange={setTranslationLanguage}
               formData={translationFormData}
               setFormData={setTranslationFormData}

@@ -58,6 +58,7 @@ type ArtworkFormProps = {
   artists: Artist[];
 
   artworkSaved: boolean;
+  isEditMode?: boolean;
   onSave: (imageId: string | null, newImageUrl: string | null) => void;
   onTranslate?: () => void;
 
@@ -80,6 +81,7 @@ export default function ArtworkForm({
   setFormData,
   artists,
   artworkSaved,
+  isEditMode = false,
   onSave,
   onTranslate,
   showTranslateButton = true,
@@ -122,7 +124,7 @@ export default function ArtworkForm({
 
     // Bereits gespeichert oder gerade im Speichervorgang:
     // keinen weiteren Submit zulassen.
-    if (isSaving || artworkSaved || hasSubmitted) {
+    if (isSaving || (!isEditMode && (artworkSaved || hasSubmitted))) {
       return;
     }
 
@@ -597,16 +599,16 @@ export default function ArtworkForm({
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"
-          disabled={isSaving || artworkSaved || hasSubmitted}
+          disabled={isSaving || (!isEditMode && (artworkSaved || hasSubmitted))}
           className={`border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
-            isSaving || artworkSaved || hasSubmitted
+            isSaving || (!isEditMode && (artworkSaved || hasSubmitted))
               ? "cursor-not-allowed opacity-50"
               : "hover:bg-black hover:text-white"
           }`}
         >
-          {isSaving || hasSubmitted
+          {isSaving || (!isEditMode && hasSubmitted)
             ? "..."
-            : artworkSaved
+            : artworkSaved && !isEditMode
               ? "Gespeichert"
               : t("actions.save")}
         </button>

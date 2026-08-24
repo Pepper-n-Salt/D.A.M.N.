@@ -37,7 +37,7 @@ export default function NewArtistPage() {
    * Wenn eine ID vorhanden ist, befinden wir uns
    * im Bearbeitungsmodus.
    */
-  const isEditMode = !!id;
+  const isEditMode = !!id; // das doppelte Ausrufezeichen wandelt einen Wert in einen echten Boolean (true oder false) um
 
   const [language, setLanguage] = useState<Language>("german");
 
@@ -447,6 +447,7 @@ export default function NewArtistPage() {
         <div className="w-full">
           <ArtistForm
             language={language}
+            isEditMode={isEditMode}
             onLanguageChange={setLanguage}
             formData={formData}
             setFormData={setFormData}
@@ -482,6 +483,7 @@ export default function NewArtistPage() {
           <div className="w-full">
             <ArtistForm
               language={translationLanguage}
+              isEditMode={isEditMode}
               onLanguageChange={setTranslationLanguage}
               formData={translationFormData}
               setFormData={setTranslationFormData}
