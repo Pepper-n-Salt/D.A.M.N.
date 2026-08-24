@@ -1,42 +1,4 @@
 # D.A.M.N.
-
-Digital-Artwork-Management-Network
-
-# Exhibition CMS
-
-A modern content management system for museums and exhibitions.
-
-## Features
-
-- Authentication
-- Role management
-- Exhibition editor
-- QR Codes
-- Interactive quizzes
-- Responsive Design
-
-## Tech Stack
-
-React
-Express
-PostgreSQL
-Tailwind CSS
-
-## Screenshots
-
-...
-
-## Live Demo
-
-...
-
-## Installation
-
-...
-
-___ ab hier neu ___
-
-# D.A.M.N.
 ## Digital Artwork Management Network
 
 **D.A.M.N.** is a full-stack web application for the **digital management, organisation and presentation of exhibitions and artworks**.
@@ -88,30 +50,6 @@ The system combines a modern web-based CMS with a visitor-facing experience and 
 * **Responsive Design**
   Designed for desktop, tablet and mobile devices.
 
-
----
-
-## Screenshots
-
-### Dashboard
-
-<!-- screenshot -->
-
-### Exhibition Management
-
-<!-- screenshot -->
-
-### Exhibition Editor
-
-<!-- screenshot -->
-
-### Artwork Management
-
-<!-- screenshot -->
-
-### Visitor Experience
-
-<!-- screenshot -->
 
 ---
 
