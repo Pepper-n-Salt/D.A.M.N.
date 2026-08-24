@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"; // useRef, um das File-Input zurüclsetzen zu können
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useArtistValidation } from "../validation/artistValidation";
 
@@ -64,6 +64,10 @@ export default function ArtistForm({
 
   const [isSavingImage, setIsSavingImage] = useState(false);
 
+  // Verhindert mehrfaches Absenden, bevor der Parent
+  // isSaving/artistSaved aktualisiert hat.
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   const errors = validateArtistForm(formData);
@@ -107,11 +111,23 @@ export default function ArtistForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Kein erneutes Absenden erlauben, wenn:
+    // - bereits gespeichert wurde
+    // - gerade gespeichert wird
+    // - bereits ein Submit gestartet wurde
+    if (isSaving || artistSaved || hasSubmitted) {
+      return;
+    }
+
     const validationErrors = validateArtistForm(formData);
 
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
+
+    // Sofort sperren, damit auch sehr schnelle Doppelklicks
+    // keinen zweiten Speichervorgang starten.
+    setHasSubmitted(true);
 
     try {
       let imageId: string | null = null;
@@ -134,6 +150,10 @@ export default function ArtistForm({
 
       onSave(imageId, imageUrl);
     } catch (error) {
+      // Wenn der Speichervorgang fehlschlägt,
+      // darf der Benutzer erneut versuchen zu speichern.
+      setHasSubmitted(false);
+
       console.error(error);
     }
   };
@@ -391,19 +411,31 @@ export default function ArtistForm({
         </div>
       )}
 
+      {/* SAVE MESSAGE */}
+
+      {(isSaving || hasSubmitted) && !artistSaved && (
+        <p className="text-sm uppercase tracking-[0.2em]">
+          {t("messages.saving")}
+        </p>
+      )}
+
       {/* ACTIONS */}
 
       <div className="flex flex-wrap gap-4">
         <button
           type="submit"
-          disabled={isSaving}
+          disabled={isSaving || artistSaved || hasSubmitted}
           className={`border border-black px-8 py-3 uppercase tracking-[0.2em] transition-colors duration-300 ${
-            isSaving
+            isSaving || artistSaved || hasSubmitted
               ? "cursor-not-allowed opacity-50"
               : "hover:bg-black hover:text-white"
           }`}
         >
-          {isSaving ? "..." : t("actions.save")}
+          {isSaving || hasSubmitted
+            ? "..."
+            : artistSaved
+              ? "Gespeichert"
+              : t("actions.save")}
         </button>
 
         {showTranslateButton && (
