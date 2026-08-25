@@ -526,6 +526,7 @@ export default function NewArtworkPage() {
         <div className="w-full">
           <ArtworkForm
             language={language}
+            isEditMode={isEditMode}
             onLanguageChange={setLanguage}
             formData={formData}
             setFormData={setFormData}
@@ -562,6 +563,7 @@ export default function NewArtworkPage() {
           <div className="w-full">
             <ArtworkForm
               language={translationLanguage}
+              isEditMode={isEditMode}
               onLanguageChange={setTranslationLanguage}
               formData={translationFormData}
               setFormData={setTranslationFormData}
