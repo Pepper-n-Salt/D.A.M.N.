@@ -72,21 +72,20 @@ export default function ExhibitionScreenChat() {
       return;
     }
 
-    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const wsBaseUrl = import.meta.env.VITE_WS_URL;
 
-    const socketHost =
-      window.location.hostname === "localhost"
-        ? "localhost:3000"
-        : window.location.host;
+    if (!wsBaseUrl) {
+      throw new Error("VITE_WS_URL is not configured");
+    }
 
-    const socket = new WebSocket(
-      `${protocol}://${socketHost}/ws/chat/exhibition/${id}`
-    );
+    const socketUrl = `${wsBaseUrl}/ws/chat/exhibition/${id}`;
+
+    const socket = new WebSocket(socketUrl);
 
     socketRef.current = socket;
 
     socket.onopen = () => {
-      console.log("WebSocket opened");
+      console.log("WebSocket opened:", socketUrl);
     };
 
     socket.onmessage = (event) => {
@@ -113,7 +112,8 @@ export default function ExhibitionScreenChat() {
       }
     };
 
-    socket.onclose = () => {
+    socket.onclose = (event) => {
+      console.log("WebSocket closed:", event.code, event.reason);
       setIsConnected(false);
     };
 
