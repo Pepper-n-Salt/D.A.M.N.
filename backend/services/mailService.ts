@@ -23,23 +23,24 @@ export interface ContactMailData {
 export async function sendContactMail(data: ContactMailData) {
   const { name, email, message } = data;
 
-  await transporter.sendMail({
-    /*
+  try {
+    const result = await transporter.sendMail({
+      /*
             Die Mail wird von unserem
             Mailkonto verschickt.
         */
 
-    from: process.env.SMTP_USER,
+      from: process.env.SMTP_USER,
 
-    /*
+      /*
             Empfänger der Nachricht.
             Kann später einfach in der .env
             geändert werden.
         */
 
-    to: process.env.CONTACT_EMAIL,
+      to: process.env.CONTACT_EMAIL,
 
-    /*
+      /*
             Antwortet Melanie später
             auf die Mail,
 
@@ -47,11 +48,11 @@ export async function sendContactMail(data: ContactMailData) {
             an den Besucher.
         */
 
-    replyTo: email,
+      replyTo: email,
 
-    subject: `Neue Kontaktanfrage von ${name}`,
+      subject: `Neue Kontaktanfrage von ${name}`,
 
-    text: `
+      text: `
 Name:
 ${name}
 
@@ -61,5 +62,13 @@ ${email}
 Nachricht:
 ${message}
 `,
-  });
+    });
+
+    console.log("Contact mail sent:", result.messageId);
+
+    return result;
+  } catch (error) {
+    console.error("Contact mail sending failed:", error);
+    throw error;
+  }
 }
